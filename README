@@ -1,0 +1,53 @@
+I created this projekt to solve a problem a ran into wil migrateing a larger customer to Google Apps.
+I hope it can be usefull to some one else.
+
+You can send feedback ore questions to robert.j@plan-tre.net
+
+1.
+You will need to download ".NET library for the Google Data API"
+http://code.google.com/p/google-gdata/downloads/list
+
+2.
+Add the cmdlet to powershell
+
+set-alias installutil $env:windir\Microsoft.NET\Framework\v2.0.50727\installutil
+installutil Microsoft.PowerShell.GData.dll
+Add-PSSnapin GData
+
+Example use:
+
+$UserService = New-GDataUserService -AdminPassword Password -AdminUsername admin@domain.com
+New-GDataUser -UserService $UserService -FamilyName Robert -GivenName Jönsson -ID robertj -Passsword Password
+Add-GDataUserNickName -UserService $UserService -ID robertj -NickName robert.jonsson
+
+$MailSettingsService = New-GDataMailSettingsService -AdminPassword Password -AdminUsername admin@domain.com
+Set-GDataMailSetting -ID robertj -Name "Robert Jönsson" -SenderAdress "robert.jonsson@domain.com" -IsDefault -MailSettingsService $MailSettingsService
+
+This project includes:
+
+New-GDataContactService
+Remove-GDataContact
+Get-GDataContact
+Set-GDataContact
+New-GDataContact
+
+New-GDataGroupService
+Remove-GDataGroup
+Get-GDataGroup
+Get-GDataGroupMember
+Add-GDataGroupMember
+Remove-GDataGroupMember
+Set-GDataGroup
+New-GDataGroup
+
+New-GDataGDataMailSettingsService
+Set-GDataGDataMailSetting
+
+New-GDataUserService
+Remove-GDatauser
+Get-GDataUser
+Set-GDataUser
+New-GDataUser
+Get-GDataUserNickName
+Add-GDataUserNickName
+Remove-GDataUserNickName
