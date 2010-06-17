@@ -15,7 +15,7 @@ namespace Microsoft.PowerShell.GData
     public class Contact
     {
 
-        // Todo: add scope option fore Contacs (Personal and Domain Sharied)
+        
 
         #region New-GDataContactService
 
@@ -95,6 +95,18 @@ namespace Microsoft.PowerShell.GData
             }
             private string _SelfUri;
 
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string Scope
+            {
+                get { return null; }
+                set { _Scope = value; }
+            }
+            private string _Scope;
+
             protected override void ProcessRecord()
             {
 
@@ -107,6 +119,11 @@ namespace Microsoft.PowerShell.GData
                 var _DgcGoogle = new Contact.DgcGoogle();
                 var _Domain = _DgcGoogle.Get(_ContactService);
                 */
+
+                if (_Scope != null)
+                {
+                    _Domain = _Scope;
+                }
 
                 var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
                 var _Feed = _ContactService.Query(_Query);
@@ -179,6 +196,17 @@ namespace Microsoft.PowerShell.GData
             }
             private string _Name;
 
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string Scope
+            {
+                get { return null; }
+                set { _Scope = value; }
+            }
+            private string _Scope;
+
             #endregion Parameters
 
 
@@ -188,6 +216,12 @@ namespace Microsoft.PowerShell.GData
 
                 var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
                 var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService);
+
+
+                if (_Scope != null)
+                {
+                    _Domain = _Scope;
+                }
 
                 var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
                 try
@@ -312,6 +346,16 @@ namespace Microsoft.PowerShell.GData
             }
             private string _PostalAddress;
 
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string Scope
+            {
+                get { return null; }
+                set { _Scope = value; }
+            }
+            private string _Scope;
 
             #endregion Parameters
 
@@ -323,8 +367,14 @@ namespace Microsoft.PowerShell.GData
                 var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
                 var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService);
 
+                if (_Scope != null)
+                {
+                    _Domain = _Scope;
+                }
+
+
                 var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
-               
+                
                 var _Feed = _ContactService.Query(_Query);
 
                 foreach (ContactEntry _Entry in _Feed.Entries)
@@ -454,7 +504,18 @@ namespace Microsoft.PowerShell.GData
                 set { _PostalAddress = value; }
             }
             private string _PostalAddress;
-            
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string Scope
+            {
+                get { return null; }
+                set { _Scope = value; }
+            }
+            private string _Scope;
+
             #endregion Parameters
 
 
@@ -490,6 +551,11 @@ namespace Microsoft.PowerShell.GData
                 var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
                 var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService);
 
+                if (_Scope != null)
+                {
+                    _Domain = _Scope;
+                }
+                
                 Uri _FeedUri = new Uri(ContactsQuery.CreateContactsUri(_Domain));
 
 
