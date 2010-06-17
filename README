@@ -16,12 +16,12 @@ Add-PSSnapin GData
 
 Example use:
 
-$UserService = New-GDataUserService -AdminPassword Password -AdminUsername admin@domain.com
-New-GDataUser -UserService $UserService -FamilyName Robert -GivenName Jönsson -ID robertj -Passsword Password
+$UserService = New-GDataUserService -AdminPassword Password -AdminUsername admin@plan-tre.net
+New-GDataUser -UserService $UserService -FamilyName Robert -GivenName Jonsson -ID robertj -Passsword Password
 Add-GDataUserNickName -UserService $UserService -ID robertj -NickName robert.jonsson
 
-$MailSettingsService = New-GDataMailSettingsService -AdminPassword Password -AdminUsername admin@domain.com
-Set-GDataMailSetting -ID robertj -Name "Robert Jönsson" -SenderAdress "robert.jonsson@domain.com" -IsDefault -MailSettingsService $MailSettingsService
+$MailSettingsService = New-GDataMailSettingsService -AdminPassword Password -AdminUsername admin@plan-tre.net
+Set-GDataMailSetting -ID robertj -Name "Robert Jonsson" -SenderAdress "robert.jonsson@plan-tre.net" -IsDefault -MailSettingsService $MailSettingsService
 
 This project includes:
 
