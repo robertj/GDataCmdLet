@@ -15,7 +15,7 @@ namespace Microsoft.PowerShell.GData
     public class Contact
     {
 
-        // Todo: add scope option fore Contacs (Personal and Domainsharied)
+        // Todo: add scope option fore Contacs (Personal and Domain Sharied)
 
         #region New-GDataContactService
 
