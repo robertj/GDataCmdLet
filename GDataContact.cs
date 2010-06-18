@@ -25,7 +25,8 @@ namespace Microsoft.PowerShell.GData
             #region Parameters
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "GoogleApps admin user, admin@domain.com"
             )]
             [ValidateNotNullOrEmpty]
             public string AdminUsername
@@ -36,7 +37,8 @@ namespace Microsoft.PowerShell.GData
             private string _AdminUser;
 
             [Parameter(
-               Mandatory = true
+               Mandatory = true,
+               HelpMessage = "GoogleApps admin password"
             )]
             [ValidateNotNullOrEmpty]
             public string AdminPassword
@@ -74,7 +76,8 @@ namespace Microsoft.PowerShell.GData
         {
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "ContactService, new-GdataContactService"
             )]
             [ValidateNotNullOrEmpty]
             public ContactsService ContactService
@@ -85,7 +88,8 @@ namespace Microsoft.PowerShell.GData
             private ContactsService _ContactService;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Contact Uri"
             )]
             [ValidateNotNullOrEmpty]
             public string SelfUri
@@ -97,7 +101,8 @@ namespace Microsoft.PowerShell.GData
 
 
             [Parameter(
-            Mandatory = false
+            Mandatory = false,
+            HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
             )]
             [ValidateNotNullOrEmpty]
             public string Scope
@@ -164,7 +169,8 @@ namespace Microsoft.PowerShell.GData
             #region Parameters
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "ContactService, new-GdataContactService"
             )]
             [ValidateNotNullOrEmpty]
             public ContactsService ContactService
@@ -175,7 +181,8 @@ namespace Microsoft.PowerShell.GData
             private ContactsService _ContactService;
  
             [Parameter(
-            Mandatory = false
+            Mandatory = false,
+            HelpMessage = "Contact Uri"
             )]
             [ValidateNotNullOrEmpty]
             public string SelfUri
@@ -186,7 +193,8 @@ namespace Microsoft.PowerShell.GData
             private string _SelfUri;
 
             [Parameter(
-            Mandatory = false
+            Mandatory = false,
+            HelpMessage = "Contact Name"
             )]
             [ValidateNotNullOrEmpty]
             public string Name
@@ -197,7 +205,8 @@ namespace Microsoft.PowerShell.GData
             private string _Name;
 
             [Parameter(
-            Mandatory = false
+            Mandatory = false,
+            HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
             )]
             [ValidateNotNullOrEmpty]
             public string Scope
@@ -279,7 +288,8 @@ namespace Microsoft.PowerShell.GData
 
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "ContactService, new-GdataContactService"
             )]
             [ValidateNotNullOrEmpty]
             public ContactsService ContactService
@@ -290,7 +300,8 @@ namespace Microsoft.PowerShell.GData
             private ContactsService _ContactService;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Contact Uri"
             )]
             [ValidateNotNullOrEmpty]
             public string SelfUri
@@ -301,7 +312,8 @@ namespace Microsoft.PowerShell.GData
             private string _SelfUri;
 
             [Parameter(
-             Mandatory = false
+             Mandatory = false,
+             HelpMessage = "Contact EmailAdress"
             )]
             [ValidateNotNullOrEmpty]
             public string EmailAddress
@@ -312,7 +324,8 @@ namespace Microsoft.PowerShell.GData
             private string _EmailAddress;
 
             [Parameter(
-               Mandatory = false
+               Mandatory = false,
+               HelpMessage = "Contact Name"
             )]
             [ValidateNotNullOrEmpty]
             public string Name
@@ -324,7 +337,8 @@ namespace Microsoft.PowerShell.GData
 
 
             [Parameter(
-               Mandatory = false
+               Mandatory = false,
+               HelpMessage = "Contact PhoneNumber"
             )]
             [ValidateNotNullOrEmpty]
             public string PhoneNumber
@@ -336,7 +350,8 @@ namespace Microsoft.PowerShell.GData
 
 
             [Parameter(
-               Mandatory = false
+               Mandatory = false,
+               HelpMessage = "Contact PostalAddress"
             )]
             [ValidateNotNullOrEmpty]
             public string PostalAddress
@@ -347,7 +362,8 @@ namespace Microsoft.PowerShell.GData
             private string _PostalAddress;
 
             [Parameter(
-            Mandatory = false
+            Mandatory = false,
+            HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
             )]
             [ValidateNotNullOrEmpty]
             public string Scope
@@ -448,8 +464,9 @@ namespace Microsoft.PowerShell.GData
 
 
             [Parameter(
-            Mandatory = true
-             )]
+            Mandatory = true,
+            HelpMessage = "ContactService, new-GdataContactService"
+            )]
             [ValidateNotNullOrEmpty]
             public ContactsService ContactService
             {
@@ -460,7 +477,8 @@ namespace Microsoft.PowerShell.GData
 
             
             [Parameter(
-               Mandatory = true
+               Mandatory = true,
+               HelpMessage = "Contact EmailAddress"
             )]
             [ValidateNotNullOrEmpty]
             public string EmailAddress
@@ -471,7 +489,8 @@ namespace Microsoft.PowerShell.GData
             private string _EmailAddress;
 
             [Parameter(
-               Mandatory = true
+               Mandatory = true,
+               HelpMessage = "Contact Name"
             )]
             [ValidateNotNullOrEmpty]
             public string Name
@@ -483,7 +502,8 @@ namespace Microsoft.PowerShell.GData
 
 
             [Parameter(
-               Mandatory = false
+               Mandatory = false,
+               HelpMessage = "Contact PhoneNumber"
             )]
             [ValidateNotNullOrEmpty]
             public string PhoneNumber
@@ -495,7 +515,8 @@ namespace Microsoft.PowerShell.GData
 
             
             [Parameter(
-               Mandatory = false
+               Mandatory = false,
+               HelpMessage = "Contact PostalAddress"
             )]
             [ValidateNotNullOrEmpty]
             public string PostalAddress
@@ -506,7 +527,8 @@ namespace Microsoft.PowerShell.GData
             private string _PostalAddress;
 
             [Parameter(
-            Mandatory = false
+            Mandatory = false,
+            HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
             )]
             [ValidateNotNullOrEmpty]
             public string Scope
