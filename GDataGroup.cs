@@ -25,7 +25,8 @@ namespace Microsoft.PowerShell.GData
             #region Parameters
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "GoogleApps admin user, admin@domain.com"
             )]
             [ValidateNotNullOrEmpty]
             public string AdminUsername
@@ -36,7 +37,8 @@ namespace Microsoft.PowerShell.GData
             private string _AdminUser;
 
             [Parameter(
-               Mandatory = true
+               Mandatory = true,
+               HelpMessage = "GoogleApps admin password"
             )]
             [ValidateNotNullOrEmpty]
             public string AdminPassword
@@ -73,7 +75,8 @@ namespace Microsoft.PowerShell.GData
             #region Parameters
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "GroupService, new-GdataGroupService"
             )]
             [ValidateNotNullOrEmpty]
             public AppsService GroupService
@@ -84,7 +87,8 @@ namespace Microsoft.PowerShell.GData
             private AppsService _GroupService;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Goup ID"
             )]
             [ValidateNotNullOrEmpty]
             public string ID
@@ -123,7 +127,8 @@ namespace Microsoft.PowerShell.GData
 
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "GroupService, new-GdataGroupService"
             )]
             [ValidateNotNullOrEmpty]
             public AppsService GroupService
@@ -134,7 +139,8 @@ namespace Microsoft.PowerShell.GData
             private AppsService _GroupService;
 
             [Parameter(
-            Mandatory = false
+            Mandatory = false,
+            HelpMessage = "Group ID"
             )]
             [ValidateNotNullOrEmpty]
             public string ID
@@ -190,7 +196,8 @@ namespace Microsoft.PowerShell.GData
 
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "GroupService, new-GdataGroupService"
             )]
             [ValidateNotNullOrEmpty]
             public AppsService GroupService
@@ -201,7 +208,8 @@ namespace Microsoft.PowerShell.GData
             private AppsService _GroupService;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Group ID"
             )]
             [ValidateNotNullOrEmpty]
             public string Id
@@ -240,7 +248,8 @@ namespace Microsoft.PowerShell.GData
 
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "GroupService, new-GdataGroupService"
             )]
             [ValidateNotNullOrEmpty]
             public AppsService GroupService
@@ -251,7 +260,8 @@ namespace Microsoft.PowerShell.GData
             private AppsService _GroupService;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Group ID"
             )]
             [ValidateNotNullOrEmpty]
             public string ID
@@ -262,7 +272,8 @@ namespace Microsoft.PowerShell.GData
             private string _ID;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Username"
             )]
             [ValidateNotNullOrEmpty]
             public string UserID
@@ -301,7 +312,8 @@ namespace Microsoft.PowerShell.GData
 
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "GroupService, New-GDataGroupService"
             )]
             [ValidateNotNullOrEmpty]
             public AppsService GroupService
@@ -312,7 +324,8 @@ namespace Microsoft.PowerShell.GData
             private AppsService _GroupService;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Group ID"
             )]
             [ValidateNotNullOrEmpty]
             public string ID
@@ -323,7 +336,8 @@ namespace Microsoft.PowerShell.GData
             private string _ID;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Username"
             )]
             [ValidateNotNullOrEmpty]
             public string UserID
@@ -362,8 +376,9 @@ namespace Microsoft.PowerShell.GData
             #region Parameters
 
             [Parameter(
-                  Mandatory = true
-                  )]
+                  Mandatory = true,
+                  HelpMessage = "GroupService, New-GDataGroupService"
+            )]
             [ValidateNotNullOrEmpty]
             public AppsService GroupService
             {
@@ -373,7 +388,8 @@ namespace Microsoft.PowerShell.GData
             private AppsService _GroupService;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Group ID"
             )]
             [ValidateNotNullOrEmpty]
             public string ID
@@ -384,7 +400,8 @@ namespace Microsoft.PowerShell.GData
             private string _ID;
 
             [Parameter(
-            Mandatory = false
+            Mandatory = false,
+            HelpMessage = "Group name"
             )]
             [ValidateNotNullOrEmpty]
             public string Name
@@ -395,7 +412,8 @@ namespace Microsoft.PowerShell.GData
             private string _Name;
 
             [Parameter(
-            Mandatory = false
+            Mandatory = false,
+            HelpMessage = "Group description"
             )]
             [ValidateNotNullOrEmpty]
             public string Description
@@ -406,7 +424,8 @@ namespace Microsoft.PowerShell.GData
             private string _Description;
 
             [Parameter(
-            Mandatory = false
+            Mandatory = false,
+            HelpMessage = "Group EmailPermission, Owner, Member, Domain, Anyone"
             )]
             [ValidateNotNullOrEmpty]
             public string EmailPermission
@@ -467,7 +486,8 @@ namespace Microsoft.PowerShell.GData
 
 
             [Parameter(
-         Mandatory = true
+         Mandatory = true,
+         HelpMessage = "GroupService, New-GDataGroupService"
          )]
             [ValidateNotNullOrEmpty]
             public AppsService GroupService
@@ -478,7 +498,8 @@ namespace Microsoft.PowerShell.GData
             private AppsService _GroupService;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Group ID"
             )]
             [ValidateNotNullOrEmpty]
             public string ID
@@ -489,7 +510,8 @@ namespace Microsoft.PowerShell.GData
             private string _ID;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Group name"
             )]
             [ValidateNotNullOrEmpty]
             public string Name
@@ -500,7 +522,8 @@ namespace Microsoft.PowerShell.GData
             private string _Name;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Group description"
             )]
             [ValidateNotNullOrEmpty]
             public string Description
@@ -511,7 +534,8 @@ namespace Microsoft.PowerShell.GData
             private string _Description;
 
             [Parameter(
-            Mandatory = true
+            Mandatory = true,
+            HelpMessage = "Group EmailPermission, Owner, Member, Domain, Anyone"
             )]
             [ValidateNotNullOrEmpty]
             public string EmailPermission
