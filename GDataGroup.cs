@@ -21,7 +21,6 @@ namespace Microsoft.PowerShell.GData
         [Cmdlet(VerbsCommon.New, "GDataGroupService")]
         public class NewGDataGroupService : Cmdlet
         {
-
             #region Parameters
 
             [Parameter(
