@@ -5,8 +5,8 @@ I hope it can be usefull to someone else.
 You can send feedback ore questions to robert.j@plan-tre.net
 
 1.
-You will need to download ".NET library for the Google Data API"
-http://code.google.com/p/google-gdata/downloads/detail?name=Google%20Data%20API%20Setup%281.4.0.2%29.msi&can=4&q=
+You will need to download ".NET library for the Google Data API (1.6.0.0)"
+http://code.google.com/p/google-gdata/downloads/list
 
 2.
 Add the cmdlet to powershell
