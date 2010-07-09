@@ -6,12 +6,14 @@ You can send feedback ore questions to robert.j@plan-tre.net
 
 1.
 You will need to download ".NET library for the Google Data API"
-http://code.google.com/p/google-gdata/downloads/list
+http://code.google.com/p/google-gdata/downloads/detail?name=Google%20Data%20API%20Setup%281.4.0.2%29.msi&can=4&q=
 
 2.
 Add the cmdlet to powershell
 
 set-alias installutil $env:windir\Microsoft.NET\Framework\v2.0.50727\installutil
+Fore 64bit use "set-alias installutil $env:windir\Microsoft.NET\Framework64\v2.0.50727\installutil"
+
 installutil Microsoft.PowerShell.GData.dll
 Add-PSSnapin GData
 
