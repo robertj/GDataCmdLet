@@ -129,11 +129,14 @@ namespace Microsoft.PowerShell.GData
                 {
                     _Domain = _Scope;
                 }
+               
 
-                var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
+//              var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
+                var _Query = new ContactsQuery("http://www.google.com/m8/feeds/profiles/domain/domain/full");
                 var _Feed = _ContactService.Query(_Query);
 
 
+                
                 foreach (var _Entry in _Feed.Entries)
                 {
                     if (_Entry.SelfUri.Content == _SelfUri)
@@ -423,8 +426,10 @@ namespace Microsoft.PowerShell.GData
 
                         if (_PostalAddress != null)
                         {
-                            var postalAddress = new PostalAddress();
-                            postalAddress.Value = _PostalAddress;
+                            //var postalAddress = new PostalAddress();
+                            var postalAddress = new StructuredPostalAddress();
+                            //postalAddress.Value = _PostalAddress;
+                            postalAddress.FormattedAddress = _PostalAddress;
                             postalAddress.Primary = true;
                             postalAddress.Rel = ContactsRelationships.IsWork;
                             _Entry.PostalAddresses.Add(postalAddress);
@@ -562,8 +567,10 @@ namespace Microsoft.PowerShell.GData
 
                 if (_PostalAddress != null)
                 {
-                    var postalAddress = new PostalAddress();
-                    postalAddress.Value = _PostalAddress;
+                    //var postalAddress = new PostalAddress();
+                    var postalAddress = new StructuredPostalAddress();
+                    //postalAddress.Value = _PostalAddress;
+                    postalAddress.FormattedAddress = _PostalAddress;
                     postalAddress.Primary = true;
                     postalAddress.Rel = ContactsRelationships.IsWork;
                     _NewEntry.PostalAddresses.Add(postalAddress);
