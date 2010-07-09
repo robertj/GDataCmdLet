@@ -1,0 +1,16 @@
+﻿Installing assembly 'H:\repo\GDataCmdLet\bin\Debug\Microsoft.PowerShell.GData.dll'.
+Affected parameters are:
+   assemblypath = H:\repo\GDataCmdLet\bin\Debug\Microsoft.PowerShell.GData.dll
+   logfile = H:\repo\GDataCmdLet\bin\Debug\Microsoft.PowerShell.GData.InstallLog
+   logtoconsole = 
+Unable to create an instance of the Microsoft.PowerShell.GData.Ps installer type.
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
+The inner exception System.Security.SecurityException was thrown with the following error message: That assembly does not allow partially trusted callers..
+Rolling back assembly 'H:\repo\GDataCmdLet\bin\Debug\Microsoft.PowerShell.GData.dll'.
+Affected parameters are:
+   assemblypath = H:\repo\GDataCmdLet\bin\Debug\Microsoft.PowerShell.GData.dll
+   logfile = H:\repo\GDataCmdLet\bin\Debug\Microsoft.PowerShell.GData.InstallLog
+   logtoconsole = 
+Unable to create an instance of the Microsoft.PowerShell.GData.Ps installer type.
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
+The inner exception System.Security.SecurityException was thrown with the following error message: That assembly does not allow partially trusted callers..
