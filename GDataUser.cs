@@ -434,7 +434,7 @@ namespace Microsoft.PowerShell.GData
 
                         if (_Feed.Entries.Count == 0)
                         {
-                            Except throw newion("No NickNames found!");
+                            throw new Exception("No NickNames found!");
                         }
                         WriteObject(_Feed);
 
