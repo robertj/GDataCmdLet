@@ -131,8 +131,8 @@ namespace Microsoft.PowerShell.GData
                 }
                
 
-//              var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
-                var _Query = new ContactsQuery("http://www.google.com/m8/feeds/profiles/domain/domain/full");
+                var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
+//                var _Query = new ContactsQuery("http://www.google.com/m8/feeds/profiles/domain/domain/full");
                 var _Feed = _ContactService.Query(_Query);
 
 
