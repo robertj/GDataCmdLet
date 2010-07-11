@@ -364,6 +364,19 @@ namespace Microsoft.PowerShell.GData
             }
             private string _PostalAddress;
 
+
+            [Parameter(
+               Mandatory = false,
+               HelpMessage = "Contact City"
+            )]
+            [ValidateNotNullOrEmpty]
+            public string City
+            {
+                get { return null; }
+                set { _City = value; }
+            }
+            private string _City;
+
             [Parameter(
             Mandatory = false,
             HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
@@ -432,10 +445,14 @@ namespace Microsoft.PowerShell.GData
                             postalAddress.FormattedAddress = _PostalAddress;
                             postalAddress.Primary = true;
                             postalAddress.Rel = ContactsRelationships.IsWork;
+                            if (_City != null)
+                            {
+                                postalAddress.City = _City;
+                            }
                             _Entry.PostalAddresses.Add(postalAddress);
+
+                        
                         }
-
-
 
                         Uri _FeedUri = new Uri(ContactsQuery.CreateContactsUri(_Domain));
 
@@ -533,6 +550,18 @@ namespace Microsoft.PowerShell.GData
 
             [Parameter(
             Mandatory = false,
+            HelpMessage = "Contact City"
+            )]
+            [ValidateNotNullOrEmpty]
+            public string City
+            {
+                get { return null; }
+                set { _City = value; }
+            }
+            private string _City;
+
+            [Parameter(
+            Mandatory = false,
             HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
             )]
             [ValidateNotNullOrEmpty]
@@ -573,6 +602,11 @@ namespace Microsoft.PowerShell.GData
                     postalAddress.FormattedAddress = _PostalAddress;
                     postalAddress.Primary = true;
                     postalAddress.Rel = ContactsRelationships.IsWork;
+                    if (_City != null)
+                    {
+                        postalAddress.City = _City;
+                    }
+                    
                     _NewEntry.PostalAddresses.Add(postalAddress);
                 }
                 _NewEntry.Content.Content = _Name;
