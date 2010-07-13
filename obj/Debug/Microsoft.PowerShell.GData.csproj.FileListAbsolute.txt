@@ -1,9 +1,0 @@
-H:\repo\GDataCmdLet\bin\Debug\Microsoft.PowerShell.GData.dll
-H:\repo\GDataCmdLet\bin\Debug\Microsoft.PowerShell.GData.pdb
-H:\repo\GDataCmdLet\bin\Debug\Google.GData.Apps.dll
-H:\repo\GDataCmdLet\bin\Debug\Google.GData.Client.dll
-H:\repo\GDataCmdLet\bin\Debug\Google.GData.Contacts.dll
-H:\repo\GDataCmdLet\bin\Debug\Google.GData.Extensions.dll
-H:\repo\GDataCmdLet\obj\Debug\ResolveAssemblyReference.cache
-H:\repo\GDataCmdLet\obj\Debug\Microsoft.PowerShell.GData.dll
-H:\repo\GDataCmdLet\obj\Debug\Microsoft.PowerShell.GData.pdb
