@@ -9,4 +9,5 @@ using System.Security.Permissions;
 [assembly: AssemblyCompany("plan-tre.net")]
 [assembly: AssemblyCopyright("Robert Jönsson")]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, Flags = 0)]
-[assembly: AssemblyVersion("0.5.0.2")]
+[assembly: AssemblyVersion("0.5.0.3")]
+
