@@ -65,6 +65,7 @@
   -->
   <ItemGroup>
     <Compile Include="AssemblyInfoGData.cs" />
+    <Compile Include="GDataCalendar.cs" />
     <Compile Include="GDataDgc.cs" />
     <Compile Include="GDataMailSettings.cs" />
     <Compile Include="snap-in.cs">
@@ -78,6 +79,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Google.GData.AccessControl, Version=1.6.0.0, Culture=neutral, PublicKeyToken=b4b8eb9a7afc8328, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Binaries\Google.GData.AccessControl.dll</HintPath>
+    </Reference>
     <Reference Include="Google.GData.Apps, Version=1.6.0.0, Culture=neutral, PublicKeyToken=e6feebfe441b89cb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Binaries\Google.GData.Apps.dll</HintPath>
