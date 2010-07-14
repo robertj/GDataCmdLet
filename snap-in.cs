@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Management.Automation;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Google.Contacts;
 using Google.GData.Client;
@@ -17,6 +18,7 @@ namespace Microsoft.PowerShell.GData
 
     [RunInstaller(true)]
     public class Ps : PSSnapIn
+
     {
         public Ps()
             : base()
@@ -54,6 +56,7 @@ namespace Microsoft.PowerShell.GData
                 return "This is a PowerShell snap-in that includes the GData cmdlet's.";
             }
         }
+ 
     }
 
     #endregion PowerShell snap-in

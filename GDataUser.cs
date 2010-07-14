@@ -9,6 +9,7 @@ using Google.GData.Extensions;
 using System.Collections.Generic;
 using Google.GData.Apps;
 using Google.GData.Apps.GoogleMailSettings;
+using Google.GData.Extensions.Apps;
 
 namespace Microsoft.PowerShell.GData
 {
@@ -158,7 +159,7 @@ namespace Microsoft.PowerShell.GData
                     try
                     {
                         var _Feed = _UserService.RetrieveAllUsers();
-                        WriteObject(_Feed.Entries);
+                        WriteObject(_Feed.Entries,true);
                     }
                     catch (Exception _Exception)
                     {
@@ -170,7 +171,7 @@ namespace Microsoft.PowerShell.GData
                     try
                     {
                         var _Entry = _UserService.RetrieveUser(_ID);
-                        WriteObject(_Entry);
+                        WriteObject(_Entry,true);
                     }
                     catch (Exception _Exception)
                     {
@@ -293,7 +294,6 @@ namespace Microsoft.PowerShell.GData
                     WriteObject(_Exception);
                 }
             }
-
 
         }
 
@@ -420,6 +420,8 @@ namespace Microsoft.PowerShell.GData
                 {
                     try
                     {
+                        
+             
                         var _Feed = _UserService.RetrieveAllNicknames();
                         WriteObject(_Feed.Entries);
                     }
@@ -438,7 +440,7 @@ namespace Microsoft.PowerShell.GData
                         {
                             throw new Exception("No NickNames found!");
                         }
-                        WriteObject(_Feed);
+                        WriteObject(_Feed,true);
 
                     }
                     catch (Exception _Exception)
