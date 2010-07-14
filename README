@@ -56,3 +56,9 @@ New-GDataUser
 Get-GDataUserNickName
 Add-GDataUserNickName
 Remove-GDataUserNickName
+
+New-GDataCalendarService
+Get-GdataCalendar
+Set-GDataCalendar
+New-GdataCalendar
+Remove-GdataCalendar
