@@ -25,7 +25,8 @@ namespace Microsoft.PowerShell.GData
 
             [Parameter(
             Mandatory = true,
-            HelpMessage = "GoogleApps admin user, admin@domain.com"
+            HelpMessage = "GoogleApps admin user, admin@domain.com",
+            HelpMessageBaseName = "GoogleApps admin user, admin@domain.com"
             )]
             [ValidateNotNullOrEmpty]
             public string AdminUsername
