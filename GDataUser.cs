@@ -37,6 +37,7 @@ namespace Microsoft.PowerShell.GData
                Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
+           
             public string AdminPassword
             {
                 get { return null; }
@@ -55,6 +56,7 @@ namespace Microsoft.PowerShell.GData
                 try
                 {
                     var _UserService = new AppsService(_Domain, _AdminUser, _AdminPassword);
+                                  
                     WriteObject(_UserService);
                 }
                 catch (Exception _Exception)
