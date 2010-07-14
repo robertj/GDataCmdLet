@@ -5,12 +5,27 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using Google.Contacts;
 using Google.GData.Contacts;
+using Google.GData.Client;
+using Google.GData.Extensions;
+using Google.GData.Apps;
+using Google.GData.Extensions.Apps;
+using System.Net;
+using Google.GData.Calendar;
+
 
 namespace Microsoft.PowerShell.GData
 {
 
     public class Dgc
     {
+
+
+        #region test
+
+
+        #endregion test
+
+
 
         #region GoogleAppService
 
@@ -45,6 +60,24 @@ namespace Microsoft.PowerShell.GData
         }
 
         #endregion GoogleContactsService
+
+        #region GoogleCalendarsService
+
+        public class GoogleCalendarsService
+        {
+            public string GetDomain(CalendarService CalendarService)
+            {
+
+                char[] delimiterChars = { '@' };
+                string[] _temp = CalendarService.Credentials.Username.ToString().Split(delimiterChars);
+                var _Domain = _temp[1];
+
+                return _Domain;
+            }
+        }
+
+        #endregion GoogleCalendarsService
+
 
     }
 }
