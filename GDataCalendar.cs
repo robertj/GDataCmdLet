@@ -128,7 +128,7 @@ namespace Microsoft.PowerShell.GData
 
                     
                     var _CalendarQuery = new CalendarQuery();
-                    _CalendarQuery.Uri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/owncalendars/full");
+                    _CalendarQuery.Uri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/allcalendars/full");
                     try
                     {
                         var _CalendarFeed = (CalendarFeed)_CalendarService.Query(_CalendarQuery);
@@ -222,7 +222,7 @@ namespace Microsoft.PowerShell.GData
 
                     
                     var _CalendarQuery = new CalendarQuery();
-                    _CalendarQuery.Uri = new Uri("https://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/owncalendars/full");
+                    _CalendarQuery.Uri = new Uri("https://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/allcalendars/full");
                    
                     try
                     {
@@ -329,7 +329,7 @@ namespace Microsoft.PowerShell.GData
                 //_Calendar.Color = "#2952A3";
                 //_Calendar.Location = new Where("", "", "Oakland");
 
-                Uri postUri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/owncalendars/full");
+                Uri postUri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/allcalendars/full");
 
 
                 CalendarEntry _CreatedCalendar = (CalendarEntry) _CalendarService.Insert(postUri, _Calendar);
@@ -420,7 +420,7 @@ namespace Microsoft.PowerShell.GData
 
 
                 var _CalendarQuery = new CalendarQuery();
-                _CalendarQuery.Uri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/owncalendars/full");
+                _CalendarQuery.Uri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/allcalendars/full");
                 try
                 {
                     var _CalendarFeed = (CalendarFeed)_CalendarService.Query(_CalendarQuery);
@@ -549,6 +549,248 @@ namespace Microsoft.PowerShell.GData
         }
 
         #endregion Get-GDataCalendarAcl
+
+        #region Add-GDataCalendarAcl
+
+        [Cmdlet(VerbsCommon.Add, "GDataCalendarAcl")]
+        public class AddGDataCalendarAcl : Cmdlet
+        {
+            #region Parameters
+
+
+            [Parameter(
+            Mandatory = true,
+            HelpMessage = "GDataCalendar, new-GDataCalendarService"
+            )]
+            [ValidateNotNullOrEmpty]
+            public CalendarService CalendarService
+            {
+                get { return null; }
+                set { _CalendarService = value; }
+            }
+            private CalendarService _CalendarService;
+
+            [Parameter(
+            Mandatory = true,
+            HelpMessage = "SelfUri"
+            )]
+            [ValidateNotNullOrEmpty]
+            public string SelfUri
+            {
+                get { return null; }
+                set { _SelfUri = value; }
+            }
+            private string _SelfUri;
+
+            [Parameter(
+            Mandatory = true,
+            HelpMessage = "User ID"
+            )]
+            [ValidateNotNullOrEmpty]
+            public string ID
+            {
+                get { return null; }
+                set { _ID = value; }
+            }
+            private string _ID;
+
+            [Parameter(
+            Mandatory = true,
+            HelpMessage = "Role"
+            )]
+            [ValidateNotNullOrEmpty]
+            public string Role
+            {
+                get { return null; }
+                set { _Role = value; }
+            }
+            private string _Role;
+
+
+            #endregion Parameters
+
+
+            protected override void ProcessRecord()
+            {
+
+                var _DgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
+                var _Domain = _DgcGoogleCalendarService.GetDomain(_CalendarService);
+
+                var _Query = new CalendarQuery();
+                _Query.Uri = new Uri(_SelfUri);
+
+
+                try
+                {
+                    var _Entry = _CalendarService.Query(_Query);
+
+                    //WriteObject(_Entry);
+
+                    var _Links = _Entry.Entries[0].Links;
+
+                    if (_Links == null)
+                    {
+                        throw new Exception("AclFeed new null");
+                    }
+
+
+                    foreach (var _Link in _Links)
+                    {
+
+                        if (_Link.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList")
+                        {
+                            var _AclEntry = new AclEntry();
+                            _AclEntry.Scope = new AclScope();
+                            _AclEntry.Scope.Type = AclScope.SCOPE_USER;
+                            _AclEntry.Scope.Value = _ID;
+
+                            if (_Role.ToUpper() == "FREEBUSY")
+                            {
+                                _AclEntry.Role = AclRole.ACL_CALENDAR_FREEBUSY;
+                            }
+                            else if (_Role.ToUpper() == "READ")
+                            {
+                                _AclEntry.Role = AclRole.ACL_CALENDAR_READ;
+                            }
+                            else if (_Role.ToUpper() == "EDITOR")
+                            {
+                                _AclEntry.Role = AclRole.ACL_CALENDAR_EDITOR;
+                            }
+                            else if (_Role.ToUpper() == "OWNER")
+                            {
+                                _AclEntry.Role = AclRole.ACL_CALENDAR_OWNER;
+                            }
+                            else
+                            {
+                                throw new Exception("-Role needs a FREEBUSY/READ/EDITOR/OWNER parameter");
+                            }
+
+                            var _AclUri = new Uri(_Link.HRef.ToString());
+                            var _AlcEntry = _CalendarService.Insert(_AclUri, _AclEntry) as AclEntry;
+                            WriteObject(_AclEntry);
+                        }
+                    }
+
+                }
+                catch (Exception _Exception)
+                {
+                    WriteObject(_Exception);
+                }
+
+
+            }
+
+        }
+
+        #endregion Add-GDataCalendarAcl
+
+        #region Remove-GDataCalendarAcl
+
+        [Cmdlet(VerbsCommon.Remove, "GDataCalendarAcl")]
+        public class RemoveGDataCalendarAcl : Cmdlet
+        {
+            #region Parameters
+
+
+            [Parameter(
+            Mandatory = true,
+            HelpMessage = "GDataCalendar, new-GDataCalendarService"
+            )]
+            [ValidateNotNullOrEmpty]
+            public CalendarService CalendarService
+            {
+                get { return null; }
+                set { _CalendarService = value; }
+            }
+            private CalendarService _CalendarService;
+
+            [Parameter(
+            Mandatory = true,
+            HelpMessage = "SelfUri"
+            )]
+            [ValidateNotNullOrEmpty]
+            public string SelfUri
+            {
+                get { return null; }
+                set { _SelfUri = value; }
+            }
+            private string _SelfUri;
+
+            [Parameter(
+            Mandatory = true,
+            HelpMessage = "User ID, test@domain.com"
+            )]
+            [ValidateNotNullOrEmpty]
+            public string ID
+            {
+                get { return null; }
+                set { _ID = value; }
+            }
+            private string _ID;
+
+            #endregion Parameters
+
+
+            protected override void ProcessRecord()
+            {
+
+                var _DgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
+                var _Domain = _DgcGoogleCalendarService.GetDomain(_CalendarService);
+
+                var _Query = new CalendarQuery();
+                _Query.Uri = new Uri(_SelfUri);
+
+
+                try
+                {
+                    var _Entry = _CalendarService.Query(_Query);
+
+                    //WriteObject(_Entry);
+
+                    var _Links = _Entry.Entries[0].Links;
+
+                    if (_Links == null)
+                    {
+                        throw new Exception("AclFeed new null");
+                    }
+
+
+                    foreach (var _Link in _Links)
+                    {
+
+                        if (_Link.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList")
+                        {
+
+                            var _AclQuery = new AclQuery(_Link.HRef.ToString());
+                            var _Feed = _CalendarService.Query(_AclQuery);
+
+                            foreach (AclEntry _AclEntry in _Feed.Entries)
+                            {
+
+                                if (_AclEntry.Scope.Value.ToString() == _ID)
+                                {
+                                    
+                                    
+                                    _AclEntry.Delete();
+                                    WriteObject(_ID);
+                                }
+
+                            }
+                            
+                        }
+                    }
+
+                }
+                catch (Exception _Exception)
+                {
+                    WriteObject(_Exception);
+                }
+
+            }
+
+        }
+
+        #endregion Remove-GDataCalendarAcl
 
     }
 
