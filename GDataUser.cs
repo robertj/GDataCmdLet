@@ -38,6 +38,7 @@ namespace Microsoft.PowerShell.GData
                Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
+           
             public string AdminPassword
             {
                 get { return null; }
@@ -56,6 +57,7 @@ namespace Microsoft.PowerShell.GData
                 try
                 {
                     var _UserService = new AppsService(_Domain, _AdminUser, _AdminPassword);
+                                  
                     WriteObject(_UserService);
                 }
                 catch (Exception _Exception)
@@ -258,6 +260,16 @@ namespace Microsoft.PowerShell.GData
             }
             private string _NewId;
 
+            [Parameter(Mandatory = false)]
+            [ValidateNotNullOrEmpty]
+            public string ChangePassNextLogon
+            {
+                get { return null; }
+                set { _ChangePassNextLogon = value; }
+            }
+            private string _ChangePassNextLogon;
+            private bool _ChPass;
+          
             #endregion Parameters
 
 
@@ -281,9 +293,28 @@ namespace Microsoft.PowerShell.GData
                 {
                     _Entry.Login.UserName = _NewId;
                 }
-
+                
                 try
                 {
+
+                    if (_ChangePassNextLogon != null)
+                    {
+                        _ChangePassNextLogon = _ChangePassNextLogon.ToLower();
+                        if (_ChangePassNextLogon == "true")
+                        {
+                            _ChPass = true;
+                        }
+                        else if (_ChangePassNextLogon == "false")
+                        {
+                            _ChPass = false;
+                        }
+                        else
+                        {
+                            throw new Exception("-ChangePassNextLogon needs a true or false statement");
+                        }
+                        _Entry.Login.ChangePasswordAtNextLogin = _ChPass;
+                    }
+                
                     var _update = _UserService.UpdateUser(_Entry);
                     WriteObject(_update);
                 }
