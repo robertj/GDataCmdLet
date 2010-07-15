@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using Google.GData.Apps;
 using Google.GData.Apps.Groups;
 using Google.GData.Calendar;
+using Google.AccessControl;
+using Google.GData.AccessControl;
 
 
 namespace Microsoft.PowerShell.GData
@@ -463,6 +465,90 @@ namespace Microsoft.PowerShell.GData
         }
 
         #endregion Set-GDataCalendar
+
+        #region Get-GDataCalendarAcl
+
+        [Cmdlet(VerbsCommon.Get, "GDataCalendarAcl")]
+        public class GetGDataCalendarAcl : Cmdlet
+        {
+            #region Parameters
+
+
+            [Parameter(
+            Mandatory = true,
+            HelpMessage = "GDataCalendar, new-GDataCalendarService"
+            )]
+            [ValidateNotNullOrEmpty]
+            public CalendarService CalendarService
+            {
+                get { return null; }
+                set { _CalendarService = value; }
+            }
+            private CalendarService _CalendarService;
+
+            [Parameter(
+            Mandatory = true,
+            HelpMessage = "SelfUri"
+            )]
+            [ValidateNotNullOrEmpty]
+            public string SelfUri
+            {
+                get { return null; }
+                set { _SelfUri = value; }
+            }
+            private string _SelfUri;
+
+            #endregion Parameters
+
+
+            protected override void ProcessRecord()
+            {
+
+                var _DgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
+                var _Domain = _DgcGoogleCalendarService.GetDomain(_CalendarService);
+
+                var _Query = new CalendarQuery();
+                _Query.Uri = new Uri(_SelfUri);
+
+
+                try
+                {
+                    var _Entry = _CalendarService.Query(_Query);
+
+                    //WriteObject(_Entry);
+
+                    var _Links = _Entry.Entries[0].Links;
+
+                    if (_Links == null) 
+                    {
+                        throw new Exception("AclFeed new null");
+                    }
+                        
+                            
+                        foreach ( var _Link in _Links ) {
+
+                            if (_Link.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList")
+                            {
+
+                                var _AclQuery = new AclQuery(_Link.HRef.ToString());
+                                var _Feed = _CalendarService.Query(_AclQuery);
+                                WriteObject(_Feed.Entries);
+
+                            }   
+                        }
+                    
+                }
+                catch (Exception _Exception)
+                {
+                    WriteObject(_Exception);
+                }
+
+
+            }
+
+        }
+
+        #endregion Get-GDataCalendarAcl
 
     }
 
