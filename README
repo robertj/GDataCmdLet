@@ -63,3 +63,5 @@ Set-GDataCalendar
 New-GDataCalendar
 Remove-GDataCalendar
 Get-GDataCalendarAcl
+Add-GDataCalendarAcl
+Remove-GDataCalendarAcl
