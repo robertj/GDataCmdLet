@@ -269,6 +269,15 @@ namespace Microsoft.PowerShell.GData
             }
             private string _ChangePassNextLogon;
             private bool _ChPass;
+
+            [Parameter(Mandatory = false)]
+            public string IsAdmin
+            {
+                get { return null; }
+                set { _IsAdmin = value; }
+            }
+            private string _IsAdmin;
+            private bool _IsAdminBool;
           
             #endregion Parameters
 
@@ -313,6 +322,24 @@ namespace Microsoft.PowerShell.GData
                             throw new Exception("-ChangePassNextLogon needs a true or false statement");
                         }
                         _Entry.Login.ChangePasswordAtNextLogin = _ChPass;
+                    }
+
+                    if (_IsAdmin != null)
+                    {
+                        _IsAdmin = _IsAdmin.ToLower();
+                        if (_IsAdmin == "true")
+                        {
+                            _IsAdminBool = true;
+                        }
+                        else if (_IsAdmin == "false")
+                        {
+                            _IsAdminBool = false;
+                        }
+                        else
+                        {
+                            throw new Exception("-IsAdmin needs a true or false statement");
+                        }
+                        _Entry.Login.Admin = _IsAdminBool;
                     }
                 
                     var _update = _UserService.UpdateUser(_Entry);
