@@ -4,11 +4,14 @@
 //Started: 2010-07-11
 //Task: Add cmdlets for Google Calendar
 
-Stared: 2010-07-14
-Task: Add GDataCalendar cmdlets for calendar sharing.
+//Stared: 2010-07-14
+//Task: Add GDataCalendar cmdlets for calendar sharing.
 
 Started: 2010-07-11
 Task: Add cmdlets for UserProfile
 
 Started: 2010-07-11
 Task: Add multidomain support
+
+Started: 2010-07-15
+Task: Add cmdlets for resources
