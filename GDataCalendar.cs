@@ -199,15 +199,15 @@ namespace Microsoft.PowerShell.GData
 
             [Parameter(
             Mandatory = false,
-            HelpMessage = "Calendar ID"
+            HelpMessage = "Calendar Name"
             )]
             [ValidateNotNullOrEmpty]
-            public string CalendarID
+            public string CalendarName
             {
                 get { return null; }
-                set { _CalendarID = value; }
+                set { _CalendarName = value; }
             }
-            private string _CalendarID;
+            private string _CalendarName;
 
             #endregion Parameters
 
@@ -229,7 +229,7 @@ namespace Microsoft.PowerShell.GData
 
                         var _CalendarFeed = _CalendarService.Query(_CalendarQuery);
 
-                        if (_CalendarID == null)
+                        if (_CalendarName == null)
                         {
                             WriteObject(_CalendarFeed.Entries, true);
                         }
@@ -237,7 +237,7 @@ namespace Microsoft.PowerShell.GData
                         {
                             foreach (var _Entry in _CalendarFeed.Entries)
                             {
-                                if (_Entry.Title.Text.ToString() == _CalendarID) 
+                                if (_Entry.Title.Text.ToString() == _CalendarName) 
                                 {
                                     WriteObject(_Entry, true);   
                                 }
@@ -289,15 +289,15 @@ namespace Microsoft.PowerShell.GData
 
             [Parameter(
             Mandatory = true,
-            HelpMessage = "CalendarID"
+            HelpMessage = "Calendar Name"
             )]
             [ValidateNotNullOrEmpty]
-            public string CalendarID
+            public string CalendarName
             {
                 get { return null; }
-                set { _CalendarID = value; }
+                set { _CalendarName = value; }
             }
-            private string _CalendarID;
+            private string _CalendarName;
 
             [Parameter(
             Mandatory = false,
@@ -311,6 +311,19 @@ namespace Microsoft.PowerShell.GData
             }
             private string _Description;
 
+            [Parameter(
+            Mandatory = false,
+            HelpMessage = "TimeZone, Long format time zone ID (not PST, but America/Los_Angeles.) "
+            )]
+            [ValidateNotNullOrEmpty]
+            public string TimeZone
+            {
+                get { return null; }
+                set { _TimeZone = value; }
+            }
+            private string _TimeZone;
+
+
             #endregion Parameters
 
 
@@ -321,18 +334,35 @@ namespace Microsoft.PowerShell.GData
                 var _Domain = _DgcGoogleCalendarService.GetDomain(_CalendarService);
 
                 var _Calendar = new CalendarEntry();
-                _Calendar.Title.Text = _CalendarID;
-                _Calendar.Summary.Text = _Description;
+                _Calendar.Title.Text = _CalendarName;
+
+                if (_Description != null)
+                {
+                    _Calendar.Summary.Text = _Description;
+                }
+                if (_TimeZone != null)
+                {
+                    _Calendar.TimeZone = _TimeZone;
+                }
+
+                //_Calendar.
                 
-                //_Calendar.TimeZone = "America/Los_Angeles";
+                
+
                 //_Calendar.Hidden = false;
                 //_Calendar.Color = "#2952A3";
-                //_Calendar.Location = new Where("", "", "Oakland");
 
-                Uri postUri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/allcalendars/full");
+                var _PostUri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "%40" + _Domain + "/owncalendars/full");
 
+                try
+                {
+                    var _CreatedCalendar = (CalendarEntry)_CalendarService.Insert(_PostUri, _Calendar);
+                    WriteObject(_CreatedCalendar);
 
-                CalendarEntry _CreatedCalendar = (CalendarEntry) _CalendarService.Insert(postUri, _Calendar);
+                } catch (Exception _Exception)
+                {
+                    WriteObject(_Exception);
+                }
 
 
             }
@@ -399,15 +429,27 @@ namespace Microsoft.PowerShell.GData
 
             [Parameter(
             Mandatory = false,
-            HelpMessage = "CalendarID"
+            HelpMessage = "Calendar Name"
             )]
             [ValidateNotNullOrEmpty]
-            public string CalendarID
+            public string CalendarName
             {
                 get { return null; }
-                set { _CalendarID = value; }
+                set { _CalendarName = value; }
             }
-            private string _CalendarID;
+            private string _CalendarName;
+
+            [Parameter(
+            Mandatory = false,
+            HelpMessage = "TimeZone, Long format time zone ID (not PST, but America/Los_Angeles.) "
+            )]
+            [ValidateNotNullOrEmpty]
+            public string TimeZone
+            {
+                get { return null; }
+                set { _TimeZone = value; }
+            }
+            private string _TimeZone;
 
             #endregion Parameters
 
@@ -426,20 +468,24 @@ namespace Microsoft.PowerShell.GData
                     var _CalendarFeed = (CalendarFeed)_CalendarService.Query(_CalendarQuery);
 
 
-                    foreach (var _Entry in _CalendarFeed.Entries)
+                    foreach (CalendarEntry _Entry in _CalendarFeed.Entries)
                     {
                         if (_Entry.SelfUri.ToString() == _SelfUri)
                         {
                             try
                             {
 
-                                if (_CalendarID != null)
+                                if (_CalendarName != null)
                                 {
-                                    _Entry.Title.Text = _CalendarID;
+                                    _Entry.Title.Text = _CalendarName;
                                 }
                                 if (_Description != null)
                                 {
                                     _Entry.Summary.Text = _Description;
+                                }
+                                if (_TimeZone != null)
+                                {
+                                    _Entry.TimeZone = _TimeZone;
                                 }
 
                                 var _Result = _Entry.Update();
