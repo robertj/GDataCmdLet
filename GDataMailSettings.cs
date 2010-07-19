@@ -40,10 +40,10 @@ namespace Microsoft.PowerShell.GData
 
         #endregion Pop3ActionDelete
         
-        #region New-GDataGDataMailSettingsService
+        #region New-GDataGDataMailSettingService
 
-        [Cmdlet(VerbsCommon.New, "GDataMailSettingsService")]
-        public class NewGDatMmailSettingsService : Cmdlet
+        [Cmdlet(VerbsCommon.New, "GDataMailSettingService")]
+        public class NewGDatMmailSettingService : Cmdlet
         {
 
             #region Parameters
@@ -94,7 +94,7 @@ namespace Microsoft.PowerShell.GData
 
         }
 
-        #endregion New-GDataGDataMailSettingsService
+        #endregion New-GDataGDataMailSettingService
 
         #region Set-GDataGDataMailSetting
 
