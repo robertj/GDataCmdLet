@@ -12,7 +12,7 @@ using Google.GData.Apps.Groups;
 using Google.GData.Calendar;
 using Google.AccessControl;
 using Google.GData.AccessControl;
-
+using System.Linq;
 
 namespace Microsoft.PowerShell.GData
 {
@@ -235,12 +235,15 @@ namespace Microsoft.PowerShell.GData
                         }
                         else
                         {
-                            foreach (var _Entry in _CalendarFeed.Entries)
+
+                            var _CalendarSelection = from _Selection in _CalendarFeed.Entries
+                                                     where _Selection.Title.Text.ToString() == _CalendarName
+                                                     select _Selection;
+
+
+                            foreach (var _Entry in _CalendarSelection)
                             {
-                                if (_Entry.Title.Text.ToString() == _CalendarName) 
-                                {
-                                    WriteObject(_Entry, true);   
-                                }
+                                WriteObject(_Entry, true);
                             }
                         }
      
@@ -569,19 +572,19 @@ namespace Microsoft.PowerShell.GData
                     {
                         throw new Exception("AclFeed new null");
                     }
-                        
-                            
-                        foreach ( var _Link in _Links ) {
 
-                            if (_Link.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList")
-                            {
 
-                                var _AclQuery = new AclQuery(_Link.HRef.ToString());
-                                var _Feed = _CalendarService.Query(_AclQuery);
-                                WriteObject(_Feed.Entries);
+                    var _LinkSelection = from _Selection in _Links
+                                         where _Selection.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList"
+                                         select _Selection;
 
-                            }   
-                        }
+                    foreach (var _Link in _LinkSelection)
+                    {
+
+                        var _AclQuery = new AclQuery(_Link.HRef.ToString());
+                        var _Feed = _CalendarService.Query(_AclQuery);
+                        WriteObject(_Feed.Entries);
+                    }
                     
                 }
                 catch (Exception _Exception)
@@ -679,43 +682,47 @@ namespace Microsoft.PowerShell.GData
                         throw new Exception("AclFeed new null");
                     }
 
+                    var _LinkSelection = from _Selection in _Links
+                                         where _Selection.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList"
+                                         select _Selection;
 
-                    foreach (var _Link in _Links)
+
+
+                    foreach (var _Link in _LinkSelection)
                     {
 
-                        if (_Link.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList")
+                        var _AclEntry = new AclEntry();
+                        _AclEntry.Scope = new AclScope();
+                        _AclEntry.Scope.Type = AclScope.SCOPE_USER;
+                        _AclEntry.Scope.Value = _ID;
+
+                        if (_Role.ToUpper() == "FREEBUSY")
                         {
-                            var _AclEntry = new AclEntry();
-                            _AclEntry.Scope = new AclScope();
-                            _AclEntry.Scope.Type = AclScope.SCOPE_USER;
-                            _AclEntry.Scope.Value = _ID;
-
-                            if (_Role.ToUpper() == "FREEBUSY")
-                            {
-                                _AclEntry.Role = AclRole.ACL_CALENDAR_FREEBUSY;
-                            }
-                            else if (_Role.ToUpper() == "READ")
-                            {
-                                _AclEntry.Role = AclRole.ACL_CALENDAR_READ;
-                            }
-                            else if (_Role.ToUpper() == "EDITOR")
-                            {
-                                _AclEntry.Role = AclRole.ACL_CALENDAR_EDITOR;
-                            }
-                            else if (_Role.ToUpper() == "OWNER")
-                            {
-                                _AclEntry.Role = AclRole.ACL_CALENDAR_OWNER;
-                            }
-                            else
-                            {
-                                throw new Exception("-Role needs a FREEBUSY/READ/EDITOR/OWNER parameter");
-                            }
-
-                            var _AclUri = new Uri(_Link.HRef.ToString());
-                            var _AlcEntry = _CalendarService.Insert(_AclUri, _AclEntry) as AclEntry;
-                            WriteObject(_AclEntry);
+                            _AclEntry.Role = AclRole.ACL_CALENDAR_FREEBUSY;
                         }
+                        else if (_Role.ToUpper() == "READ")
+                        {
+                            _AclEntry.Role = AclRole.ACL_CALENDAR_READ;
+                        }
+                        else if (_Role.ToUpper() == "EDITOR")
+                        {
+                            _AclEntry.Role = AclRole.ACL_CALENDAR_EDITOR;
+                        }
+                        else if (_Role.ToUpper() == "OWNER")
+                        {
+                            _AclEntry.Role = AclRole.ACL_CALENDAR_OWNER;
+                        }
+                        else
+                        {
+                            throw new Exception("-Role needs a FREEBUSY/READ/EDITOR/OWNER parameter");
+                        }
+
+                        var _AclUri = new Uri(_Link.HRef.ToString());
+                        var _AlcEntry = _CalendarService.Insert(_AclUri, _AclEntry) as AclEntry;
+                        WriteObject(_AclEntry);
+                        
                     }
+                    
 
                 }
                 catch (Exception _Exception)
@@ -801,31 +808,29 @@ namespace Microsoft.PowerShell.GData
                     }
 
 
-                    foreach (var _Link in _Links)
+                    var _LinkSelection = from _Selection in _Links
+                                where _Selection.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList"
+                                select _Selection;
+
+                    foreach (var _Link in _LinkSelection)
                     {
 
-                        if (_Link.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList")
+                        var _AclQuery = new AclQuery(_Link.HRef.ToString());
+                        var _Feed = _CalendarService.Query(_AclQuery);
+
+                        var _FeedSelection = from AclEntry _Selection in _Feed.Entries
+                                    where _Selection.Scope.Value.ToString() == _ID
+                                    select _Selection;
+
+
+
+                        foreach (AclEntry _AclEntry in _FeedSelection)
                         {
-
-                            var _AclQuery = new AclQuery(_Link.HRef.ToString());
-                            var _Feed = _CalendarService.Query(_AclQuery);
-
-                            foreach (AclEntry _AclEntry in _Feed.Entries)
-                            {
-
-                                if (_AclEntry.Scope.Value.ToString() == _ID)
-                                {
-                                    
-                                    
-                                    _AclEntry.Delete();
-                                    WriteObject(_ID);
-                                }
-
-                            }
-                            
+                                _AclEntry.Delete();
+                                WriteObject(_ID);
                         }
-                    }
-
+                    
+                    }   
                 }
                 catch (Exception _Exception)
                 {
