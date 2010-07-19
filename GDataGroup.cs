@@ -410,6 +410,7 @@ namespace Microsoft.PowerShell.GData
 
                 try
                 {
+                    
                     var _Entry = _GroupService.Groups.RetrieveGroupOwners(_ID);
                     WriteObject(_Entry,true);
                 }
@@ -479,6 +480,16 @@ namespace Microsoft.PowerShell.GData
                 
                 try
                 {
+
+                    var _UserCheck = _GroupService.Groups.RetrieveMember(_UserID, _ID);
+                    
+                    /*
+                    if (_Check == null)
+                    {
+                        throw new Exception(_UserID + " is note meber of " + _ID);
+                    }
+                    */
+
                     var _Entry = _GroupService.Groups.AddOwnerToGroup(_UserID + "@" + _Domain, _ID);
                     WriteObject(_Entry,true);
                 }
