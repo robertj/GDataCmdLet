@@ -65,6 +65,7 @@
   -->
   <ItemGroup>
     <Compile Include="AssemblyInfoGData.cs" />
+    <Compile Include="GdataResource.cs" />
     <Compile Include="GDataCalendar.cs" />
     <Compile Include="GDataDgc.cs" />
     <Compile Include="GDataMailSettings.cs" />
