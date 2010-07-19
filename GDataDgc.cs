@@ -19,14 +19,6 @@ namespace Microsoft.PowerShell.GData
     public class Dgc
     {
 
-
-        #region test
-
-
-        #endregion test
-
-
-
         #region GoogleAppService
 
         public class GoogleAppService
@@ -39,10 +31,16 @@ namespace Microsoft.PowerShell.GData
                 return Domain;
 
             }
+
+            public string GetDomainFromAppService(AppsService UserService)
+            {
+                string Domain = UserService.Domain;
+                return Domain;
+
+            }
         }
 
         #endregion GoogleAppService
-
 
         #region GoogleContactsService
 
