@@ -26,6 +26,8 @@ namespace Microsoft.PowerShell.GData
             public string GetDomain(string AdminUser)
             {
                 char[] delimiterChars = { '@' };
+                
+                
                 string[] temp = AdminUser.Split(delimiterChars);
                 var Domain = temp[1];
                 return Domain;

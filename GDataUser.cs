@@ -60,9 +60,9 @@ namespace Microsoft.PowerShell.GData
                                   
                     WriteObject(_UserService);
                 }
-                catch (Exception _Exception)
+                catch (AppsException _Exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_Exception,true);
                 }
             }
 
@@ -173,9 +173,9 @@ namespace Microsoft.PowerShell.GData
                         var _Entry = _UserService.RetrieveUser(_ID);
                         WriteObject(_Entry,true);
                     }
-                    catch (Exception _Exception)
+                    catch (AppsException _Exception)
                     {
-                        WriteObject(_Exception);
+                        WriteObject(_Exception,true);
                     }
                 }
 

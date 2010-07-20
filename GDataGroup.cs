@@ -475,9 +475,11 @@ namespace Microsoft.PowerShell.GData
             protected override void ProcessRecord()
             {
 
-                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                var _Domain = _DgcGoogleAppsService.GetDomainFromAppService(_GroupService);
-                
+                //var _DgcGoogleAppsService = new Dgc.GoogleAppService();
+                //var _Domain = _DgcGoogleAppsService.GetDomainFromAppService(_GroupService);
+
+                var _Domain = _GroupService.Domain.ToString();
+
                 try
                 {
 
@@ -554,8 +556,10 @@ namespace Microsoft.PowerShell.GData
             protected override void ProcessRecord()
             {
 
-                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                var _Domain = _DgcGoogleAppsService.GetDomainFromAppService(_GroupService);
+                //var _DgcGoogleAppsService = new Dgc.GoogleAppService();
+                //var _Domain = _DgcGoogleAppsService.GetDomainFromAppService(_GroupService);
+
+                var _Domain = _GroupService.Domain.ToString();
 
                 try
                 {
