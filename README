@@ -27,7 +27,6 @@ $MailSettingsService = New-GDataMailSettingsService -AdminPassword Password -Adm
 Set-GDataMailSetting -ID robertj -Name "Robert Jonsson" -SenderAdress "robert.jonsson@plan-tre.net" -IsDefault -MailSettingsService $MailSettingsService
 
 
-
 This project includes:
 
 New-GDataContactService
