@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using Google.GData.Apps;
 using Google.GData.Apps.GoogleMailSettings;
 using Google.GData.Extensions.Apps;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Microsoft.PowerShell.GData
 {
@@ -54,10 +56,12 @@ namespace Microsoft.PowerShell.GData
                 var _DgcGoogleAppsService = new Dgc.GoogleAppService();
                 var _Domain = _DgcGoogleAppsService.GetDomain(_AdminUser);
 
+
                 try
                 {
                     var _UserService = new AppsService(_Domain, _AdminUser, _AdminPassword);
                                   
+
                     WriteObject(_UserService);
                 }
                 catch (AppsException _Exception)
@@ -500,13 +504,10 @@ namespace Microsoft.PowerShell.GData
             {
                 if (_ID == null)
                 {
-                    try
-                    {
-                        
-             
+                    try {
                         var _Feed = _UserService.RetrieveAllNicknames();
                         WriteObject(_Feed.Entries);
-                    }
+                       }
                     catch (Exception _Exception)
                     {
                         WriteObject(_Exception);
@@ -514,16 +515,30 @@ namespace Microsoft.PowerShell.GData
                 }
                 else
                 {
+                    
                     try
                     {
-                        var _Feed = _UserService.RetrieveNicknames(_ID);
-
-                        if (_Feed.Entries.Count == 0)
+                        if (_ID.Contains("@"))
                         {
-                            throw new Exception("No NickNames found!");
-                        }
-                        WriteObject(_Feed,true);
 
+                            var _DgcGoogleAppsService = new Dgc.GoogleAppService();
+                            var _Xml = _DgcGoogleAppsService.RetriveUserAlias(_ID, _UserService);
+
+                            //var _Reader = XmlReader.Create(_Entry);
+
+                            XmlDocument _XmlDoc = new XmlDocument();
+                            _XmlDoc.InnerXml = _Xml;
+                            XmlElement _Entry = _XmlDoc.DocumentElement;
+
+                            WriteObject(_Entry);
+
+                        }
+                        else
+                        {
+                            var _Feed = _UserService.RetrieveNicknames(_ID);
+                            WriteObject(_Feed);
+                        }
+             
                     }
                     catch (Exception _Exception)
                     {
@@ -586,8 +601,27 @@ namespace Microsoft.PowerShell.GData
             {
                 try
                 {
-                    var _Entry = _UserService.CreateNickname(_ID, _NickName);
-                    WriteObject(_Entry);
+                    if (_NickName.Contains("@"))
+                    {
+
+                        var _DgcGoogleAppsService = new Dgc.GoogleAppService();
+                        var _Xml = _DgcGoogleAppsService.CreateUserAlias(_ID, _UserService, _NickName);
+
+                        //var _Reader = XmlReader.Create(_Entry);
+
+                        XmlDocument _XmlDoc = new XmlDocument();
+                        _XmlDoc.InnerXml = _Xml;
+                        XmlElement _Entry = _XmlDoc.DocumentElement;
+
+                        WriteObject(_Entry);
+
+                    }
+                    else
+                    {
+                        var _Entry = _UserService.CreateNickname(_ID, _NickName);
+                        WriteObject(_Entry);
+                    }
+
                 }
                 catch (Exception _Exception)
                 {
@@ -635,8 +669,26 @@ namespace Microsoft.PowerShell.GData
             {
                 try
                 {
-                    _UserService.DeleteNickname(_NickName);
-                    WriteObject(_NickName);
+                    if (_NickName.Contains("@"))
+                    {
+
+                        var _DgcGoogleAppsService = new Dgc.GoogleAppService();
+                        var _Xml = _DgcGoogleAppsService.RemoveUserAlias(_UserService, _NickName);
+
+                        //var _Reader = XmlReader.Create(_Entry);
+
+                        XmlDocument _XmlDoc = new XmlDocument();
+                        _XmlDoc.InnerXml = _Xml;
+                        XmlElement _Entry = _XmlDoc.DocumentElement;
+
+                        WriteObject(_NickName);
+
+                    }
+                    else
+                    {
+                        _UserService.DeleteNickname(_NickName);
+                        WriteObject(_NickName);
+                    }
                 }
                 catch (Exception _Exception)
                 {

@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using Google.GData.Apps;
 using Google.GData.Apps.GoogleMailSettings;
 using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Microsoft.PowerShell.GData
 {
