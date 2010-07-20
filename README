@@ -42,6 +42,9 @@ Get-GDataGroup
 Get-GDataGroupMember
 Add-GDataGroupMember
 Remove-GDataGroupMember
+Get-GDataGroupOwner
+Add-GDataGroupOwner
+Remove-GDataGroupOwner
 Set-GDataGroup
 New-GDataGroup
 
