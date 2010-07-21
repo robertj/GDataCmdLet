@@ -497,6 +497,17 @@ namespace Microsoft.PowerShell.GData
             }
             private string _ID;
 
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public SwitchParameter Legacy
+            {
+                //get { return null; }
+                set { _Legacy = value; }
+            }
+            private bool _Legacy;
+
             #endregion Parameters
 
 
@@ -504,10 +515,27 @@ namespace Microsoft.PowerShell.GData
             {
                 if (_ID == null)
                 {
-                    try {
-                        var _Feed = _UserService.RetrieveAllNicknames();
-                        WriteObject(_Feed.Entries);
-                       }
+                    try 
+                    {
+                        if (!_Legacy == true)
+                        {
+                            var _DgcGoogleAppsService = new Dgc.GoogleAppService();
+                            var _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService);
+
+                            //var _Reader = XmlReader.Create(_Entry);
+
+                            XmlDocument _XmlDoc = new XmlDocument();
+                            _XmlDoc.InnerXml = _Xml;
+                            XmlElement _Entry = _XmlDoc.DocumentElement;
+
+                            WriteObject(_Entry);
+                        }
+                        else
+                        {
+                            var _Feed = _UserService.RetrieveAllNicknames();
+                            WriteObject(_Feed.Entries);
+                        }
+                    }
                     catch (Exception _Exception)
                     {
                         WriteObject(_Exception);
@@ -518,9 +546,8 @@ namespace Microsoft.PowerShell.GData
                     
                     try
                     {
-                        if (_ID.Contains("@"))
+                        if (_Legacy == true)
                         {
-
                             var _DgcGoogleAppsService = new Dgc.GoogleAppService();
                             var _Xml = _DgcGoogleAppsService.RetriveUserAlias(_ID, _UserService);
 
@@ -530,6 +557,7 @@ namespace Microsoft.PowerShell.GData
                             _XmlDoc.InnerXml = _Xml;
                             XmlElement _Entry = _XmlDoc.DocumentElement;
 
+                            
                             WriteObject(_Entry);
 
                         }
@@ -593,6 +621,17 @@ namespace Microsoft.PowerShell.GData
             }
             private string _NickName;
 
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public SwitchParameter Legacy
+            {
+                //get { return null; }
+                set { _Legacy = value; }
+            }
+            private bool _Legacy;
+
 
             #endregion Parameters
 
@@ -601,20 +640,23 @@ namespace Microsoft.PowerShell.GData
             {
                 try
                 {
-                    if (_NickName.Contains("@"))
+                    if (_Legacy == true)
                     {
+                        if (!_NickName.Contains("@"))
+                        {
+                            throw new Exception("-NickName must contain EmailDomain, user@domain.com");
+                        }
+                            var _DgcGoogleAppsService = new Dgc.GoogleAppService();
+                            var _Xml = _DgcGoogleAppsService.CreateUserAlias(_ID, _UserService, _NickName);
 
-                        var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                        var _Xml = _DgcGoogleAppsService.CreateUserAlias(_ID, _UserService, _NickName);
+                            //var _Reader = XmlReader.Create(_Entry);
 
-                        //var _Reader = XmlReader.Create(_Entry);
+                            XmlDocument _XmlDoc = new XmlDocument();
+                            _XmlDoc.InnerXml = _Xml;
+                            XmlElement _Entry = _XmlDoc.DocumentElement;
 
-                        XmlDocument _XmlDoc = new XmlDocument();
-                        _XmlDoc.InnerXml = _Xml;
-                        XmlElement _Entry = _XmlDoc.DocumentElement;
-
-                        WriteObject(_Entry);
-
+                            WriteObject(_Entry);
+                        
                     }
                     else
                     {
@@ -662,6 +704,18 @@ namespace Microsoft.PowerShell.GData
             }
             private string _NickName;
 
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public SwitchParameter Legacy
+            {
+                //get { return null; }
+                set { _Legacy = value; }
+            }
+            private bool _Legacy;
+
+
             #endregion Parameters
 
 
@@ -669,8 +723,12 @@ namespace Microsoft.PowerShell.GData
             {
                 try
                 {
-                    if (_NickName.Contains("@"))
+                    if (_Legacy == true)
                     {
+                        if(!_NickName.Contains("@"))
+                        {
+                            throw new Exception("-NickName must contain EmailDomain, user@domain.com");
+                        }
 
                         var _DgcGoogleAppsService = new Dgc.GoogleAppService();
                         var _Xml = _DgcGoogleAppsService.RemoveUserAlias(_UserService, _NickName);

@@ -29,6 +29,8 @@ namespace Microsoft.PowerShell.GData
 
         public class GoogleAppService
         {
+            #region GetDomain
+
             public string GetDomain(string AdminUser)
             {
                 char[] delimiterChars = { '@' };
@@ -40,12 +42,20 @@ namespace Microsoft.PowerShell.GData
 
             }
 
+            #endregion GetDomain
+
+            #region GetDomainFromAppService
+
             public string GetDomainFromAppService(AppsService UserService)
             {
                 string Domain = UserService.Domain;
                 return Domain;
 
             }
+
+            #endregion GetDomainFromAppService
+
+            #region CreateUserAlias
 
             public string CreateUserAlias(string ID, AppsService UserService, string UserAlias)
             {
@@ -90,6 +100,10 @@ namespace Microsoft.PowerShell.GData
  
             }
 
+            #endregion CreateUserAlias
+
+            #region RemoveUserAlias
+
             public string RemoveUserAlias(AppsService UserService, string UserAlias)
             {
                 var Domain = UserService.Domain.ToString();
@@ -133,6 +147,10 @@ namespace Microsoft.PowerShell.GData
 
             }
 
+            #endregion RemoveUserAlias
+
+            #region RetriveUserAlias
+
             public string RetriveUserAlias(string ID, AppsService UserService)
             {
                 var Domain = UserService.Domain.ToString();
@@ -163,6 +181,41 @@ namespace Microsoft.PowerShell.GData
 
             }
 
+            #endregion RetriveUserAlias
+
+            #region RetriveAllUserAlias
+
+            public string RetriveAllUserAlias(AppsService UserService)
+            {
+                var Domain = UserService.Domain.ToString();
+                char[] DelimiterChars = { '@' };
+
+                var Token = UserService.Groups.QueryClientLoginToken();
+
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + Domain + "?start=alias@" + Domain);
+
+                WebRequest WebRequest = WebRequest.Create(uri);
+
+                WebRequest.Method = "GET";
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+
+                return _Result;
+
+
+            }
+
+            #endregion RetriveAllUserAlias
 
         }
 
