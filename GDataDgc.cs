@@ -312,14 +312,15 @@ namespace Microsoft.PowerShell.GData
                 string[] temp = AdminUser.Split(delimiterChars);
                 var Domain = temp[1];
 
+                
                 var _Entry = new ResourceService
                 {
                     AdminUser = AdminUser,
                     Token = Token,
                     Domain = Domain,
                 };
-
-
+                
+               
 
                 return _Entry;
             }
@@ -479,7 +480,7 @@ namespace Microsoft.PowerShell.GData
 
             #endregion RemoveResources
 
-            #region RemoveResource
+            #region SetResource
 
             public string SetResource(ResourceService ResourceService, string ResourceID, string ResourceDescription, string ResourceType)
             {
@@ -520,11 +521,144 @@ namespace Microsoft.PowerShell.GData
                 return _Result;
             }
 
-            #endregion RemoveResources
+            #endregion SetResources
 
         }
         #endregion GoogleResourceService
+        
+        #region GoogleProfileService
+        
+        public class GoogleProfileService
+        {
 
+            public class ProfileService
+            {
+                public string AdminUser { get; set; }
+                public string Token { get; set; }
+                public string Domain { get; set; }
+            }
+
+            public string PostalAddress
+            {
+                set;
+                get;
+            }
+          
+
+            #region GetAuthToken
+
+            public ProfileService GetAuthToken(string AdminUser, string AdminPassword)
+            {
+                var uri = new Uri("https://www.google.com/accounts/ClientLogin");
+
+                // parameters: name1=value1&name2=value2    
+                WebRequest WebRequest = WebRequest.Create(uri);
+
+                WebRequest.ContentType = "application/x-www-form-urlencoded";
+                WebRequest.Method = "POST";
+
+                byte[] Bytes = Encoding.ASCII.GetBytes("&Email=" + AdminUser + "&Passwd=" + AdminPassword.Replace("@", "%40") + "&accountType=HOSTED_OR_GOOGLE&service=apps&source=companyName-applicationName-versionID");
+                Stream OS = null;
+
+                WebRequest.ContentLength = Bytes.Length;   //Count bytes to send
+                OS = WebRequest.GetRequestStream();
+                OS.Write(Bytes, 0, Bytes.Length);         //Send it
+
+                OS.Close();
+
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var Result = SR.ReadToEnd().Trim();
+
+
+                char[] _Deliminator = { ';' };
+
+                var ResE = Result.Replace("Auth=", ";");
+                var ResS = ResE.Split(_Deliminator);
+                var Token = ResS[1].ToString();
+
+                char[] delimiterChars = { '@' };
+
+
+                string[] temp = AdminUser.Split(delimiterChars);
+                var Domain = temp[1];
+
+
+                var _Entry = new ProfileService
+                {
+                    AdminUser = AdminUser,
+                    Token = Token,
+                    Domain = Domain,
+                };
+
+
+
+                return _Entry;
+            }
+
+            #endregion GetAuthToken
+
+            #region SetProfile
+
+            public string SetProfile(ProfileService ProfileService, string ID, string ProfilePostalAddress)
+            {
+                /*
+                var DGCGoogleAppsService = new Dgc.GoogleAppService();
+                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
+                */
+
+                var Domain = ResourceService.Domain;
+
+                var uri = new Uri("https://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID);
+
+                // parameters: name1=value1&name2=value2
+
+                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Method = "PUT";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ProfileService.Token);
+
+                if (ProfilePostalAddress != null)
+                {
+                    PostalAddress = "<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work'><gd:formattedAddress>" + ProfilePostalAddress + "</gd:formattedAddress></gd:structuredPostalAddress>";
+                }
+
+                var Post = "<entry xmlns='http://www.w3.org/2005/Atom'xmlns:gContact='http://schemas.google.com/contact/2008'xmlns:batch='http://schemas.google.com/gdata/batch'xmlns:gd='http://schemas.google.com/g/2005'<category scheme='http://schemas.google.com/g/2005#kind'term='http://schemas.google.com/contact/2008#profile' /><id>http://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID + "</id><link rel='self' type='application/atom+xml'href='http://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID + "' /><link rel='edit' type='application/atom+xml'href='http://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID + "' />" + PostalAddress + "</entry>";
+                
+                byte[] Bytes = Encoding.ASCII.GetBytes("");
+                Stream OS = null;
+                WebRequest.ContentLength = Bytes.Length;
+                OS = WebRequest.GetRequestStream();
+                OS.Write(Bytes, 0, Bytes.Length);
+
+                OS.Close();
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+
+                return _Result;
+            }
+
+            #endregion SetProfile
+
+        }
+        
+        #endregion GoogleProfileService
     }
 }
 
