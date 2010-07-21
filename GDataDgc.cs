@@ -255,6 +255,276 @@ namespace Microsoft.PowerShell.GData
 
         #endregion GoogleCalendarsService
 
+        #region GoogleRescourceService
+
+        public class GoogleRescourceService
+        {
+
+            public class ResourceService
+            {
+                public string AdminUser { get; set; }
+                public string Token { get; set; }
+                public string Domain { get; set; }
+            }
+
+            #region GetAuthToken
+
+            public ResourceService GetAuthToken(string AdminUser, string AdminPassword)
+            {
+                var uri = new Uri("https://www.google.com/accounts/ClientLogin");
+
+                // parameters: name1=value1&name2=value2    
+                WebRequest WebRequest = WebRequest.Create(uri);
+
+                WebRequest.ContentType = "application/x-www-form-urlencoded";
+                WebRequest.Method = "POST";
+
+                byte[] Bytes = Encoding.ASCII.GetBytes("&Email=" + AdminUser + "&Passwd=" + AdminPassword.Replace("@", "%40") + "&accountType=HOSTED_OR_GOOGLE&service=apps&source=companyName-applicationName-versionID");
+                Stream OS = null;
+
+                WebRequest.ContentLength = Bytes.Length;   //Count bytes to send
+                OS = WebRequest.GetRequestStream();
+                OS.Write(Bytes, 0, Bytes.Length);         //Send it
+
+                OS.Close();
+
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var Result = SR.ReadToEnd().Trim();
+
+
+                char[] _Deliminator = { ';' };
+
+                var ResE = Result.Replace("Auth=", ";");
+                var ResS = ResE.Split(_Deliminator);
+                var Token = ResS[1].ToString();
+
+                char[] delimiterChars = { '@' };
+
+
+                string[] temp = AdminUser.Split(delimiterChars);
+                var Domain = temp[1];
+
+                var _Entry = new ResourceService
+                {
+                    AdminUser = AdminUser,
+                    Token = Token,
+                    Domain = Domain,
+                };
+
+
+
+                return _Entry;
+            }
+
+            #endregion GetAuthToken
+
+            #region NewResource
+
+            public string NewResource(ResourceService ResourceService, string ResourceId, string ResourceType, string ResurceDescription)
+            {
+                /*
+                var DGCGoogleAppsService = new Dgc.GoogleAppService();
+                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
+                */
+
+                var Domain = ResourceService.Domain;
+
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + Domain);
+
+                // parameters: name1=value1&name2=value2    
+                WebRequest WebRequest = WebRequest.Create(uri);
+
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Method = "POST";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
+                byte[] Bytes = Encoding.ASCII.GetBytes("<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:apps='http://schemas.google.com/apps/2006'><apps:property name='resourceId' value='" + ResourceId + "'/><apps:property name='resourceCommonName' value='" + ResourceId + "'/><apps:property name='resourceDescription' value='" + ResurceDescription + "'/><apps:property name='resourceType' value='" + ResourceType + "'/></atom:entry>");
+                Stream OS = null;
+                WebRequest.ContentLength = Bytes.Length;   
+                OS = WebRequest.GetRequestStream();
+                OS.Write(Bytes, 0, Bytes.Length);         
+
+                OS.Close();
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+
+                return _Result;
+            }
+
+            #endregion NewResource
+
+            #region RetriveResource
+
+            public string RetriveResource(ResourceService ResourceService, string ResourceId)
+            {
+                /*
+                var DGCGoogleAppsService = new Dgc.GoogleAppService();
+                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
+                */
+
+                var Domain = ResourceService.Domain;
+
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + Domain + "/" + ResourceId);
+
+                // parameters: name1=value1&name2=value2    
+                WebRequest WebRequest = WebRequest.Create(uri);
+
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Method = "GET";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
+             
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+
+                return _Result;
+            }
+
+            #endregion RetriveResource
+
+            #region RetriveResource
+
+            public string RetriveAllResources(ResourceService ResourceService)
+            {
+                /*
+                var DGCGoogleAppsService = new Dgc.GoogleAppService();
+                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
+                */
+
+                var Domain = ResourceService.Domain;
+
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + Domain + "/");
+
+                // parameters: name1=value1&name2=value2    
+                WebRequest WebRequest = WebRequest.Create(uri);
+
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Method = "GET";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
+
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+
+                return _Result;
+            }
+
+            #endregion RetriveAllResources
+
+            #region RemoveResource
+
+            public string RemoveResources(ResourceService ResourceService, string ResourceID)
+            {
+                /*
+                var DGCGoogleAppsService = new Dgc.GoogleAppService();
+                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
+                */
+
+                var Domain = ResourceService.Domain;
+
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + Domain + "/" + ResourceID);
+
+                // parameters: name1=value1&name2=value2    
+                WebRequest WebRequest = WebRequest.Create(uri);
+
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Method = "DELETE";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
+
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+
+                return _Result;
+            }
+
+            #endregion RemoveResources
+
+            #region RemoveResource
+
+            public string SetResource(ResourceService ResourceService, string ResourceID, string ResourceDescription, string ResourceType)
+            {
+                /*
+                var DGCGoogleAppsService = new Dgc.GoogleAppService();
+                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
+                */
+
+                var Domain = ResourceService.Domain;
+
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + Domain + "/" + ResourceID);
+
+                // parameters: name1=value1&name2=value2
+
+                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Method = "PUT";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
+                byte[] Bytes = Encoding.ASCII.GetBytes("<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceCommonName' value='" + ResourceID + "'/><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceDescription' value='" + ResourceDescription + "'/><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceType' value='" + ResourceType + "'/></atom:entry>");
+                Stream OS = null;
+                WebRequest.ContentLength = Bytes.Length;
+                OS = WebRequest.GetRequestStream();
+                OS.Write(Bytes, 0, Bytes.Length);
+
+                OS.Close();
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+
+                return _Result;
+            }
+
+            #endregion RemoveResources
+
+        }
+        #endregion GoogleRescourceService
 
     }
 }
