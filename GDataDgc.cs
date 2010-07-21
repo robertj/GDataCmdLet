@@ -255,9 +255,9 @@ namespace Microsoft.PowerShell.GData
 
         #endregion GoogleCalendarsService
 
-        #region GoogleRescourceService
+        #region GoogleResourceService
 
-        public class GoogleRescourceService
+        public class GoogleResourceService
         {
 
             public class ResourceService
@@ -524,7 +524,7 @@ namespace Microsoft.PowerShell.GData
             #endregion RemoveResources
 
         }
-        #endregion GoogleRescourceService
+        #endregion GoogleResourceService
 
     }
 }

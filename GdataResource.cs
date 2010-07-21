@@ -56,8 +56,8 @@ namespace Microsoft.PowerShell.GData
 
                 try
                 {
-                    var _DgcGoogleRescourceService = new Dgc.GoogleRescourceService();
-                    var _Entry = _DgcGoogleRescourceService.GetAuthToken(_AdminUser, _AdminPassword);
+                    var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
+                    var _Entry = _DgcGoogleResourceService.GetAuthToken(_AdminUser, _AdminPassword);
 
                     WriteObject(_Entry);
 
@@ -84,12 +84,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public Dgc.GoogleRescourceService.ResourceService ResourceService
+            public Dgc.GoogleResourceService.ResourceService ResourceService
             {
                 get { return null; }
                 set { _ResourceService = value; }
             }
-            private Dgc.GoogleRescourceService.ResourceService _ResourceService;
+            private Dgc.GoogleResourceService.ResourceService _ResourceService;
 
             [Parameter(
             Mandatory = true
@@ -131,8 +131,8 @@ namespace Microsoft.PowerShell.GData
 
                 try
                 {
-                    var _DgcGoogleRescourceService = new Dgc.GoogleRescourceService();
-                    var _Xml = _DgcGoogleRescourceService.NewResource(_ResourceService, _ID, _Type, _Description);
+                    var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
+                    var _Xml = _DgcGoogleResourceService.NewResource(_ResourceService, _ID, _Type, _Description);
 
                     XmlDocument _XmlDoc = new XmlDocument();
                     _XmlDoc.InnerXml = _Xml;
@@ -160,12 +160,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public Dgc.GoogleRescourceService.ResourceService ResourceService
+            public Dgc.GoogleResourceService.ResourceService ResourceService
             {
                 get { return null; }
                 set { _ResourceService = value; }
             }
-            private Dgc.GoogleRescourceService.ResourceService _ResourceService;
+            private Dgc.GoogleResourceService.ResourceService _ResourceService;
 
             [Parameter(
             Mandatory = false
@@ -187,8 +187,8 @@ namespace Microsoft.PowerShell.GData
                 {
                     if (_ID != null)
                     {
-                        var _DgcGoogleRescourceService = new Dgc.GoogleRescourceService();
-                        var _Xml = _DgcGoogleRescourceService.RetriveResource(_ResourceService, _ID);
+                        var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
+                        var _Xml = _DgcGoogleResourceService.RetriveResource(_ResourceService, _ID);
 
                         XmlDocument _XmlDoc = new XmlDocument();
                         _XmlDoc.InnerXml = _Xml;
@@ -198,8 +198,8 @@ namespace Microsoft.PowerShell.GData
                     }
                     else
                     {
-                        var _DgcGoogleRescourceService = new Dgc.GoogleRescourceService();
-                        var _Xml = _DgcGoogleRescourceService.RetriveAllResources(_ResourceService);
+                        var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
+                        var _Xml = _DgcGoogleResourceService.RetriveAllResources(_ResourceService);
 
                         XmlDocument _XmlDoc = new XmlDocument();
                         _XmlDoc.InnerXml = _Xml;
@@ -228,12 +228,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public Dgc.GoogleRescourceService.ResourceService ResourceService
+            public Dgc.GoogleResourceService.ResourceService ResourceService
             {
                 get { return null; }
                 set { _ResourceService = value; }
             }
-            private Dgc.GoogleRescourceService.ResourceService _ResourceService;
+            private Dgc.GoogleResourceService.ResourceService _ResourceService;
 
             [Parameter(
             Mandatory = true
@@ -253,9 +253,9 @@ namespace Microsoft.PowerShell.GData
 
                 try
                 {
-         
-                    var _DgcGoogleRescourceService = new Dgc.GoogleRescourceService();
-                    var _Xml = _DgcGoogleRescourceService.RetriveAllResources(_ResourceService);
+
+                    var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
+                    var _Xml = _DgcGoogleResourceService.RetriveAllResources(_ResourceService);
 
                     XmlDocument _XmlDoc = new XmlDocument();
                     _XmlDoc.InnerXml = _Xml;
@@ -285,12 +285,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public Dgc.GoogleRescourceService.ResourceService ResourceService
+            public Dgc.GoogleResourceService.ResourceService ResourceService
             {
                 get { return null; }
                 set { _ResourceService = value; }
             }
-            private Dgc.GoogleRescourceService.ResourceService _ResourceService;
+            private Dgc.GoogleResourceService.ResourceService _ResourceService;
 
             [Parameter(
             Mandatory = true
@@ -332,8 +332,8 @@ namespace Microsoft.PowerShell.GData
 
                 try
                 {
-                    var _DgcGoogleRescourceService = new Dgc.GoogleRescourceService();
-                    var _Xml = _DgcGoogleRescourceService.SetResource(_ResourceService, _ID, _Type, _Description);
+                    var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
+                    var _Xml = _DgcGoogleResourceService.SetResource(_ResourceService, _ID, _Type, _Description);
 
                     XmlDocument _XmlDoc = new XmlDocument();
                     _XmlDoc.InnerXml = _Xml;
