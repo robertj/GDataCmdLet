@@ -255,11 +255,7 @@ namespace Microsoft.PowerShell.GData
                 {
 
                     var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                    var _Xml = _DgcGoogleResourceService.RetriveAllResources(_ResourceService);
-
-                    XmlDocument _XmlDoc = new XmlDocument();
-                    _XmlDoc.InnerXml = _Xml;
-                    XmlElement _Entry = _XmlDoc.DocumentElement;
+                    var _Xml = _DgcGoogleResourceService.RemoveResources(_ResourceService, _ID);
 
                     WriteObject(_ID);
 

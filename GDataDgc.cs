@@ -463,7 +463,6 @@ namespace Microsoft.PowerShell.GData
                 WebRequest.Method = "DELETE";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
 
-
                 WebResponse WebResponse = WebRequest.GetResponse();
 
 
