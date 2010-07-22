@@ -24,24 +24,40 @@ namespace Microsoft.PowerShell.GData
 
     public class Dgc
     {
+        #region XmlReturn
+
+        public class XmlReturn
+        {
+            public string name { get; set; }
+            public string value { get; set; }
+        }
+
+        #endregion XmlReturn
+
         #region ParseXML
 
         public class ParseXML
         {
-            public IEnumerable<XElement> Parse(string XMLString)
+            public IEnumerable<XmlReturn> ListFormat;
+            public ParseXML(string XMLString)
             {
                 XElement Elem = XElement.Parse(XMLString);
                 XNamespace Ns = "http://schemas.google.com/apps/2006";
 
-                IEnumerable<XElement> list = from c in Elem.DescendantsAndSelf()
-                    select c.Element(Ns + "property");
 
-                
+                ListFormat = from c in Elem.Elements(Ns + "property")
+                             select new XmlReturn
+                             {
+                                 name = c.Attribute("name").Value.ToString(),
+                                 value = c.Attribute("value").Value.ToString()
+                             };
+
+
             }
-            
+
         }
 
-        #endregion
+        #endregion ParseXML
         
         #region GoogleAppService
 
@@ -74,7 +90,7 @@ namespace Microsoft.PowerShell.GData
             #endregion GetDomainFromAppService
 
             #region GetCustomerId
-
+            
             public string GetCustomerId(AppsService CustIdService)
             {
                 var Token = CustIdService.Groups.QueryClientLoginToken();
@@ -94,12 +110,22 @@ namespace Microsoft.PowerShell.GData
                 StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
 
                 var _Result = SR.ReadToEnd().Trim();
-                var Xml = new ParseXML();
-                var CustomerId = Xml.Parse(_Result);
+                var Xml = new ParseXML(_Result);
+                
+                foreach (var x in Xml.ListFormat)
+                {
+                    if (x.name == "CustomerID")
+                    {
+                        CustomerId = x.value;
+                    }
+
+                }
+
                 return CustomerId;
                 
 
             }
+            private string CustomerId;
 
             #endregion
 
