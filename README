@@ -73,3 +73,7 @@ New-GDataResource
 Get-GDataResource
 Remove-GDataResource
 Set-GDataResource
+
+New-GDataProfileService
+Get-GDataProfile
+Set-GDataProfile
