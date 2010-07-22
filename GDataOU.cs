@@ -94,19 +94,40 @@ namespace Microsoft.PowerShell.GData
             }
             private AppsService _OUService;
 
+            [Parameter(Mandatory = false)]
+            [ValidateNotNullOrEmpty]
+            public string OuPath
+            {
+                get { return null; }
+                set { _OuPath = value; }
+
+            }
+            private string _OuPath;
+
+
             #endregion Parameters
 
 
             protected override void ProcessRecord()
             {
                 var OUService = new Dgc.GoogleAppService();
-                var _Xml = OUService.RetrievAllOUs(_OUService);
-                
-                XmlDocument _XmlDoc = new XmlDocument();
-                _XmlDoc.InnerXml = _Xml;
-                XmlElement _Entry = _XmlDoc.DocumentElement;
+                string _Xml;
 
-                WriteObject(_Entry);
+                if (_OuPath != null)
+                {
+                    _Xml = OUService.RetrieveOU(_OUService, _OuPath);
+                }
+                else
+                {
+                    _Xml = OUService.RetrieveAllOUs(_OUService);
+                }
+
+                    XmlDocument _XmlDoc = new XmlDocument();
+                    _XmlDoc.InnerXml = _Xml;
+                    XmlElement _Entry = _XmlDoc.DocumentElement;
+
+                    WriteObject(_Entry);
+                
             }
 
         }
