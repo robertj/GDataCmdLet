@@ -24,7 +24,25 @@ namespace Microsoft.PowerShell.GData
 
     public class Dgc
     {
+        #region ParseXML
 
+        public class ParseXML
+        {
+            public IEnumerable<XElement> Parse(string XMLString)
+            {
+                XElement Elem = XElement.Parse(XMLString);
+                XNamespace Ns = "http://schemas.google.com/apps/2006";
+
+                IEnumerable<XElement> list = from c in Elem.DescendantsAndSelf()
+                    select c.Element(Ns + "property");
+
+                
+            }
+            
+        }
+
+        #endregion
+        
         #region GoogleAppService
 
         public class GoogleAppService
@@ -54,6 +72,36 @@ namespace Microsoft.PowerShell.GData
             }
 
             #endregion GetDomainFromAppService
+
+            #region GetCustomerId
+
+            public string GetCustomerId(AppsService CustIdService)
+            {
+                var Token = CustIdService.Groups.QueryClientLoginToken();
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/customer/2.0/customerId");
+
+                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest.Method = "GET";
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+                var Xml = new ParseXML();
+                var CustomerId = Xml.Parse(_Result);
+                return CustomerId;
+                
+
+            }
+
+            #endregion
 
             #region CreateUserAlias
 
@@ -101,6 +149,17 @@ namespace Microsoft.PowerShell.GData
             }
 
             #endregion CreateUserAlias
+
+            #region CreateOrganizationUnit
+
+            public string CreateOrganizationUnit(AppsService OrgUnitService, string OrgUnitName, string OrgUnitDescription, string OrgUnitParentOrgUnitPath, bool OrgUnitBlockInheritance)
+            {
+
+                return null;
+
+            }
+
+            #endregion CreateOrganizationUnit
 
             #region RemoveUserAlias
 
