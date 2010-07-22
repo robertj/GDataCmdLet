@@ -100,9 +100,13 @@ namespace Microsoft.PowerShell.GData
             protected override void ProcessRecord()
             {
                 var OUService = new Dgc.GoogleAppService();
-                var AllOus = OUService.RetrievAllOUs(_OUService);
+                var _Xml = OUService.RetrievAllOUs(_OUService);
+                
+                XmlDocument _XmlDoc = new XmlDocument();
+                _XmlDoc.InnerXml = _Xml;
+                XmlElement _Entry = _XmlDoc.DocumentElement;
 
-                WriteObject(AllOus);
+                WriteObject(_Entry);
             }
 
         }

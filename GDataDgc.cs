@@ -114,7 +114,7 @@ namespace Microsoft.PowerShell.GData
                 
                 foreach (var x in Xml.ListFormat)
                 {
-                    if (x.name == "CustomerID")
+                    if (x.name == "customerId")
                     {
                         CustomerId = x.value;
                     }
@@ -301,6 +301,40 @@ namespace Microsoft.PowerShell.GData
             }
 
             #endregion RetriveAllUserAlias
+
+            #region RetrievAllOUs
+
+            public string RetrievAllOUs(AppsService UserService)
+            {
+                var Token = UserService.Groups.QueryClientLoginToken();
+                var OUService = new Dgc.GoogleAppService();
+                var CustId = OUService.GetCustomerId(UserService);
+                                
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/orgunit/2.0/" + CustId + "?get=all");
+
+                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest.Method = "GET";
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+                
+                //var Xml = new ParseXML(_Result);
+                                
+                
+                return _Result;
+                 
+            }
+
+#endregion RetrievAllOUs
 
         }
 

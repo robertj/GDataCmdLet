@@ -68,6 +68,7 @@
     <Compile Include="GDataCalendar.cs" />
     <Compile Include="GDataDgc.cs" />
     <Compile Include="GDataMailSettings.cs" />
+    <Compile Include="GDataOU.cs" />
     <Compile Include="snap-in.cs">
       <SubType>Component</SubType>
     </Compile>
