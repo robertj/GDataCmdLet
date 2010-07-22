@@ -122,7 +122,6 @@ namespace Microsoft.PowerShell.GData
                 }
 
                 return CustomerId;
-                
 
             }
             private string CustomerId;
@@ -612,7 +611,7 @@ namespace Microsoft.PowerShell.GData
         #endregion GoogleResourceService
         
         #region GoogleProfileService
-        
+
         public class GoogleProfileService
         {
 
@@ -623,12 +622,8 @@ namespace Microsoft.PowerShell.GData
                 public string Domain { get; set; }
             }
 
-            public string PostalAddress
-            {
-                set;
-                get;
-            }
-          
+            public string PostalAddress;
+
 
             #region GetAuthToken
 
@@ -641,8 +636,8 @@ namespace Microsoft.PowerShell.GData
 
                 WebRequest.ContentType = "application/x-www-form-urlencoded";
                 WebRequest.Method = "POST";
-
-                byte[] Bytes = Encoding.ASCII.GetBytes("&Email=" + AdminUser + "&Passwd=" + AdminPassword.Replace("@", "%40") + "&accountType=HOSTED_OR_GOOGLE&service=apps&source=companyName-applicationName-versionID");
+                WebRequest.Headers.Add("GData-Version: 3.0");
+                byte[] Bytes = Encoding.ASCII.GetBytes("&Email=" + AdminUser.Replace("@", "%40") + "&Passwd=" + AdminPassword + "&accountType=HOSTED&service=cp&source=dgctest.com-GDataCmdLet-v0508");
                 Stream OS = null;
 
                 WebRequest.ContentLength = Bytes.Length;   //Count bytes to send
@@ -690,40 +685,23 @@ namespace Microsoft.PowerShell.GData
 
             #endregion GetAuthToken
 
-            #region SetProfile
+            #region GetProfile
 
-            public string SetProfile(ProfileService ProfileService, string ID, string ProfilePostalAddress)
+            public string GetProfile(ProfileService ProfileService, string ID)
             {
-                /*
-                var DGCGoogleAppsService = new Dgc.GoogleAppService();
-                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
-                */
 
-                var Domain = ResourceService.Domain;
+                var Domain = ProfileService.Domain;
 
                 var uri = new Uri("https://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID);
 
-                // parameters: name1=value1&name2=value2
+
 
                 WebRequest WebRequest = WebRequest.Create(uri);
                 WebRequest.ContentType = "application/atom+xml";
-                WebRequest.Method = "PUT";
+                WebRequest.Method = "Get";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ProfileService.Token);
+                WebRequest.Headers.Add("GData-Version: 3.0");
 
-                if (ProfilePostalAddress != null)
-                {
-                    PostalAddress = "<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work'><gd:formattedAddress>" + ProfilePostalAddress + "</gd:formattedAddress></gd:structuredPostalAddress>";
-                }
-
-                var Post = "<entry xmlns='http://www.w3.org/2005/Atom'xmlns:gContact='http://schemas.google.com/contact/2008'xmlns:batch='http://schemas.google.com/gdata/batch'xmlns:gd='http://schemas.google.com/g/2005'<category scheme='http://schemas.google.com/g/2005#kind'term='http://schemas.google.com/contact/2008#profile' /><id>http://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID + "</id><link rel='self' type='application/atom+xml'href='http://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID + "' /><link rel='edit' type='application/atom+xml'href='http://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID + "' />" + PostalAddress + "</entry>";
-                
-                byte[] Bytes = Encoding.ASCII.GetBytes("");
-                Stream OS = null;
-                WebRequest.ContentLength = Bytes.Length;
-                OS = WebRequest.GetRequestStream();
-                OS.Write(Bytes, 0, Bytes.Length);
-
-                OS.Close();
 
                 WebResponse WebResponse = WebRequest.GetResponse();
 
@@ -737,6 +715,183 @@ namespace Microsoft.PowerShell.GData
                 var _Result = SR.ReadToEnd().Trim();
 
                 return _Result;
+            }
+
+            #endregion GetProfile
+
+            #region SetProfile
+            public string Res;
+            public XElement Elem;
+            public XNamespace Ns;
+            public string NewXml;
+
+            public string SetProfile(ProfileService ProfileService, string ID, string PostalAddress, string PhoneNumber, string MobilePhoneNumber, string OtherPhoneNumber, string HomePostalAddress)
+            {
+            
+
+                
+                var Domain = ProfileService.Domain;
+
+                var uri = new Uri("http://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID);
+
+                var GoogleProfileService = new GoogleProfileService();
+                Res = GoogleProfileService.GetProfile(ProfileService, ID);
+
+
+
+                Elem = XElement.Parse(Res.ToString().Trim());
+
+                Ns = "http://schemas.google.com/g/2005";
+
+                string FormatedRes = Res.Replace("\"", "'");
+
+                if (PostalAddress != null)
+                {
+                    if (FormatedRes.Contains("gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work'"))
+                    {
+
+                        foreach (var Element in Elem.Elements(Ns + "structuredPostalAddress"))
+                        {
+                            if (Element.FirstAttribute.Value == "http://schemas.google.com/g/2005#work")
+                            {
+
+                                Element.SetElementValue(Ns + "formattedAddress", PostalAddress);
+                            }
+
+
+                        }
+                        NewXml = Elem.ToString();
+                    }
+                    else
+                    {
+                        NewXml = Elem.ToString().Replace("</entry>", "<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work'><gd:formattedAddress>" + PostalAddress + "</gd:formattedAddress></gd:structuredPostalAddress></entry>");
+                        Elem = XElement.Parse(NewXml.ToString().Trim());
+                    }
+                }
+
+                if (HomePostalAddress != null)
+                {
+                    if (FormatedRes.Contains("gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#home'"))
+                    {
+
+                        foreach (var Element in Elem.Elements(Ns + "structuredPostalAddress"))
+                        {
+
+                            if (Element.FirstAttribute.Value == "http://schemas.google.com/g/2005#home")
+                            {
+                                //Element.SetValue(PhoneNumber);
+
+                                Element.SetElementValue(Ns + "formattedAddress", HomePostalAddress);
+                            }
+
+                        }
+                        NewXml = Elem.ToString();
+                    }
+                    else
+                    {
+                        NewXml = Elem.ToString().Replace("</entry>", "<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#home'><gd:formattedAddress>" + HomePostalAddress + "</gd:formattedAddress></gd:structuredPostalAddress></entry>");
+                        Elem = XElement.Parse(NewXml.ToString().Trim());
+                    }
+                }
+
+                if (PhoneNumber != null)
+                {
+                    if (Res.Contains("phoneNumber rel='http://schemas.google.com/g/2005#work'"))
+                    {
+
+                        foreach (var Element in Elem.Elements(Ns + "phoneNumber"))
+                        {
+
+                            if (Element.FirstAttribute.Value == "http://schemas.google.com/g/2005#work")
+                            {
+                                Element.SetValue(PhoneNumber);
+                            }
+                            NewXml = Elem.ToString();
+                        }
+                    }
+                    else
+                    {
+                        NewXml = Elem.ToString().Replace("</entry>", "<gd:phoneNumber rel='http://schemas.google.com/g/2005#work' primary='true'>" + PhoneNumber + "</gd:phoneNumber></entry>");
+                        Elem = XElement.Parse(NewXml.ToString().Trim());
+                    }
+                }
+
+                if (MobilePhoneNumber != null)
+                {
+                    if (Res.Contains("phoneNumber rel='http://schemas.google.com/g/2005#mobile'"))
+                    {
+                        foreach (var Element in Elem.Elements(Ns + "phoneNumber"))
+                        {
+                            if (Element.FirstAttribute.Value == "http://schemas.google.com/g/2005#mobile")
+                            {
+                                Element.SetValue(MobilePhoneNumber);
+                            }
+                        }
+                        NewXml = Elem.ToString();
+                    }
+                    else
+                    {
+                        NewXml = Elem.ToString().Replace("</entry>", "<gd:phoneNumber rel='http://schemas.google.com/g/2005#mobile'>" + MobilePhoneNumber + "</gd:phoneNumber></entry>");
+                        Elem = XElement.Parse(NewXml.ToString().Trim());
+                    }
+                }
+
+                if (OtherPhoneNumber != null)
+                {
+                    if (Res.Contains("phoneNumber rel='http://schemas.google.com/g/2005#other'"))
+                    {
+                        foreach (var Element in Elem.Elements(Ns + "phoneNumber"))
+                        {
+                            if (Element.FirstAttribute.Value == "http://schemas.google.com/g/2005#other")
+                            {
+                                Element.SetValue(OtherPhoneNumber);
+                            }
+                            NewXml = Elem.ToString();
+                        }
+                    }
+                    else
+                    {
+                        NewXml = Elem.ToString().Replace("</entry>", "<gd:phoneNumber rel='http://schemas.google.com/g/2005#other'>" + MobilePhoneNumber + "</gd:phoneNumber></entry>");
+                        Elem = XElement.Parse(NewXml.ToString().Trim());
+                    }
+                }
+
+
+                // parameters: name1=value1&name2=value2
+
+                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Method = "PUT";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ProfileService.Token);
+                WebRequest.Headers.Add("GData-Version: 3.0");
+
+                var Post = NewXml;
+
+                byte[] Bytes = Encoding.ASCII.GetBytes(Post);
+                Stream OS = null;
+                WebRequest.ContentLength = Bytes.Length;
+                OS = WebRequest.GetRequestStream();
+                OS.Write(Bytes, 0, Bytes.Length);
+
+                OS.Close();
+
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR1 = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result1 = SR1.ReadToEnd().Trim();
+
+                //return _Result1;
+
+
+                return NewXml;
+
             }
 
             #endregion SetProfile
