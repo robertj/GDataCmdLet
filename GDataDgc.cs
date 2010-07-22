@@ -24,8 +24,8 @@ namespace Microsoft.PowerShell.GData
 
     public class Dgc
     {
-        #region XmlReturn
 
+        #region XmlReturn
         public class XmlReturn
         {
             public string name { get; set; }
@@ -114,7 +114,7 @@ namespace Microsoft.PowerShell.GData
                 
                 foreach (var x in Xml.ListFormat)
                 {
-                    if (x.name == "CustomerID")
+                    if (x.name == "customerId")
                     {
                         CustomerId = x.value;
                     }
@@ -122,6 +122,7 @@ namespace Microsoft.PowerShell.GData
                 }
 
                 return CustomerId;
+                
 
             }
             private string CustomerId;
@@ -300,6 +301,68 @@ namespace Microsoft.PowerShell.GData
             }
 
             #endregion RetriveAllUserAlias
+
+            #region RetrieveAllOUs
+
+            public string RetrieveAllOUs(AppsService UserService)
+            {
+                var Token = UserService.Groups.QueryClientLoginToken();
+                var OUService = new Dgc.GoogleAppService();
+                var CustId = OUService.GetCustomerId(UserService);
+                                
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/orgunit/2.0/" + CustId + "?get=all");
+
+                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest.Method = "GET";
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+                
+                return _Result;
+                 
+            }
+
+            #endregion RetrieveAllOUs
+
+            #region RetrieveOU
+
+            public string RetrieveOU(AppsService UserService, string OuPath)
+            {
+                var Token = UserService.Groups.QueryClientLoginToken();
+                var OUService = new Dgc.GoogleAppService();
+                var CustId = OUService.GetCustomerId(UserService);
+
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/orgunit/2.0/" + CustId + "/"+OuPath);
+
+                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest.Method = "GET";
+                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+
+                return _Result;
+
+            }
+
+            #endregion RetrievOU
 
         }
 
