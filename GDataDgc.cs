@@ -720,16 +720,14 @@ namespace Microsoft.PowerShell.GData
             #endregion GetProfile
 
             #region SetProfile
-            public string Res;
-            public XElement Elem;
-            public XNamespace Ns;
-            public string NewXml;
+            private string Res;
+            private XElement Elem;
+            private XNamespace Ns;
+            private string NewXml;
 
             public string SetProfile(ProfileService ProfileService, string ID, string PostalAddress, string PhoneNumber, string MobilePhoneNumber, string OtherPhoneNumber, string HomePostalAddress)
             {
-            
 
-                
                 var Domain = ProfileService.Domain;
 
                 var uri = new Uri("http://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID);
@@ -883,14 +881,14 @@ namespace Microsoft.PowerShell.GData
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR1 = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
 
-                var _Result1 = SR1.ReadToEnd().Trim();
+                var Result = SR.ReadToEnd().Trim();
 
-                //return _Result1;
+                return Result;
 
 
-                return NewXml;
+                //return NewXml;
 
             }
 
