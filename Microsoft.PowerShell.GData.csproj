@@ -68,7 +68,12 @@
     <Compile Include="GDataCalendar.cs" />
     <Compile Include="GDataDgc.cs" />
     <Compile Include="GDataMailSettings.cs" />
+<<<<<<< HEAD
     <Compile Include="GDataOU.cs" />
+=======
+    <Compile Include="GDataProfile.cs" />
+    <Compile Include="GdataResource.cs" />
+>>>>>>> robban/master
     <Compile Include="snap-in.cs">
       <SubType>Component</SubType>
     </Compile>
