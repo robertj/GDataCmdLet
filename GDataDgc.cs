@@ -694,7 +694,6 @@ namespace Microsoft.PowerShell.GData
             {
                 var uri = new Uri("https://www.google.com/accounts/ClientLogin");
 
-                // parameters: name1=value1&name2=value2    
                 WebRequest WebRequest = WebRequest.Create(uri);
 
                 WebRequest.ContentType = "application/x-www-form-urlencoded";
@@ -703,9 +702,9 @@ namespace Microsoft.PowerShell.GData
                 byte[] Bytes = Encoding.ASCII.GetBytes("&Email=" + AdminUser.Replace("@", "%40") + "&Passwd=" + AdminPassword + "&accountType=HOSTED&service=cp&source=dgctest.com-GDataCmdLet-v0508");
                 Stream OS = null;
 
-                WebRequest.ContentLength = Bytes.Length;   //Count bytes to send
+                WebRequest.ContentLength = Bytes.Length;   
                 OS = WebRequest.GetRequestStream();
-                OS.Write(Bytes, 0, Bytes.Length);         //Send it
+                OS.Write(Bytes, 0, Bytes.Length);    
 
                 OS.Close();
 
