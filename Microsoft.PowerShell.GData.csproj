@@ -69,6 +69,8 @@
     <Compile Include="GDataDgc.cs" />
     <Compile Include="GDataMailSettings.cs" />
     <Compile Include="GDataOU.cs" />
+    <Compile Include="GDataProfile.cs" />
+    <Compile Include="GdataResource.cs" />
     <Compile Include="snap-in.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -103,10 +105,6 @@
     <Reference Include="Google.GData.Extensions, Version=1.6.0.0, Culture=neutral, PublicKeyToken=0b4c5df2ebf20876, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Binaries\Google.GData.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.GData.GoogleBase, Version=1.6.0.0, Culture=neutral, PublicKeyToken=b361faa2ad5bd3db, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Binaries\Google.GData.GoogleBase.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
