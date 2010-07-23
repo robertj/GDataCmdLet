@@ -1,4 +1,4 @@
-I created this project to have an easier way of handeling provisioning/Administration for Google Apps (Contacst/Users/Groups/MailSettings/Calendars/Resources/Profiles)
+I created this project to have an easier way of handeling provisioning/Administration for Google Apps (Contacst/Users/Groups/MailSettings/Calendar)
 
 I hope it can be usefull to someone else.
 
@@ -73,7 +73,3 @@ New-GDataResource
 Get-GDataResource
 Remove-GDataResource
 Set-GDataResource
-
-New-GDataProfileService
-Get-GDataProfile
-Set-GDataProfile
