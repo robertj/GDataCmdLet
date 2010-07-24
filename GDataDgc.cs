@@ -1100,6 +1100,78 @@ namespace Microsoft.PowerShell.GData
 
             #endregion CreateProfileEntrys
 
+            #region AppendProfileEntrys
+
+            public GDataTypes.ProfileEntrys AppendProfileEntrys(string _Xml, GDataTypes.ProfileService _ProfileService, GDataTypes.ProfileEntrys _ProfileEntrys)
+            {
+                var _ParesdXml = new GDataTypes.ParseXML(_Xml);
+
+
+                //var _ProfileEntrys = new GDataTypes.ProfileEntrys();
+
+                //_ProfileEntry.User = _ID;
+                //_ProfileEntry.Domain = _ProfileService.Domain;
+                string _ProfileLink = "http://www.google.com/m8/feeds/profiles/domain/" + _ProfileService.Domain + "/full/";
+
+                foreach (var _SEntry in _ParesdXml.ListFormat)
+                {
+                    if (_SEntry.name == "{http://www.w3.org/2005/Atom}entry")
+                    {
+                        var _ProfileEntry = new GDataTypes.ProfileEntry();
+                        _ProfileEntry.Domain = _ProfileService.Domain;
+                        foreach (var _Entry in _SEntry.sub)
+                        {
+                            if (_Entry.name == "{http://www.w3.org/2005/Atom}id")
+                            {
+                                _ProfileEntry.User = _Entry.value.Replace(_ProfileLink, "");
+                            }
+                            if (_Entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
+                            {
+                                foreach (var _Attribute in _Entry.at)
+                                {
+                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#home")
+                                    {
+                                        _ProfileEntry.HomePostalAddress = _Entry.value;
+                                    }
+                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
+                                    {
+                                        _ProfileEntry.PostalAddress = _Entry.value;
+                                    }
+                                }
+                            }
+                            if (_Entry.name == "{http://schemas.google.com/g/2005}phoneNumber")
+                            {
+                                foreach (var _Attribute in _Entry.at)
+                                {
+                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#other")
+                                    {
+                                        _ProfileEntry.OtherPhoneNumber = _Entry.value;
+                                    }
+                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
+                                    {
+                                        _ProfileEntry.PhoneNumber = _Entry.value;
+                                    }
+                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#mobile")
+                                    {
+                                        _ProfileEntry.MobilePhoneNumber = _Entry.value;
+                                    }
+                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#home")
+                                    {
+                                        _ProfileEntry.HomePhoneNumber = _Entry.value;
+                                    }
+                                }
+                            }
+                        }
+                        _ProfileEntrys.Add(_ProfileEntry);
+                    }
+                }
+
+
+                return _ProfileEntrys;
+            }
+
+            #endregion AppendProfileEntrys
+
             #region CreateProfileEntry
 
             public GDataTypes.ProfileEntry CreateProfileEntry(string _Xml, string ID, GDataTypes.ProfileService _ProfileService)
@@ -1165,12 +1237,17 @@ namespace Microsoft.PowerShell.GData
 
             #region GetProfiles
 
-            public string GetProfiles(GDataTypes.ProfileService ProfileService)
+            public string GetProfiles(GDataTypes.ProfileService ProfileService, string NextPage)
             {
 
                 var Domain = ProfileService.Domain;
 
-                var uri = new Uri("https://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full");
+                if (NextPage == "")
+                {
+                    NextPage = "https://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full";
+                }
+
+                var uri = new Uri(NextPage);
 
 
 

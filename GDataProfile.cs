@@ -104,6 +104,8 @@ namespace Microsoft.PowerShell.GData
 
             #endregion Parameters
 
+            private string NextPage;
+            private string ParseXML;
             protected override void ProcessRecord()
             {
 
@@ -116,13 +118,42 @@ namespace Microsoft.PowerShell.GData
 
                         var _ProfileEntry = _DgcGoogleProfileService.CreateProfileEntry(_Xml, _ID, _ProfileService);
                         WriteObject(_ProfileEntry);
+
                     }
                     else
                     {
+                        
                         var _DgcGoogleProfileService = new Dgc.GoogleProfileService();
-                        var _Xml = _DgcGoogleProfileService.GetProfiles(_ProfileService);
 
+
+                        NextPage = "";
+                        var _Xml = _DgcGoogleProfileService.GetProfiles(_ProfileService, NextPage);
+                        var ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
                         var _ProfileEntrys = _DgcGoogleProfileService.CreateProfileEntrys(_Xml, _ProfileService);
+
+                        while (NextPage != null)
+                        {
+                            NextPage = null;
+                            foreach (var _Elements in ParseXML.ListFormat)
+                            {
+                                foreach (var _Attribute in _Elements.at)
+                                {
+                                    if (_Attribute.Value == "next")
+                                    {
+                                        //Console.WriteLine("Next/n");
+                                        NextPage = _Attribute.NextAttribute.NextAttribute.Value;
+                                    }
+                                }
+                            }
+                            if (NextPage != null)
+                            {
+
+                                _Xml = _DgcGoogleProfileService.GetProfiles(_ProfileService, NextPage);
+                                ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
+                                _ProfileEntrys = _DgcGoogleProfileService.AppendProfileEntrys(_Xml, _ProfileService, _ProfileEntrys);
+                            }
+                        }
+
                         WriteObject(_ProfileEntrys,true);
                     }
 
