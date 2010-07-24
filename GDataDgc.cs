@@ -168,6 +168,75 @@ namespace Microsoft.PowerShell.GData
 
             #endregion CreateCreatePop3Entry
 
+            #region AppendUserAliasEntry
+
+            public GDataTypes.GDataUserAliasEntry AppendUserAliasEntry(string _Xml, GDataTypes.GDataUserAliasEntry GdataUserAliasEntry)
+            {
+                var ParesdXml = new GDataTypes.ParseXML(_Xml);
+
+
+                //var AliasEntry = new GDataTypes.GDataUserAliasEntry();
+
+
+                //var GdataUserAliasEntry = new GDataTypes.GDataUserAliasEntry();
+                var GdataUserSingelAliasEntry = new GDataTypes.GDataAliasEntry();
+                foreach (var Entry in ParesdXml.ListFormat)
+                {
+                    var GdataAliasEntry = new GDataTypes.GDataAliasEntry();
+                    foreach (var Attribute in Entry.at)
+                    {
+
+                        if (Attribute.Value == "aliasEmail" || Attribute.Value == "userEmail")
+                        {
+                            if (Attribute.Value == "aliasEmail")
+                            {
+                                GdataUserSingelAliasEntry.aliasEmail = Attribute.NextAttribute.Value;
+                            }
+                            if (Attribute.Value == "userEmail")
+                            {
+                                GdataUserSingelAliasEntry.UserName = Attribute.NextAttribute.Value;
+                            }
+                            if (GdataUserSingelAliasEntry.UserName != null && GdataUserSingelAliasEntry.aliasEmail != null)
+                            {
+                                GdataUserAliasEntry.Add(GdataUserSingelAliasEntry);
+                            }
+                        }
+
+                    }
+                    foreach (var SubEntry in Entry.sub)
+                    {
+
+
+                        foreach (var Attribute in SubEntry.at)
+                        {
+
+                            if (Attribute.Value == "aliasEmail" || Attribute.Value == "userEmail")
+                            {
+                                if (Attribute.Value == "aliasEmail")
+                                {
+                                    GdataAliasEntry.aliasEmail = Attribute.NextAttribute.Value;
+                                }
+                                if (Attribute.Value == "userEmail")
+                                {
+                                    GdataAliasEntry.UserName = Attribute.NextAttribute.Value;
+                                }
+                                if (GdataAliasEntry.UserName != null && GdataAliasEntry.aliasEmail != null)
+                                {
+                                    GdataUserAliasEntry.Add(GdataAliasEntry);
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+
+                //return _ProfileEntry;
+                return GdataUserAliasEntry;
+            }
+
+            #endregion AppendUserAliasEntry
+
             #region CreateUserAliasEntry
 
             public GDataTypes.GDataUserAliasEntry CreateUserAliasEntry(string _Xml)
@@ -379,6 +448,28 @@ namespace Microsoft.PowerShell.GData
 
             #endregion CreateOrganizationUnit
 
+            #region RetriveNextPage
+
+            private string NextPage;
+            public string RetriveNextPage(string Xml)
+            {
+                var ParseXML = new GDataTypes.ParseXML(Xml.ToString());
+                NextPage = "";
+                foreach (var _Elements in ParseXML.ListFormat)
+                {
+                    foreach (var _Attribute in _Elements.at)
+                    {
+                        if (_Attribute.Value == "next")
+                        {
+                            NextPage = _Attribute.NextAttribute.NextAttribute.Value;
+                        }
+                    }
+                }
+                return NextPage;
+            }
+
+            #endregion RetriveNextPage
+
             #region RemoveUserAlias
 
             public string RemoveUserAlias(AppsService UserService, string UserAlias)
@@ -462,14 +553,19 @@ namespace Microsoft.PowerShell.GData
 
             #region RetriveAllUserAlias
 
-            public string RetriveAllUserAlias(AppsService UserService)
+            public string RetriveAllUserAlias(AppsService UserService, string NextPage)
             {
                 var Domain = UserService.Domain.ToString();
                 char[] DelimiterChars = { '@' };
 
                 var Token = UserService.Groups.QueryClientLoginToken();
 
-                var uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + Domain + "?start=alias@" + Domain);
+                if (NextPage == "")
+                {
+                    NextPage = "https://apps-apis.google.com/a/feeds/alias/2.0/" + Domain + "?start=alias@" + Domain;
+                }
+
+                var uri = new Uri(NextPage);
 
                 WebRequest WebRequest = WebRequest.Create(uri);
 
@@ -486,6 +582,9 @@ namespace Microsoft.PowerShell.GData
                 StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
 
                 var _Result = SR.ReadToEnd().Trim();
+
+
+
 
                 return _Result;
 

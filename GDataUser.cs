@@ -477,7 +477,6 @@ namespace Microsoft.PowerShell.GData
         #endregion New-GDataUser
 
         #region Get-GDataUserNickName
-
         [Cmdlet(VerbsCommon.Get, "GDataUserNickName")]
         public class GetGDataUserNickName : Cmdlet
         {
@@ -518,7 +517,8 @@ namespace Microsoft.PowerShell.GData
 
             #endregion Parameters
 
-
+            private string NextPage;
+            private string ParseXML;
             protected override void ProcessRecord()
             {
                 if (_ID == null)
@@ -528,11 +528,38 @@ namespace Microsoft.PowerShell.GData
                         if (!_Legacy == true)
                         {
                             var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                            var _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService);
-                            
+                            //var _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService);
+
+
+                            string NextPage = "";
+                            var _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService, NextPage);
+                            var ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
                             var _UserAliasEntry = _DgcGoogleAppsService.CreateUserAliasEntry(_Xml);
-                            
-                            
+
+                            while (NextPage != null)
+                            {
+                                NextPage = null;
+                                foreach (var _Elements in ParseXML.ListFormat)
+                                {
+                                    foreach (var _Attribute in _Elements.at)
+                                    {
+                                        if (_Attribute.Value == "next")
+                                        {
+                                            //Console.WriteLine("Next/n");
+                                            NextPage = _Attribute.NextAttribute.NextAttribute.Value;
+                                        }
+                                    }
+                                }
+                                if (NextPage != null)
+                                {
+
+                                    _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService, NextPage);
+                                    ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
+                                    _UserAliasEntry = _DgcGoogleAppsService.AppendUserAliasEntry(_Xml, _UserAliasEntry);
+                                }
+                            }
+
+
                             WriteObject(_UserAliasEntry,true);
                         }
                         else
