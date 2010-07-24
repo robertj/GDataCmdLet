@@ -222,7 +222,7 @@ namespace Microsoft.PowerShell.GData
 
             protected override void ProcessRecord()
             {
-
+                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
                 if (_SenderAdress != null)
                 {
                     
@@ -237,7 +237,8 @@ namespace Microsoft.PowerShell.GData
                     try
                     {
                         var _Entry = _MailSettingsService.CreateSendAs(_ID, _Name, _SenderAdress, _SenderAdress, _StringIsDefault);
-                        WriteObject(_Entry);
+                        var _SenderAddressEntry = _DgcGoogleAppsService.CreateSenderAddressEntry(_Entry);
+                        WriteObject(_SenderAddressEntry);
                     }
                     catch (Exception _Exception )
                     {
@@ -253,7 +254,8 @@ namespace Microsoft.PowerShell.GData
                     try
                     {
                         var _Entry = _MailSettingsService.UpdatePop(_ID, "True", "ALL_MAIL", _Pop3Action);
-                        WriteObject(_Entry);
+                        var _Pop3Entry = _DgcGoogleAppsService.CreatePop3Entry(_Entry);
+                        WriteObject(_Pop3Entry);
                     }
                     catch (Exception _Exception)
                     {
@@ -265,6 +267,8 @@ namespace Microsoft.PowerShell.GData
                     try
                     {
                         var _Entry = _MailSettingsService.UpdatePop(_ID, "False", "ALL_MAIL", _Pop3Action);
+                        var _Pop3Entry = _DgcGoogleAppsService.CreatePop3Entry(_Entry);
+                        WriteObject(_Pop3Entry);
                     }
                     catch (Exception _Exception)
                     {
@@ -276,6 +280,8 @@ namespace Microsoft.PowerShell.GData
                     try
                     {
                         var _Entry = _MailSettingsService.UpdateImap(_ID, "True");
+                        var _ImapEntry = _DgcGoogleAppsService.CreateIMapEntry(_Entry);
+                        WriteObject(_ImapEntry);
                     }
                     catch (Exception _Exception)
                     {
@@ -287,6 +293,8 @@ namespace Microsoft.PowerShell.GData
                     try
                     {
                         var _Entry = _MailSettingsService.UpdateImap(_ID, "False");
+                        var _ImapEntry = _DgcGoogleAppsService.CreateIMapEntry(_Entry);
+                        WriteObject(_ImapEntry);
                     }
                     catch (Exception _Exception)
                     {
