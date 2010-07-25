@@ -5,13 +5,19 @@
 //Task: Add cmdlets for Google Calendar
 
 //Stared: 2010-07-14
-//Task: Add GDataCalendar cmdlets for calendar sharing.
+//Task: Add GDataCalendar cmdlets for calendar sharing
 
-Started: 2010-07-11
-Task: Add cmdlets for UserProfile
+//Started: 2010-07-11
+//Task: Add cmdlets for UserProfile
 
 //Started: 2010-07-11
 //Task: Add multidomain support
 
 //Started: 2010-07-15
 //Task: Add cmdlets for resources
+
+//Started: 2010-07-25
+//Task: Generic New-GDataService
+
+//Started: 2010-07-25
+//Task: Powershell adapted output for all cmdlets
