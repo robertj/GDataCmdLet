@@ -1,12 +1,8 @@
-I created this project to have an easier way of handeling provisioning/Administration for Google Apps (Contacst/Users/Groups/MailSettings/Calendar)
+I created this project to have an easier way of handeling provisioning/Administration for Google Apps (Contacts/Users/Groups/MailSettings/Calendars/Resources/Profiles)
 
 I hope it can be usefull to someone else.
 
 You can send feedback ore questions to robert.j@plan-tre.net
-
-1.
-You will need to download ".NET library for the Google Data API (1.6.0.0)"
-http://code.google.com/p/google-gdata/downloads/list
 
 2.
 Add the cmdlet to powershell
@@ -19,23 +15,22 @@ Add-PSSnapin GData
 
 Example use:
 
-$UserService = New-GDataUserService -AdminPassword Password -AdminUsername admin@plan-tre.net
-New-GDataUser -UserService $UserService -FamilyName Robert -GivenName Jonsson -ID robertj -Passsword Password
-Add-GDataUserNickName -UserService $UserService -ID robertj -NickName robert.jonsson
+$Service = New-GDataService -AdminPassword Password -AdminUsername admin@plan-tre.net
+New-GDataUser -Service $Service -FamilyName Robert -GivenName Jonsson -ID robertj -Passsword Password
+Add-GDataUserNickName -Service $Service -ID robertj -NickName robert.jonsson@plan-tre.net
 
-$MailSettingsService = New-GDataMailSettingsService -AdminPassword Password -AdminUsername admin@plan-tre.net
-Set-GDataMailSetting -ID robertj -Name "Robert Jonsson" -SenderAdress "robert.jonsson@plan-tre.net" -IsDefault -MailSettingsService $MailSettingsService
+Set-GDataMailSetting -ID robertj -Name "Robert Jonsson" -SenderAdress robert.jonsson@plan-tre.net -IsDefault -MailSettingsService $Service
 
 
 This project includes:
 
-New-GDataContactService
+New-GDataService
+
 Remove-GDataContact
 Get-GDataContact
 Set-GDataContact
 New-GDataContact
 
-New-GDataGroupService
 Remove-GDataGroup
 Get-GDataGroup
 Get-GDataGroupMember
@@ -47,10 +42,8 @@ Remove-GDataGroupOwner
 Set-GDataGroup
 New-GDataGroup
 
-New-GDataGDataMailSettingsService
 Set-GDataGDataMailSetting
 
-New-GDataUserService
 Remove-GDatauser
 Get-GDataUser
 Set-GDataUser
@@ -59,7 +52,6 @@ Get-GDataUserNickName
 Add-GDataUserNickName
 Remove-GDataUserNickName
 
-New-GDataCalendarService
 Get-GDataCalendar
 Set-GDataCalendar
 New-GDataCalendar
@@ -68,8 +60,12 @@ Get-GDataCalendarAcl
 Add-GDataCalendarAcl
 Remove-GDataCalendarAcl
 
-New-GDataResourceService
 New-GDataResource
 Get-GDataResource
 Remove-GDataResource
 Set-GDataResource
+
+New-GDataProfile
+Get-GDataProfile
+Remove-GDataProfile
+Set-GDataProfile
