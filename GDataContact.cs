@@ -15,10 +15,8 @@ namespace Microsoft.PowerShell.GData
     public class Contact
     {
 
-        
-
         #region New-GDataContactService
-
+        /*
         [Cmdlet(VerbsCommon.New, "GDataContactService")]
         public class NewGDataContactService : Cmdlet
         {
@@ -66,7 +64,7 @@ namespace Microsoft.PowerShell.GData
             }
 
         }
-
+        */
         #endregion New-GdataContactService
 
         #region Remove-GDataContact
@@ -80,12 +78,12 @@ namespace Microsoft.PowerShell.GData
             HelpMessage = "ContactService, new-GdataContactService"
             )]
             [ValidateNotNullOrEmpty]
-            public ContactsService ContactService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _ContactService = value; }
             }
-            private ContactsService _ContactService;
+            private GDataTypes.GDataService _ContactService;
 
             [Parameter(
             Mandatory = true,
@@ -118,7 +116,7 @@ namespace Microsoft.PowerShell.GData
 
 
                 var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
-                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService);
+                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService.ContactsService);
 
                 /*
                 var _DgcGoogle = new Contact.DgcGoogle();
@@ -133,7 +131,7 @@ namespace Microsoft.PowerShell.GData
 
                 var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
 //                var _Query = new ContactsQuery("http://www.google.com/m8/feeds/profiles/domain/domain/full");
-                var _Feed = _ContactService.Query(_Query);
+                var _Feed = _ContactService.ContactsService.Query(_Query);
 
 
                 
@@ -143,7 +141,7 @@ namespace Microsoft.PowerShell.GData
                     {
                         try
                         {
-                            _ContactService.Delete(_Entry);
+                            _ContactService.ContactsService.Delete(_Entry);
                             WriteObject(_Entry, true);
                         }
                         catch (Exception _Exception)
@@ -176,12 +174,12 @@ namespace Microsoft.PowerShell.GData
             HelpMessage = "ContactService, new-GdataContactService"
             )]
             [ValidateNotNullOrEmpty]
-            public ContactsService ContactService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _ContactService = value; }
             }
-            private ContactsService _ContactService;
+            private GDataTypes.GDataService _ContactService;
  
             [Parameter(
             Mandatory = false,
@@ -194,7 +192,7 @@ namespace Microsoft.PowerShell.GData
                 set { _SelfUri = value; }
             }
             private string _SelfUri;
-
+            
             [Parameter(
             Mandatory = false,
             HelpMessage = "Contact Name"
@@ -206,7 +204,7 @@ namespace Microsoft.PowerShell.GData
                 set { _Name = value; }
             }
             private string _Name;
-
+            
             [Parameter(
             Mandatory = false,
             HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
@@ -227,45 +225,67 @@ namespace Microsoft.PowerShell.GData
 
 
                 var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
-                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService);
+                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService.ContactsService);
 
 
-                if (_Scope != null)
-                {
-                    _Domain = _Scope;
-                }
 
-                var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
                 try
                 {
-                    var _Feed = _ContactService.Query(_Query);
-                
-
+                    if (_Scope != null)
+                    {
+                        _Domain = _Scope;
+                    }
                     if (_SelfUri != null)
                     {
-                        foreach (var _Entry in _Feed.Entries)
+
+
+                        var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
+                        var _Feed = _ContactService.ContactsService.Query(_Query);
+
+                        foreach (ContactEntry _Entry in _Feed.Entries)
                         {
                             if (_Entry.SelfUri.Content == _SelfUri)
                             {
-                                WriteObject(_Entry, true);
+                                var _ContactEntry = _DgcGoogleContactsService.CreateContactEntry(_Entry);
+                                WriteObject(_ContactEntry);
                             }
 
                         }
+                        
                     }
+                    
                     else if (_Name != null)
                     {
+                        var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
+                        var _Feed = _ContactService.ContactsService.Query(_Query);
+                        var _ContactsEntrys = new GDataTypes.GDataContactEntrys();
                         foreach (ContactEntry _Entry in _Feed.Entries)
                         {
-                            if (System.Text.RegularExpressions.Regex.IsMatch(_Entry.Title.Text, _Name))
+                            if (_Entry.Title.Text != null)
                             {
-                                WriteObject(_Entry, true);
+                                if (System.Text.RegularExpressions.Regex.IsMatch(_Entry.Title.Text, _Name))
+                                {
+                                    //var _ContactEntry = _DgcGoogleContactsService.CreateContactEntry(_Entry);
+                                    _ContactsEntrys = _DgcGoogleContactsService.AppendContactEntrys(_Entry, _ContactsEntrys);
+                                    //WriteObject(_Entry);
+                                }
                             }
 
                         }
+                        WriteObject(_ContactsEntrys, true);
                     }
+                    
                     else
                     {
-                        WriteObject(_Feed.Entries, true);     
+                        if (_Scope != null)
+                        {
+                            _Domain = _Scope;
+                        }
+                        var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
+                        var _Feed = _ContactService.ContactsService.Query(_Query);
+                        var _ContactEntrys = _DgcGoogleContactsService.CreateContactEntrys(_Feed);
+                        WriteObject(_ContactEntrys, true);
+                        //WriteObject(_Feed.Entries, true);     
                     }
                 }
                 catch (Exception _Exception)
@@ -295,12 +315,12 @@ namespace Microsoft.PowerShell.GData
             HelpMessage = "ContactService, new-GdataContactService"
             )]
             [ValidateNotNullOrEmpty]
-            public ContactsService ContactService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _ContactService = value; }
             }
-            private ContactsService _ContactService;
+            private GDataTypes.GDataService _ContactService;
 
             [Parameter(
             Mandatory = true,
@@ -397,7 +417,7 @@ namespace Microsoft.PowerShell.GData
 
 
                 var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
-                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService);
+                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService.ContactsService);
 
                 if (_Scope != null)
                 {
@@ -407,18 +427,12 @@ namespace Microsoft.PowerShell.GData
 
                 var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
                 
-                var _Feed = _ContactService.Query(_Query);
+                var _Feed = _ContactService.ContactsService.Query(_Query);
 
                 foreach (ContactEntry _Entry in _Feed.Entries)
                 {
                     if (_Entry.SelfUri.Content == _SelfUri)
                     {
-                        if (_Name != null)
-                        {
-                            _Entry.Title.Text = _Name;
-                            _Entry.Content.Content = _Name;
-
-                        }
                         
                         if (_EmailAddress != null)
                         {
@@ -431,6 +445,7 @@ namespace Microsoft.PowerShell.GData
 
                         if (_PhoneNumber != null)
                         {
+                            _Entry.Phonenumbers.Clear();
                             var phoneNumber = new PhoneNumber(_PhoneNumber);
                             phoneNumber.Primary = true;
                             phoneNumber.Rel = ContactsRelationships.IsWork;
@@ -439,6 +454,7 @@ namespace Microsoft.PowerShell.GData
 
                         if (_PostalAddress != null)
                         {
+                            _Entry.PostalAddresses.Clear();
                             //var postalAddress = new PostalAddress();
                             var postalAddress = new StructuredPostalAddress();
                             //postalAddress.Value = _PostalAddress;
@@ -449,7 +465,12 @@ namespace Microsoft.PowerShell.GData
                             {
                                 postalAddress.City = _City;
                             }
+                            else
+                            {
+
+                            }
                             _Entry.PostalAddresses.Add(postalAddress);
+                            
 
                         
                         }
@@ -458,8 +479,19 @@ namespace Microsoft.PowerShell.GData
 
                         try
                         {
-                            ContactEntry _UpdatedEntry = (ContactEntry)_ContactService.Update(_Entry);
-                            WriteObject(_UpdatedEntry, true);
+                            ContactEntry _UpdateEntry = (ContactEntry)_ContactService.ContactsService.Update(_Entry);
+                            if (_Name != null)
+                            {
+                                var _Token = _ContactService.ContactsService.QueryClientLoginToken();
+                                _DgcGoogleContactsService.SetContactTitle(_Token, _Entry.SelfUri.ToString(), _Name);
+                                var _ContactEntry = _DgcGoogleContactsService.CreateContactModifidEntry(_UpdateEntry, _Name);
+                                WriteObject(_ContactEntry);
+                            }
+                            else
+                            {
+                                var _ContactEntry = _DgcGoogleContactsService.CreateContactEntry(_UpdateEntry);
+                                WriteObject(_ContactEntry);
+                            }
                         }
                         catch (Exception _Exception)
                         {
@@ -490,12 +522,12 @@ namespace Microsoft.PowerShell.GData
             HelpMessage = "ContactService, new-GdataContactService"
             )]
             [ValidateNotNullOrEmpty]
-            public ContactsService ContactService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _ContactService = value; }
             }
-            private ContactsService _ContactService;
+            private GDataTypes.GDataService _ContactService;
 
             
             [Parameter(
@@ -509,7 +541,7 @@ namespace Microsoft.PowerShell.GData
                 set { _EmailAddress = value; }
             }
             private string _EmailAddress;
-
+            
             [Parameter(
                Mandatory = true,
                HelpMessage = "Contact Name"
@@ -521,8 +553,7 @@ namespace Microsoft.PowerShell.GData
                 set { _Name = value; }
             }
             private string _Name;
-
-
+            
             [Parameter(
                Mandatory = false,
                HelpMessage = "Contact PhoneNumber"
@@ -577,15 +608,13 @@ namespace Microsoft.PowerShell.GData
 
             protected override void ProcessRecord()
             {
-                
                 var _NewEntry = new ContactEntry();
-                _NewEntry.Title.Text = _Name;
                 EMail primaryEmail = new EMail();
                 primaryEmail.Address = _EmailAddress;
                 primaryEmail.Primary = true;
                 primaryEmail.Rel = ContactsRelationships.IsWork;
                 _NewEntry.Emails.Add(primaryEmail);
-
+            
                 if (_PhoneNumber != null)
                 {
                     var phoneNumber = new PhoneNumber(_PhoneNumber);
@@ -609,10 +638,9 @@ namespace Microsoft.PowerShell.GData
                     
                     _NewEntry.PostalAddresses.Add(postalAddress);
                 }
-                _NewEntry.Content.Content = _Name;
 
                 var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
-                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService);
+                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService.ContactsService);
 
                 if (_Scope != null)
                 {
@@ -624,8 +652,12 @@ namespace Microsoft.PowerShell.GData
 
                 try
                 {
-                    ContactEntry _CreatedEntry = (ContactEntry)_ContactService.Insert(_FeedUri, _NewEntry);
-                    WriteObject(_CreatedEntry, true);
+                    ContactEntry _Entry = (ContactEntry)_ContactService.ContactsService.Insert(_FeedUri, _NewEntry);
+                    var _Token = _ContactService.ContactsService.QueryClientLoginToken();
+                    //FuglyFix for Google bugs
+                    _DgcGoogleContactsService.SetContactTitle(_Token,_Entry.SelfUri.ToString(),_Name);
+                    var _ContactEntry = _DgcGoogleContactsService.CreateContactModifidEntry(_Entry, _Name);
+                    WriteObject(_ContactEntry);
                 }
                 catch (Exception _Exception)
                 {

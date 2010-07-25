@@ -65,11 +65,11 @@
   -->
   <ItemGroup>
     <Compile Include="AssemblyInfoGData.cs" />
+    <Compile Include="GDataService.cs" />
     <Compile Include="GDataTypes.cs" />
     <Compile Include="GDataCalendar.cs" />
     <Compile Include="GDataDgc.cs" />
     <Compile Include="GDataMailSettings.cs" />
-    <Compile Include="GDataOU.cs" />
     <Compile Include="GDataProfile.cs" />
     <Compile Include="GdataResource.cs" />
     <Compile Include="snap-in.cs">

@@ -17,8 +17,9 @@ namespace Microsoft.PowerShell.GData
 {
     public class User
     {
-        #region New-GDataUserService
 
+        #region New-GDataUserService
+        /*
         [Cmdlet(VerbsCommon.New, "GDataUserService")]
         public class NewGDataUserService : Cmdlet
         {
@@ -72,7 +73,7 @@ namespace Microsoft.PowerShell.GData
 
 
         }
-
+        */
         #endregion New-GDataUserService
 
         #region Remove-GDatauser
@@ -86,12 +87,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public AppsService UserService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _UserService = value; }
             }
-            private AppsService _UserService;
+            private GDataTypes.GDataService _UserService;
 
             [Parameter(
             Mandatory = true
@@ -110,7 +111,7 @@ namespace Microsoft.PowerShell.GData
             {
                 try
                 {
-                    _UserService.DeleteUser(_ID);
+                    _UserService.AppsService.DeleteUser(_ID);
                     WriteObject(_ID);
                 }
                 catch (Exception _Exception)
@@ -132,15 +133,15 @@ namespace Microsoft.PowerShell.GData
             #region Parameters
 
             [Parameter(
-                      Mandatory = true
-                      )]
+            Mandatory = true
+            )]
             [ValidateNotNullOrEmpty]
-            public AppsService UserService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _UserService = value; }
             }
-            private AppsService _UserService;
+            private GDataTypes.GDataService _UserService;
 
             [Parameter(
             Mandatory = false
@@ -163,7 +164,7 @@ namespace Microsoft.PowerShell.GData
                 {
                     try
                     {
-                        var _Feed = _UserService.RetrieveAllUsers();
+                        var _Feed = _UserService.AppsService.RetrieveAllUsers();
                         var _GDataUserEntrys = _DgcGoogleAppsService.CreateUserEntrys(_Feed);
                         WriteObject(_GDataUserEntrys, true);
                     }
@@ -176,7 +177,7 @@ namespace Microsoft.PowerShell.GData
                 {
                     try
                     {
-                        var _UserEntry = _UserService.RetrieveUser(_ID);
+                        var _UserEntry = _UserService.AppsService.RetrieveUser(_ID);
 
                         var _GdataUserEntry = _DgcGoogleAppsService.CreateUserEntry(_UserEntry);
                         WriteObject(_GdataUserEntry);
@@ -206,12 +207,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public AppsService UserService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _UserService = value; }
             }
-            private AppsService _UserService;
+            private GDataTypes.GDataService _UserService;
 
             [Parameter(
             Mandatory = true
@@ -300,7 +301,7 @@ namespace Microsoft.PowerShell.GData
 
             protected override void ProcessRecord()
             {
-                var _Entry = _UserService.RetrieveUser(_ID);
+                var _Entry = _UserService.AppsService.RetrieveUser(_ID);
 
                 if (_FamilyName != null)
                 {
@@ -376,7 +377,7 @@ namespace Microsoft.PowerShell.GData
                         _Entry.Login.Suspended = _SuspendedBool;
                     }
                 
-                    var _UserEntry = _UserService.UpdateUser(_Entry);
+                    var _UserEntry = _UserService.AppsService.UpdateUser(_Entry);
                     var _DgcGoogleAppsService = new Dgc.GoogleAppService();
                     var _GdataUserEntry = _DgcGoogleAppsService.CreateUserEntry(_UserEntry);
                     WriteObject(_GdataUserEntry);
@@ -404,12 +405,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public AppsService UserService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _UserService = value; }
             }
-            private AppsService _UserService;
+            private GDataTypes.GDataService _UserService;
 
             [Parameter(
             Mandatory = true
@@ -461,7 +462,7 @@ namespace Microsoft.PowerShell.GData
             {
                 try
                 {
-                    var _UserEntry = _UserService.CreateUser(_ID, _GivenName, _FamilyName, _Password);
+                    var _UserEntry = _UserService.AppsService.CreateUser(_ID, _GivenName, _FamilyName, _Password);
                     var _DgcGoogleAppsService = new Dgc.GoogleAppService();
                     var _GdataUserEntry = _DgcGoogleAppsService.CreateUserEntry(_UserEntry);
                     WriteObject(_GdataUserEntry);
@@ -486,12 +487,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public AppsService UserService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _UserService = value; }
             }
-            private AppsService _UserService;
+            private GDataTypes.GDataService _UserService;
 
             [Parameter(
             Mandatory = false
@@ -518,7 +519,7 @@ namespace Microsoft.PowerShell.GData
             #endregion Parameters
 
             private string NextPage;
-            private string ParseXML;
+            private GDataTypes.ParseXML ParseXML;
             protected override void ProcessRecord()
             {
                 if (_ID == null)
@@ -531,9 +532,9 @@ namespace Microsoft.PowerShell.GData
                             //var _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService);
 
 
-                            string NextPage = "";
-                            var _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService, NextPage);
-                            var ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
+                            NextPage = "";
+                            var _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService.AppsService, NextPage);
+                            ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
                             var _UserAliasEntry = _DgcGoogleAppsService.CreateUserAliasEntry(_Xml);
 
                             while (NextPage != null)
@@ -553,7 +554,7 @@ namespace Microsoft.PowerShell.GData
                                 if (NextPage != null)
                                 {
 
-                                    _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService, NextPage);
+                                    _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService.AppsService, NextPage);
                                     ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
                                     _UserAliasEntry = _DgcGoogleAppsService.AppendUserAliasEntry(_Xml, _UserAliasEntry);
                                 }
@@ -564,7 +565,7 @@ namespace Microsoft.PowerShell.GData
                         }
                         else
                         {
-                            var _Feed = _UserService.RetrieveAllNicknames();
+                            var _Feed = _UserService.AppsService.RetrieveAllNicknames();
                             WriteObject(_Feed.Entries);
                         }
                     }
@@ -585,7 +586,7 @@ namespace Microsoft.PowerShell.GData
                                 throw new Exception("-ID must contain EmailDomain, user@domain.com");
                             }
                             var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                            var _Xml = _DgcGoogleAppsService.RetriveUserAlias(_ID, _UserService);
+                            var _Xml = _DgcGoogleAppsService.RetriveUserAlias(_ID, _UserService.AppsService);
 
                             var _UserAliasEntry = _DgcGoogleAppsService.CreateUserAliasEntry(_Xml);
 
@@ -601,7 +602,7 @@ namespace Microsoft.PowerShell.GData
                         }
                         else
                         {
-                            var _Feed = _UserService.RetrieveNicknames(_ID);
+                            var _Feed = _UserService.AppsService.RetrieveNicknames(_ID);
                             WriteObject(_Feed);
                         }
              
@@ -629,12 +630,12 @@ namespace Microsoft.PowerShell.GData
                       Mandatory = true
                       )]
             [ValidateNotNullOrEmpty]
-            public AppsService UserService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _UserService = value; }
             }
-            private AppsService _UserService;
+            private GDataTypes.GDataService _UserService;
 
             [Parameter(
             Mandatory = true
@@ -685,7 +686,7 @@ namespace Microsoft.PowerShell.GData
                             throw new Exception("-NickName must contain EmailDomain, user@domain.com");
                         }
                             var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                            var _Xml = _DgcGoogleAppsService.CreateUserAlias(_ID, _UserService, _NickName);
+                            var _Xml = _DgcGoogleAppsService.CreateUserAlias(_ID, _UserService.AppsService, _NickName);
                             var _UserAliasEntry = _DgcGoogleAppsService.CreateUserAliasEntry(_Xml);
 
 
@@ -693,7 +694,7 @@ namespace Microsoft.PowerShell.GData
                     }
                     else
                     {
-                        var _Entry = _UserService.CreateNickname(_ID, _NickName);
+                        var _Entry = _UserService.AppsService.CreateNickname(_ID, _NickName);
                         WriteObject(_Entry);
                     }
 
@@ -719,12 +720,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public AppsService UserService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _UserService = value; }
             }
-            private AppsService _UserService;
+            private GDataTypes.GDataService _UserService;
 
             [Parameter(
             Mandatory = true
@@ -764,7 +765,7 @@ namespace Microsoft.PowerShell.GData
                         }
 
                         var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                        var _Xml = _DgcGoogleAppsService.RemoveUserAlias(_UserService, _NickName);
+                        var _Xml = _DgcGoogleAppsService.RemoveUserAlias(_UserService.AppsService, _NickName);
 
 
                         WriteObject(_NickName);
@@ -772,7 +773,7 @@ namespace Microsoft.PowerShell.GData
                     }
                     else
                     {
-                        _UserService.DeleteNickname(_NickName);
+                        _UserService.AppsService.DeleteNickname(_NickName);
                         WriteObject(_NickName);
                     }
                 }

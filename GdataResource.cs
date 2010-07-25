@@ -18,7 +18,7 @@ namespace Microsoft.PowerShell.GData
     {
 
         #region New-GDataResourceService
-
+        /*
         [Cmdlet(VerbsCommon.New, "GDataResourceService")]
         public class NewGDataResourceService : Cmdlet
         {
@@ -70,9 +70,9 @@ namespace Microsoft.PowerShell.GData
 
 
         }
-
+        */
         #endregion New-GDataResourceService
-
+        
         #region New-GDataResource
 
         [Cmdlet(VerbsCommon.New, "GDataResource")]
@@ -84,12 +84,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public Dgc.GoogleResourceService.ResourceService ResourceService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _ResourceService = value; }
             }
-            private Dgc.GoogleResourceService.ResourceService _ResourceService;
+            private GDataTypes.GDataService _ResourceService;
 
             [Parameter(
             Mandatory = true
@@ -132,13 +132,14 @@ namespace Microsoft.PowerShell.GData
                 try
                 {
                     var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                    var _Xml = _DgcGoogleResourceService.NewResource(_ResourceService, _ID, _Type, _Description);
-
+                    var _Xml = _DgcGoogleResourceService.NewResource(_ResourceService.ResourceService, _ID, _Type, _Description);
+                    var _ResourceEntrys = _DgcGoogleResourceService.CreateResourceEntrys(_Xml, _ResourceService.ResourceService);
+                    /*
                     XmlDocument _XmlDoc = new XmlDocument();
                     _XmlDoc.InnerXml = _Xml;
                     XmlElement _Entry = _XmlDoc.DocumentElement;
-
-                    WriteObject(_Entry);
+                    */
+                    WriteObject(_ResourceEntrys,true);
                 }
                 catch (WebException _Exception)
                 {
@@ -160,12 +161,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public Dgc.GoogleResourceService.ResourceService ResourceService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _ResourceService = value; }
             }
-            private Dgc.GoogleResourceService.ResourceService _ResourceService;
+            private GDataTypes.GDataService _ResourceService;
 
             [Parameter(
             Mandatory = false
@@ -188,24 +189,26 @@ namespace Microsoft.PowerShell.GData
                     if (_ID != null)
                     {
                         var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                        var _Xml = _DgcGoogleResourceService.RetriveResource(_ResourceService, _ID);
-
+                        var _Xml = _DgcGoogleResourceService.RetriveResource(_ResourceService.ResourceService, _ID);
+                        var _ResourceEntrys = _DgcGoogleResourceService.CreateResourceEntrys(_Xml, _ResourceService.ResourceService);
+                        /*
                         XmlDocument _XmlDoc = new XmlDocument();
                         _XmlDoc.InnerXml = _Xml;
                         XmlElement _Entry = _XmlDoc.DocumentElement;
-
-                        WriteObject(_Entry);
+                        */
+                        WriteObject(_ResourceEntrys,true);
                     }
                     else
                     {
                         var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                        var _Xml = _DgcGoogleResourceService.RetriveAllResources(_ResourceService);
-
+                        var _Xml = _DgcGoogleResourceService.RetriveAllResources(_ResourceService.ResourceService);
+                        var _ResourceEntrys = _DgcGoogleResourceService.CreateResourceEntrys(_Xml, _ResourceService.ResourceService);
+                        /*
                         XmlDocument _XmlDoc = new XmlDocument();
                         _XmlDoc.InnerXml = _Xml;
                         XmlElement _Entry = _XmlDoc.DocumentElement;
-
-                        WriteObject(_Entry);
+                        */
+                        WriteObject(_ResourceEntrys,true);
                     }
                 }
                 catch (WebException _Exception)
@@ -228,12 +231,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public Dgc.GoogleResourceService.ResourceService ResourceService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _ResourceService = value; }
             }
-            private Dgc.GoogleResourceService.ResourceService _ResourceService;
+            private GDataTypes.GDataService _ResourceService;
 
             [Parameter(
             Mandatory = true
@@ -255,7 +258,7 @@ namespace Microsoft.PowerShell.GData
                 {
 
                     var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                    var _Xml = _DgcGoogleResourceService.RemoveResources(_ResourceService, _ID);
+                    var _Xml = _DgcGoogleResourceService.RemoveResources(_ResourceService.ResourceService, _ID);
 
                     WriteObject(_ID);
 
@@ -281,12 +284,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public Dgc.GoogleResourceService.ResourceService ResourceService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _ResourceService = value; }
             }
-            private Dgc.GoogleResourceService.ResourceService _ResourceService;
+            private GDataTypes.GDataService _ResourceService;
 
             [Parameter(
             Mandatory = true
@@ -329,13 +332,16 @@ namespace Microsoft.PowerShell.GData
                 try
                 {
                     var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                    var _Xml = _DgcGoogleResourceService.SetResource(_ResourceService, _ID, _Type, _Description);
+                    _DgcGoogleResourceService.SetResource(_ResourceService.ResourceService, _ID, _Type, _Description);
 
+                    var _Xml = _DgcGoogleResourceService.RetriveResource(_ResourceService.ResourceService, _ID);
+                    var _ResourceEntrys = _DgcGoogleResourceService.CreateResourceEntrys(_Xml, _ResourceService.ResourceService);
+                    /*
                     XmlDocument _XmlDoc = new XmlDocument();
                     _XmlDoc.InnerXml = _Xml;
                     XmlElement _Entry = _XmlDoc.DocumentElement;
-
-                    WriteObject(_Entry);
+                    */
+                    WriteObject(_ResourceEntrys);
                 }
                 catch (WebException _Exception)
                 {

@@ -90,6 +90,187 @@ namespace Microsoft.PowerShell.GData
 
             #endregion GetDomainFromAppService
 
+            #region CreateGroupEntrys
+
+            public GDataTypes.GDataGroupEntrys CreateGroupEntrys(AppsExtendedFeed GroupEntrys)
+            {
+
+                var GDataGroupEntrys = new GDataTypes.GDataGroupEntrys();
+                foreach (AppsExtendedEntry GroupEntry in GroupEntrys.Entries)
+                {
+                    var GDataGroupEntry = new GDataTypes.GDataGroupEntry();
+                    GDataGroupEntry.SelfUri = GroupEntry.SelfUri.ToString();
+                    foreach (var Setting in GroupEntry.Properties)
+                    {
+                        if (Setting.Name == "groupId")
+                        {
+                            GDataGroupEntry.GroupId = Setting.Value;
+                        }
+                        else if (Setting.Name == "groupName")
+                        {
+                            GDataGroupEntry.GroupName = Setting.Value;
+                        }
+                        else if (Setting.Name == "description")
+                        {
+                            GDataGroupEntry.Description = Setting.Value;
+                        }
+                        else if (Setting.Name == "emailPermission")
+                        {
+                            GDataGroupEntry.EmailPermission = Setting.Value;
+                        }
+
+                    }
+                    GDataGroupEntrys.Add(GDataGroupEntry);
+                }
+
+                return GDataGroupEntrys;
+            }
+
+            #endregion CreateGroupEntrys
+
+            #region CreateGroupEntry
+
+            public GDataTypes.GDataGroupEntry CreateGroupEntry(AppsExtendedEntry GroupEntry)
+            {
+                var GDataGroupEntry = new GDataTypes.GDataGroupEntry();
+                GDataGroupEntry.SelfUri = GroupEntry.SelfUri.ToString();
+                foreach (var Setting in GroupEntry.Properties)
+                {
+                    if (Setting.Name == "groupId")
+                    {
+                        GDataGroupEntry.GroupId = Setting.Value;
+                    }
+                    else if (Setting.Name == "groupName")
+                    {
+                        GDataGroupEntry.GroupName = Setting.Value;
+                    }
+                    else if (Setting.Name == "description")
+                    {
+                        GDataGroupEntry.Description = Setting.Value;
+                    }
+                    else if (Setting.Name == "emailPermission")
+                    {
+                        GDataGroupEntry.EmailPermission = Setting.Value;
+                    }
+
+                }
+                return GDataGroupEntry;
+            }
+
+            #endregion CreateGroupEntry
+
+            #region CreateGroupMemberEntrys
+
+            public GDataTypes.GDataGroupMemberEntrys CreateGroupMemberEntrys(AppsExtendedFeed GroupMemberEntrys)
+            {
+
+                var GDataGroupMemberEntrys = new GDataTypes.GDataGroupMemberEntrys();
+                foreach (AppsExtendedEntry GroupMemberEntry in GroupMemberEntrys.Entries)
+                {
+                    var GDataGroupMemberEntry = new GDataTypes.GDataGroupMemberEntry();
+                    foreach (var Setting in GroupMemberEntry.Properties)
+                    {
+                        if (Setting.Name == "memberId")
+                        {
+                            GDataGroupMemberEntry.MemberId = Setting.Value;
+                        }
+                        else if (Setting.Name == "memberType")
+                        {
+                            GDataGroupMemberEntry.MemberType = Setting.Value;
+                        }
+                        else if (Setting.Name == "directMember")
+                        {
+                            GDataGroupMemberEntry.DirectMember = Setting.Value;
+                        }
+                        
+                    }
+                    GDataGroupMemberEntrys.Add(GDataGroupMemberEntry);
+                }
+
+                return GDataGroupMemberEntrys;
+            }
+
+            #endregion CreateGroupMemberEntrys
+
+            #region CreateGroupMemberEntry
+
+            public GDataTypes.GDataGroupMemberEntry CreateGroupMemberEntry(AppsExtendedEntry GroupMemberEntry)
+            {
+                var GDataGroupMemberEntry = new GDataTypes.GDataGroupMemberEntry();
+                foreach (var Setting in GroupMemberEntry.Properties)
+                {
+                    if (Setting.Name == "memberId")
+                    {
+                        GDataGroupMemberEntry.MemberId = Setting.Value;
+                    }
+                    else if (Setting.Name == "memberType")
+                    {
+                        GDataGroupMemberEntry.MemberType = Setting.Value;
+                    }
+                    else if (Setting.Name == "directMember")
+                    {
+                        GDataGroupMemberEntry.DirectMember = Setting.Value;
+                    }
+
+                }
+
+                return GDataGroupMemberEntry;
+            }
+
+            #endregion CreateGroupMemberEntry
+
+            #region CreateGroupOwnerEntrys
+
+            public GDataTypes.GDataGroupOwnerEntrys CreateGroupOwnerEntrys(AppsExtendedFeed GroupOwnerEntrys)
+            {
+
+                var GDataGroupOwnerEntrys = new GDataTypes.GDataGroupOwnerEntrys();
+                foreach (AppsExtendedEntry GroupOwnerEntry in GroupOwnerEntrys.Entries)
+                {
+                    var GDataGroupOwnerEntry = new GDataTypes.GDataGroupOwnerEntry();
+                    foreach (var Setting in GroupOwnerEntry.Properties)
+                    {
+                        if (Setting.Name == "email")
+                        {
+                            GDataGroupOwnerEntry.MemberId = Setting.Value;
+                        }
+                        else if (Setting.Name == "type")
+                        {
+                            GDataGroupOwnerEntry.MemberType = Setting.Value;
+                        }
+
+                    }
+                    GDataGroupOwnerEntrys.Add(GDataGroupOwnerEntry);
+                }
+
+                return GDataGroupOwnerEntrys;
+            }
+
+            #endregion CreateGroupOwnerEntrys
+
+            #region CreateGroupOwnerEntry
+
+            public GDataTypes.GDataGroupOwnerEntry CreateGroupOwnerEntry(AppsExtendedEntry GroupOwnerEntry)
+            {
+                var GDataGroupOwnerEntry = new GDataTypes.GDataGroupOwnerEntry();
+                foreach (var Setting in GroupOwnerEntry.Properties)
+                {
+                    if (Setting.Name == "email")
+                    {
+                        GDataGroupOwnerEntry.MemberId = Setting.Value;
+                    }
+                    else if (Setting.Name == "type")
+                    {
+                        GDataGroupOwnerEntry.MemberType = Setting.Value;
+                    }
+
+                }
+
+                return GDataGroupOwnerEntry;
+            }
+
+            #endregion CreateGroupOwnerEntry
+
             #region CreateSenderAddressEntry
 
             public GDataTypes.GDataSenderAddress CreateSenderAddressEntry(GoogleMailSettingsEntry MailSettingsEntry)
@@ -359,7 +540,7 @@ namespace Microsoft.PowerShell.GData
 
                 WebRequest WebRequest = WebRequest.Create(uri);
                 WebRequest.Method = "GET";
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
 
                 WebResponse WebResponse = WebRequest.GetResponse();
@@ -408,12 +589,12 @@ namespace Microsoft.PowerShell.GData
                 WebRequest WebRequest = WebRequest.Create(uri);
 
                 WebRequest.Method = "POST";
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
 
                 string Post = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:apps='http://schemas.google.com/apps/2006'><apps:property name=\"aliasEmail\" value=\"" + UserAlias + "\" /><apps:property name=\"userEmail\" value=\"" + ID + "@" + Domain + "\" /></atom:entry>";
 
-                byte[] Bytes = Encoding.ASCII.GetBytes(Post);
+                byte[] Bytes = Encoding.UTF8.GetBytes(Post);
                 Stream OS = null;
                 WebRequest.ContentLength = Bytes.Length;   
                 OS = WebRequest.GetRequestStream();
@@ -488,12 +669,12 @@ namespace Microsoft.PowerShell.GData
                 WebRequest WebRequest = WebRequest.Create(uri);
 
                 WebRequest.Method = "DELETE";
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
 
                 //string Post = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:apps='http://schemas.google.com/apps/2006'><apps:property name=\"aliasEmail\" value=\"" + UserAlias + "\" /><apps:property name=\"userEmail\" value=\"" + ID + "@" + Domain + "\" /></atom:entry>";
                 string Post = "";
-                byte[] Bytes = Encoding.ASCII.GetBytes(Post);
+                byte[] Bytes = Encoding.UTF8.GetBytes(Post);
                 Stream OS = null;
                 WebRequest.ContentLength = Bytes.Length;
                 OS = WebRequest.GetRequestStream();
@@ -531,7 +712,7 @@ namespace Microsoft.PowerShell.GData
                 WebRequest WebRequest = WebRequest.Create(uri);
 
                 WebRequest.Method = "GET";
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
 
                 WebResponse WebResponse = WebRequest.GetResponse();
@@ -570,7 +751,7 @@ namespace Microsoft.PowerShell.GData
                 WebRequest WebRequest = WebRequest.Create(uri);
 
                 WebRequest.Method = "GET";
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
 
                 WebResponse WebResponse = WebRequest.GetResponse();
@@ -605,7 +786,7 @@ namespace Microsoft.PowerShell.GData
 
                 WebRequest WebRequest = WebRequest.Create(uri);
                 WebRequest.Method = "GET";
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
 
                 WebResponse WebResponse = WebRequest.GetResponse();
@@ -636,7 +817,7 @@ namespace Microsoft.PowerShell.GData
 
                 WebRequest WebRequest = WebRequest.Create(uri);
                 WebRequest.Method = "GET";
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
 
                 WebResponse WebResponse = WebRequest.GetResponse();
@@ -663,6 +844,7 @@ namespace Microsoft.PowerShell.GData
 
         public class GoogleContactsService
         {
+            #region GetDomain
             public string GetDomain(ContactsService ContactService)
             {
 
@@ -672,6 +854,264 @@ namespace Microsoft.PowerShell.GData
 
                 return Domain;
             }
+            #endregion GetDomain
+
+            #region SetContactTitle
+            private string EditUri;
+            private string OldTitle;
+            public string SetContactTitle(string Token, string SelfUri, string Title)
+            {
+                /*
+                var DGCGoogleAppsService = new Dgc.GoogleAppService();
+                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
+                */
+                
+                //var Domain = ResourceService.Domain;
+
+                
+                var Xml = GetContact(Token, SelfUri);
+
+                var ParedXml = new GDataTypes.ParseXML(Xml);
+                if(Xml.Contains("<title type='text'></title>"))
+                {
+
+                }
+                foreach (var Entry in ParedXml.ListFormat)
+                {
+                    if (Entry.name == "{http://www.w3.org/2005/Atom}link")
+                    {
+                        foreach (var Attribute in Entry.at)
+                        {
+                            if (Attribute.Value == "edit")
+                            {
+                                EditUri = Attribute.NextAttribute.NextAttribute.Value;
+                            }
+                        }
+                    }
+                    if (Entry.name == "{http://www.w3.org/2005/Atom}title")
+                    {
+                        if (Entry.value != null)
+                        {
+                            OldTitle = "<title type='text'>" + Entry.value + "</title>";
+                        }
+                        else
+                        {
+                            OldTitle = "<title type='text'></title>";
+                        }
+                    }
+                }
+
+                var uri = new Uri(EditUri);
+
+                var NewXml = Xml.Replace(OldTitle, "<title type='text'>" + Title + "</title>");
+
+                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                
+                WebRequest.Method = "PUT";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
+                byte[] Bytes = Encoding.UTF8.GetBytes(NewXml);
+                Stream OS = null;
+                WebRequest.ContentLength = Bytes.Length;
+                OS = WebRequest.GetRequestStream();
+                OS.Write(Bytes, 0, Bytes.Length);
+
+                OS.Close();
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+
+                return _Result;
+            }
+
+            #endregion SetContact
+
+            #region GetContact
+
+            public string GetContact(string Token, string SelfUri)
+            {
+                /*
+                var DGCGoogleAppsService = new Dgc.GoogleAppService();
+                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
+                */
+                
+                //var Domain = ResourceService.Domain;
+
+                var uri = new Uri(SelfUri);
+
+                // parameters: name1=value1&name2=value2
+
+                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                WebRequest.Method = "Get";
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
+
+                WebResponse WebResponse = WebRequest.GetResponse();
+
+
+                if (WebResponse == null)
+                {
+                    throw new Exception("WebResponse is null");
+                }
+                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+
+                var _Result = SR.ReadToEnd().Trim();
+
+                return _Result;
+            }
+
+            #endregion GetContact
+
+            #region CreateContactEntry
+
+            public GDataTypes.GDataContactEntry CreateContactEntry(ContactEntry ContactEntry)
+            {
+                var GDataContactEntry = new GDataTypes.GDataContactEntry();
+                GDataContactEntry.Name = ContactEntry.Title.Text;
+                foreach (var EmailEntry in ContactEntry.Emails)
+                {
+                    if (EmailEntry.Work == true)
+                    {
+                        GDataContactEntry.Email = EmailEntry.Address;
+                    }
+                }
+                foreach (var PhoneNumberEntry in ContactEntry.Phonenumbers)
+                {
+                    if (PhoneNumberEntry.Work == true)
+                    {
+                        GDataContactEntry.PhoneNumber = PhoneNumberEntry.Value;
+                    }
+                }
+                foreach (var PostaAddressEntry in ContactEntry.PostalAddresses)
+                {
+                    if (PostaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                    {
+                        GDataContactEntry.PostalAddress = PostaAddressEntry.FormattedAddress;
+                        GDataContactEntry.City = PostaAddressEntry.City;
+                    }
+                }
+                GDataContactEntry.SelfUri = ContactEntry.SelfUri.ToString();
+                return GDataContactEntry;
+            }
+
+            #endregion CreateContactEntry
+
+            #region CreateContactModifidEntry
+
+            public GDataTypes.GDataContactEntry CreateContactModifidEntry(ContactEntry ContactEntry, string Name)
+            {
+                var GDataContactEntry = new GDataTypes.GDataContactEntry();
+                GDataContactEntry.Name = Name;
+                foreach (var EmailEntry in ContactEntry.Emails)
+                {
+                    if (EmailEntry.Work == true)
+                    {
+                        GDataContactEntry.Email = EmailEntry.Address;
+                    }
+                }
+                foreach (var PhoneNumberEntry in ContactEntry.Phonenumbers)
+                {
+                    if (PhoneNumberEntry.Work == true)
+                    {
+                        GDataContactEntry.PhoneNumber = PhoneNumberEntry.Value;
+                    }
+                }
+                foreach (var PostaAddressEntry in ContactEntry.PostalAddresses)
+                {
+                    if (PostaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                    {
+                        GDataContactEntry.PostalAddress = PostaAddressEntry.FormattedAddress;
+                        GDataContactEntry.City = PostaAddressEntry.City;
+                    }
+                }
+                GDataContactEntry.SelfUri = ContactEntry.SelfUri.ToString();
+                return GDataContactEntry;
+            }
+
+            #endregion CreateContactModifidEntry
+
+            #region CreateContactEntrys
+
+            public GDataTypes.GDataContactEntrys CreateContactEntrys(ContactsFeed ContactEntrys)
+            {
+                var GDataContactEntrys = new GDataTypes.GDataContactEntrys();
+
+                foreach (ContactEntry ContactEntry in ContactEntrys.Entries)
+                {
+                    var GDataContactEntry = new GDataTypes.GDataContactEntry();
+                    GDataContactEntry.Name = ContactEntry.Title.Text;
+                    foreach (var EmailEntry in ContactEntry.Emails)
+                    {
+                        if (EmailEntry.Work == true)
+                        {
+                            GDataContactEntry.Email = EmailEntry.Address;
+                        }
+                    }
+                    foreach (var PhoneNumberEntry in ContactEntry.Phonenumbers)
+                    {
+                        if (PhoneNumberEntry.Work == true)
+                        {
+                            GDataContactEntry.PhoneNumber = PhoneNumberEntry.Value;
+                        }
+                    }
+                    foreach (var PostaAddressEntry in ContactEntry.PostalAddresses)
+                    {
+                        if (PostaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                        {
+                            GDataContactEntry.PostalAddress = PostaAddressEntry.FormattedAddress;
+                            GDataContactEntry.City = PostaAddressEntry.City;
+                        }
+                    }
+                    GDataContactEntry.SelfUri = ContactEntry.SelfUri.ToString();
+                    GDataContactEntrys.Add(GDataContactEntry);
+                }
+                return GDataContactEntrys;
+            }
+            #endregion CreateContactEntrys
+
+            #region AppendContactEntrys
+
+            public GDataTypes.GDataContactEntrys AppendContactEntrys(ContactEntry ContactEntry, GDataTypes.GDataContactEntrys GDataContactEntrys)
+            {
+                    var GDataContactEntry = new GDataTypes.GDataContactEntry();
+
+                    GDataContactEntry.Name = ContactEntry.Title.Text;
+                    foreach (var EmailEntry in ContactEntry.Emails)
+                    {
+                        if (EmailEntry.Work == true)
+                        {
+                            GDataContactEntry.Email = EmailEntry.Address;
+                        }
+                    }
+                    foreach (var PhoneNumberEntry in ContactEntry.Phonenumbers)
+                    {
+                        if (PhoneNumberEntry.Work == true)
+                        {
+                            GDataContactEntry.PhoneNumber = PhoneNumberEntry.Value;
+                        }
+                    }
+                    foreach (var PostaAddressEntry in ContactEntry.PostalAddresses)
+                    {
+                        if (PostaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                        {
+                            GDataContactEntry.PostalAddress = PostaAddressEntry.FormattedAddress;
+                            GDataContactEntry.City = PostaAddressEntry.City;
+                        }
+                    }
+                    GDataContactEntry.SelfUri = ContactEntry.SelfUri.ToString();
+                    GDataContactEntrys.Add(GDataContactEntry);
+
+                return GDataContactEntrys;
+            }
+            #endregion AppendContactEntrys
         }
 
         #endregion GoogleContactsService
@@ -707,7 +1147,7 @@ namespace Microsoft.PowerShell.GData
 
             #region GetAuthToken
 
-            public ResourceService GetAuthToken(string AdminUser, string AdminPassword)
+            public GDataTypes.ResourceService GetAuthToken(string AdminUser, string AdminPassword)
             {
                 var uri = new Uri("https://www.google.com/accounts/ClientLogin");
 
@@ -717,7 +1157,7 @@ namespace Microsoft.PowerShell.GData
                 WebRequest.ContentType = "application/x-www-form-urlencoded";
                 WebRequest.Method = "POST";
 
-                byte[] Bytes = Encoding.ASCII.GetBytes("&Email=" + AdminUser + "&Passwd=" + AdminPassword.Replace("@", "%40") + "&accountType=HOSTED_OR_GOOGLE&service=apps&source=companyName-applicationName-versionID");
+                byte[] Bytes = Encoding.UTF8.GetBytes("&Email=" + AdminUser + "&Passwd=" + AdminPassword.Replace("@", "%40") + "&accountType=HOSTED_OR_GOOGLE&service=apps&source=companyName-applicationName-versionID");
                 Stream OS = null;
 
                 WebRequest.ContentLength = Bytes.Length;   //Count bytes to send
@@ -751,7 +1191,7 @@ namespace Microsoft.PowerShell.GData
                 var Domain = temp[1];
 
                 
-                var _Entry = new ResourceService
+                var _Entry = new GDataTypes.ResourceService
                 {
                     AdminUser = AdminUser,
                     Token = Token,
@@ -765,9 +1205,142 @@ namespace Microsoft.PowerShell.GData
 
             #endregion GetAuthToken
 
+            #region CreateResourceEntrys
+
+            public GDataTypes.ResourceEntrys CreateResourceEntrys(string Xml, GDataTypes.ResourceService ResourceService)
+            {
+                var ParesdXml = new GDataTypes.ParseXML(Xml);
+
+
+                var GDataResourceEntrys = new GDataTypes.ResourceEntrys();
+                var GdataSingelResourceEntry = new GDataTypes.ResourceEntry();
+                foreach (var SEntry in ParesdXml.ListFormat)
+                {
+                    foreach (var Attribute in SEntry.at)
+                    {
+
+                        if (Attribute.Value == "resourceId" || Attribute.Value == "resourceCommonName" || Attribute.Value == "resourceEmail" || Attribute.Value == "resourceDescription" || Attribute.Value == "resourceType")
+                        {
+
+                            if (Attribute.Value == "resourceId")
+                            {
+                                if (Attribute.NextAttribute.Value != null)
+                                {
+                                    GdataSingelResourceEntry.ResourceId = Attribute.NextAttribute.Value;
+                                }
+                                else
+                                {
+                                    GdataSingelResourceEntry.ResourceId = "_EMPTY_";
+                                }
+                            }
+                            if (Attribute.Value == "resourceCommonName")
+                            {
+                                if (Attribute.NextAttribute.Value != null)
+                                {
+                                    GdataSingelResourceEntry.CommonName = Attribute.NextAttribute.Value;
+                                }
+                                else
+                                {
+                                    GdataSingelResourceEntry.CommonName = "_EMPTY_";
+                                }
+                            }
+                            if (Attribute.Value == "resourceEmail")
+                            {
+                                if (Attribute.NextAttribute.Value != null)
+                                {
+                                    GdataSingelResourceEntry.Email = Attribute.NextAttribute.Value;
+                                }
+                                else
+                                {
+                                    GdataSingelResourceEntry.Email = "_EMPTY_";
+                                }
+                            }
+                            if (Attribute.Value == "resourceDescription")
+                            {
+                                if (Attribute.NextAttribute.Value != null)
+                                {
+                                    GdataSingelResourceEntry.Description = Attribute.NextAttribute.Value;
+                                }
+                                else
+                                {
+                                    GdataSingelResourceEntry.Description = "_EMPTY_";
+                                }
+                            }
+                            if (Attribute.Value == "resourceType")
+                            {
+                                if (Attribute.NextAttribute.Value != null)
+                                {
+                                    GdataSingelResourceEntry.Type = Attribute.NextAttribute.Value;
+                                }
+                                else
+                                {
+                                    GdataSingelResourceEntry.Type = "_EMPTY_";
+                                }
+                            }
+                        }
+
+                    }
+                    //if (GdataSingelResourceEntry.ResourceId != null && GdataSingelResourceEntry.CommonName != null && GdataSingelResourceEntry.Description != null && GdataSingelResourceEntry.Email != null && GdataSingelResourceEntry.Type != null)
+                    //{
+                    //    GDataResourceEntrys.Add(GdataSingelResourceEntry);
+                    //}
+
+                    var GdataResourceEntry = new GDataTypes.ResourceEntry();
+                    foreach (var SubEntry in SEntry.sub)
+                    {
+                        foreach (var Attribute in SubEntry.at)
+                        {
+
+                            if (Attribute.Value == "resourceId" || Attribute.Value == "resourceCommonName" || Attribute.Value == "resourceEmail" || Attribute.Value == "resourceDescription" || Attribute.Value == "resourceType")
+                            {
+
+                                if (Attribute.Value == "resourceId")
+                                {
+
+                                    GdataResourceEntry.ResourceId = Attribute.NextAttribute.Value;
+                                }
+                                if (Attribute.Value == "resourceCommonName")
+                                {
+
+                                    GdataResourceEntry.CommonName = Attribute.NextAttribute.Value;
+                                }
+                                if (Attribute.Value == "resourceEmail")
+                                {
+
+                                    GdataResourceEntry.Email = Attribute.NextAttribute.Value;
+                                }
+                                if (Attribute.Value == "resourceDescription")
+                                {
+
+                                    GdataResourceEntry.Description = Attribute.NextAttribute.Value;
+                                }
+                                if (Attribute.Value == "resourceType")
+                                {
+
+                                    GdataResourceEntry.Type = Attribute.NextAttribute.Value;
+                                }
+
+                            }
+
+                        }
+                    }
+                    if (GdataResourceEntry.ResourceId != null)
+                    {
+                        GDataResourceEntrys.Add(GdataResourceEntry);
+                    }
+                }
+                if (GdataSingelResourceEntry.ResourceId != null)
+                {
+                    GDataResourceEntrys.Add(GdataSingelResourceEntry);
+                }
+                return GDataResourceEntrys;
+            }
+
+            #endregion CreateResourceEntrys
+
             #region NewResource
 
-            public string NewResource(ResourceService ResourceService, string ResourceId, string ResourceType, string ResurceDescription)
+            public string NewResource(GDataTypes.ResourceService ResourceService, string ResourceId, string ResourceType, string ResurceDescription)
             {
                 /*
                 var DGCGoogleAppsService = new Dgc.GoogleAppService();
@@ -781,10 +1354,10 @@ namespace Microsoft.PowerShell.GData
                 // parameters: name1=value1&name2=value2    
                 WebRequest WebRequest = WebRequest.Create(uri);
 
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Method = "POST";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
-                byte[] Bytes = Encoding.ASCII.GetBytes("<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:apps='http://schemas.google.com/apps/2006'><apps:property name='resourceId' value='" + ResourceId + "'/><apps:property name='resourceCommonName' value='" + ResourceId + "'/><apps:property name='resourceDescription' value='" + ResurceDescription + "'/><apps:property name='resourceType' value='" + ResourceType + "'/></atom:entry>");
+                byte[] Bytes = Encoding.UTF8.GetBytes("<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:apps='http://schemas.google.com/apps/2006'><apps:property name='resourceId' value='" + ResourceId + "'/><apps:property name='resourceCommonName' value='" + ResourceId + "'/><apps:property name='resourceDescription' value='" + ResurceDescription + "'/><apps:property name='resourceType' value='" + ResourceType + "'/></atom:entry>");
                 Stream OS = null;
                 WebRequest.ContentLength = Bytes.Length;   
                 OS = WebRequest.GetRequestStream();
@@ -810,7 +1383,7 @@ namespace Microsoft.PowerShell.GData
 
             #region RetriveResource
 
-            public string RetriveResource(ResourceService ResourceService, string ResourceId)
+            public string RetriveResource(GDataTypes.ResourceService ResourceService, string ResourceId)
             {
                 /*
                 var DGCGoogleAppsService = new Dgc.GoogleAppService();
@@ -824,7 +1397,7 @@ namespace Microsoft.PowerShell.GData
                 // parameters: name1=value1&name2=value2    
                 WebRequest WebRequest = WebRequest.Create(uri);
 
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Method = "GET";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
              
@@ -847,7 +1420,7 @@ namespace Microsoft.PowerShell.GData
 
             #region RetriveResource
 
-            public string RetriveAllResources(ResourceService ResourceService)
+            public string RetriveAllResources(GDataTypes.ResourceService ResourceService)
             {
                 /*
                 var DGCGoogleAppsService = new Dgc.GoogleAppService();
@@ -861,7 +1434,7 @@ namespace Microsoft.PowerShell.GData
                 // parameters: name1=value1&name2=value2    
                 WebRequest WebRequest = WebRequest.Create(uri);
 
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Method = "GET";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
 
@@ -884,7 +1457,7 @@ namespace Microsoft.PowerShell.GData
 
             #region RemoveResource
 
-            public string RemoveResources(ResourceService ResourceService, string ResourceID)
+            public string RemoveResources(GDataTypes.ResourceService ResourceService, string ResourceID)
             {
                 /*
                 var DGCGoogleAppsService = new Dgc.GoogleAppService();
@@ -898,7 +1471,7 @@ namespace Microsoft.PowerShell.GData
                 // parameters: name1=value1&name2=value2    
                 WebRequest WebRequest = WebRequest.Create(uri);
 
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Method = "DELETE";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
 
@@ -920,7 +1493,7 @@ namespace Microsoft.PowerShell.GData
 
             #region SetResource
 
-            public string SetResource(ResourceService ResourceService, string ResourceID, string ResourceDescription, string ResourceType)
+            public string SetResource(GDataTypes.ResourceService ResourceService, string ResourceID, string ResourceDescription, string ResourceType)
             {
                 /*
                 var DGCGoogleAppsService = new Dgc.GoogleAppService();
@@ -934,10 +1507,10 @@ namespace Microsoft.PowerShell.GData
                 // parameters: name1=value1&name2=value2
 
                 WebRequest WebRequest = WebRequest.Create(uri);
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Method = "PUT";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
-                byte[] Bytes = Encoding.ASCII.GetBytes("<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceCommonName' value='" + ResourceID + "'/><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceDescription' value='" + ResourceDescription + "'/><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceType' value='" + ResourceType + "'/></atom:entry>");
+                byte[] Bytes = Encoding.UTF8.GetBytes("<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceCommonName' value='" + ResourceID + "'/><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceDescription' value='" + ResourceDescription + "'/><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceType' value='" + ResourceType + "'/></atom:entry>");
                 Stream OS = null;
                 WebRequest.ContentLength = Bytes.Length;
                 OS = WebRequest.GetRequestStream();
@@ -980,7 +1553,7 @@ namespace Microsoft.PowerShell.GData
                 WebRequest.ContentType = "application/x-www-form-urlencoded";
                 WebRequest.Method = "POST";
                 WebRequest.Headers.Add("GData-Version: 3.0");
-                byte[] Bytes = Encoding.ASCII.GetBytes("&Email=" + AdminUser.Replace("@", "%40") + "&Passwd=" + AdminPassword + "&accountType=HOSTED&service=cp&source=dgctest.com-GDataCmdLet-v0508");
+                byte[] Bytes = Encoding.UTF8.GetBytes("&Email=" + AdminUser.Replace("@", "%40") + "&Passwd=" + AdminPassword + "&accountType=HOSTED&service=cp&source=dgctest.com-GDataCmdLet-v0508");
                 Stream OS = null;
 
                 WebRequest.ContentLength = Bytes.Length;   
@@ -1051,7 +1624,7 @@ namespace Microsoft.PowerShell.GData
                         {
                             if (_Entry.name == "{http://www.w3.org/2005/Atom}id")
                             {
-                                _ProfileEntry.User = _Entry.value.Replace(_ProfileLink,"");
+                                _ProfileEntry.UserName = _Entry.value.Replace(_ProfileLink,"");
                             }
                             if (_Entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
                             {
@@ -1123,7 +1696,7 @@ namespace Microsoft.PowerShell.GData
                         {
                             if (_Entry.name == "{http://www.w3.org/2005/Atom}id")
                             {
-                                _ProfileEntry.User = _Entry.value.Replace(_ProfileLink, "");
+                                _ProfileEntry.UserName = _Entry.value.Replace(_ProfileLink, "");
                             }
                             if (_Entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
                             {
@@ -1182,13 +1755,13 @@ namespace Microsoft.PowerShell.GData
                 var _ProfileEntry = new GDataTypes.ProfileEntry();
 
                 _ProfileEntry.Domain = _ProfileService.Domain;
-                
+                string _ProfileLink = "http://www.google.com/m8/feeds/profiles/domain/" + _ProfileService.Domain + "/full/";
 
                 foreach (var _Entry in _ParesdXml.ListFormat)
                 {
                     if (_Entry.name == "{http://www.w3.org/2005/Atom}id")
                     {
-                        _ProfileEntry.User = _Entry.value;
+                        _ProfileEntry.UserName = _Entry.value.Replace(_ProfileLink, "");
                     }
                     if (_Entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
                     {
@@ -1252,7 +1825,7 @@ namespace Microsoft.PowerShell.GData
 
 
                 WebRequest WebRequest = WebRequest.Create(uri);
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Method = "Get";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ProfileService.Token);
                 WebRequest.Headers.Add("GData-Version: 3.0");
@@ -1286,7 +1859,7 @@ namespace Microsoft.PowerShell.GData
 
 
                 WebRequest WebRequest = WebRequest.Create(uri);
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Method = "Get";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ProfileService.Token);
                 WebRequest.Headers.Add("GData-Version: 3.0");
@@ -1468,14 +2041,14 @@ namespace Microsoft.PowerShell.GData
                 // parameters: name1=value1&name2=value2
 
                 WebRequest WebRequest = WebRequest.Create(uri);
-                WebRequest.ContentType = "application/atom+xml";
+                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 WebRequest.Method = "PUT";
                 WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ProfileService.Token);
                 WebRequest.Headers.Add("GData-Version: 3.0");
 
                 var Post = NewXml;
 
-                byte[] Bytes = Encoding.ASCII.GetBytes(Post);
+                byte[] Bytes = Encoding.UTF8.GetBytes(Post);
                 Stream OS = null;
                 WebRequest.ContentLength = Bytes.Length;
                 OS = WebRequest.GetRequestStream();

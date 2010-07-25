@@ -43,7 +43,7 @@ namespace Microsoft.PowerShell.GData
         #endregion Pop3ActionDelete
         
         #region New-GDataGDataMailSettingService
-
+        /*
         [Cmdlet(VerbsCommon.New, "GDataMailSettingService")]
         public class NewGDatMmailSettingService : Cmdlet
         {
@@ -95,7 +95,7 @@ namespace Microsoft.PowerShell.GData
 
 
         }
-
+        */
         #endregion New-GDataGDataMailSettingService
 
         #region Set-GDataGDataMailSetting
@@ -111,12 +111,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public GoogleMailSettingsService MailSettingsService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _MailSettingsService = value; }
             }
-            private GoogleMailSettingsService _MailSettingsService;
+            private GDataTypes.GDataService _MailSettingsService;
 
             [Parameter(
             Mandatory = true
@@ -236,7 +236,7 @@ namespace Microsoft.PowerShell.GData
 
                     try
                     {
-                        var _Entry = _MailSettingsService.CreateSendAs(_ID, _Name, _SenderAdress, _SenderAdress, _StringIsDefault);
+                        var _Entry = _MailSettingsService.GoogleMailSettingsService.CreateSendAs(_ID, _Name, _SenderAdress, _SenderAdress, _StringIsDefault);
                         var _SenderAddressEntry = _DgcGoogleAppsService.CreateSenderAddressEntry(_Entry);
                         WriteObject(_SenderAddressEntry);
                     }
@@ -253,7 +253,7 @@ namespace Microsoft.PowerShell.GData
                 {
                     try
                     {
-                        var _Entry = _MailSettingsService.UpdatePop(_ID, "True", "ALL_MAIL", _Pop3Action);
+                        var _Entry = _MailSettingsService.GoogleMailSettingsService.UpdatePop(_ID, "True", "ALL_MAIL", _Pop3Action);
                         var _Pop3Entry = _DgcGoogleAppsService.CreatePop3Entry(_Entry);
                         WriteObject(_Pop3Entry);
                     }
@@ -266,7 +266,7 @@ namespace Microsoft.PowerShell.GData
                 {
                     try
                     {
-                        var _Entry = _MailSettingsService.UpdatePop(_ID, "False", "ALL_MAIL", _Pop3Action);
+                        var _Entry = _MailSettingsService.GoogleMailSettingsService.UpdatePop(_ID, "False", "ALL_MAIL", _Pop3Action);
                         var _Pop3Entry = _DgcGoogleAppsService.CreatePop3Entry(_Entry);
                         WriteObject(_Pop3Entry);
                     }
@@ -279,7 +279,7 @@ namespace Microsoft.PowerShell.GData
                 {
                     try
                     {
-                        var _Entry = _MailSettingsService.UpdateImap(_ID, "True");
+                        var _Entry = _MailSettingsService.GoogleMailSettingsService.UpdateImap(_ID, "True");
                         var _ImapEntry = _DgcGoogleAppsService.CreateIMapEntry(_Entry);
                         WriteObject(_ImapEntry);
                     }
@@ -292,7 +292,7 @@ namespace Microsoft.PowerShell.GData
                 {
                     try
                     {
-                        var _Entry = _MailSettingsService.UpdateImap(_ID, "False");
+                        var _Entry = _MailSettingsService.GoogleMailSettingsService.UpdateImap(_ID, "False");
                         var _ImapEntry = _DgcGoogleAppsService.CreateIMapEntry(_Entry);
                         WriteObject(_ImapEntry);
                     }

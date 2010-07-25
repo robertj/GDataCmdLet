@@ -18,7 +18,7 @@ namespace Microsoft.PowerShell.GData
     {
 
         #region New-GDataProfileService
-
+        /*
         [Cmdlet(VerbsCommon.New, "GDataProfileService")]
         public class NewGDataProfileService : Cmdlet
         {
@@ -70,7 +70,7 @@ namespace Microsoft.PowerShell.GData
 
 
         }
-
+        */
         #endregion New-GDataProfileService
 
         #region Get-GDataProfile
@@ -84,12 +84,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public GDataTypes.ProfileService ProfileService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _ProfileService = value; }
             }
-            private GDataTypes.ProfileService _ProfileService;
+            private GDataTypes.GDataService _ProfileService;
 
             [Parameter(
             Mandatory = false
@@ -114,9 +114,9 @@ namespace Microsoft.PowerShell.GData
                     if (_ID != null)
                     {
                         var _DgcGoogleProfileService = new Dgc.GoogleProfileService();
-                        var _Xml = _DgcGoogleProfileService.GetProfile(_ProfileService, _ID);
+                        var _Xml = _DgcGoogleProfileService.GetProfile(_ProfileService.ProfileService, _ID);
 
-                        var _ProfileEntry = _DgcGoogleProfileService.CreateProfileEntry(_Xml, _ID, _ProfileService);
+                        var _ProfileEntry = _DgcGoogleProfileService.CreateProfileEntry(_Xml, _ID, _ProfileService.ProfileService);
                         WriteObject(_ProfileEntry);
 
                     }
@@ -127,9 +127,10 @@ namespace Microsoft.PowerShell.GData
 
 
                         NextPage = "";
-                        var _Xml = _DgcGoogleProfileService.GetProfiles(_ProfileService, NextPage);
+                        var _Xml = _DgcGoogleProfileService.GetProfiles(_ProfileService.ProfileService, NextPage);
+
                         var ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
-                        var _ProfileEntrys = _DgcGoogleProfileService.CreateProfileEntrys(_Xml, _ProfileService);
+                        var _ProfileEntrys = _DgcGoogleProfileService.CreateProfileEntrys(_Xml, _ProfileService.ProfileService);
 
                         while (NextPage != null)
                         {
@@ -148,9 +149,9 @@ namespace Microsoft.PowerShell.GData
                             if (NextPage != null)
                             {
 
-                                _Xml = _DgcGoogleProfileService.GetProfiles(_ProfileService, NextPage);
+                                _Xml = _DgcGoogleProfileService.GetProfiles(_ProfileService.ProfileService, NextPage);
                                 ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
-                                _ProfileEntrys = _DgcGoogleProfileService.AppendProfileEntrys(_Xml, _ProfileService, _ProfileEntrys);
+                                _ProfileEntrys = _DgcGoogleProfileService.AppendProfileEntrys(_Xml, _ProfileService.ProfileService, _ProfileEntrys);
                             }
                         }
 
@@ -228,12 +229,12 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public GDataTypes.ProfileService ProfileService
+            public GDataTypes.GDataService Service
             {
                 get { return null; }
                 set { _ProfileService = value; }
             }
-            private GDataTypes.ProfileService _ProfileService;
+            private GDataTypes.GDataService _ProfileService;
 
             [Parameter(
             Mandatory = true
@@ -322,9 +323,9 @@ namespace Microsoft.PowerShell.GData
 
                     
                     var _DgcGoogleProfileService = new Dgc.GoogleProfileService();
-                    var _Xml = _DgcGoogleProfileService.SetProfile(_ProfileService, _ID, _PostalAddress, _PhoneNumber, _MobilePhoneNumber, _OtherPhoneNumber, _HomePostalAddress, _HomePhoneNumber);
+                    var _Xml = _DgcGoogleProfileService.SetProfile(_ProfileService.ProfileService, _ID, _PostalAddress, _PhoneNumber, _MobilePhoneNumber, _OtherPhoneNumber, _HomePostalAddress, _HomePhoneNumber);
 
-                    var _ProfileEntry = _DgcGoogleProfileService.CreateProfileEntry(_Xml, _ID, _ProfileService);
+                    var _ProfileEntry = _DgcGoogleProfileService.CreateProfileEntry(_Xml, _ID, _ProfileService.ProfileService);
 
                     #region comment
                     /*

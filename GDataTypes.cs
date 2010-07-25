@@ -6,12 +6,144 @@ using System.IO;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
+using Google.Contacts;
+using Google.GData.Contacts;
+using Google.GData.Client;
+using Google.GData.Extensions;
+using Google.GData.Apps;
+using Google.GData.Extensions.Apps;
+using Google.GData.Calendar;
+using Google.GData.Apps.GoogleMailSettings;
 
 
 namespace Microsoft.PowerShell.GData
 {
     public class GDataTypes
     {
+
+        #region Service
+
+        public class GDataService
+        {
+            public AppsService AppsService;
+            public CalendarService CalendarService;
+            public GoogleMailSettingsService GoogleMailSettingsService;
+            public GDataTypes.ProfileService ProfileService;
+            public GDataTypes.ResourceService ResourceService;
+            public ContactsService ContactsService;
+        }
+
+        #endregion Service
+
+        #region Group
+
+
+        public class GDataGroupEntrys : System.Collections.CollectionBase
+        {
+            public void Add(GDataGroupEntry GDataGroupEntry)
+            {
+                List.Add(GDataGroupEntry);
+
+            }
+        }
+
+        public class GDataGroupEntry
+        {
+            public string GroupId;
+            public string GroupName;
+            public string EmailPermission;
+            public string Description;
+            public string SelfUri;
+        }
+
+        public class GDataGroupMemberEntrys : System.Collections.CollectionBase
+        {
+            public void Add(GDataGroupMemberEntry GDataGroupMemberEntry)
+            {
+                List.Add(GDataGroupMemberEntry);
+
+            }
+        }
+
+        public class GDataGroupMemberEntry
+        {
+            public string MemberId;
+            public string MemberType;
+            public string DirectMember;
+        }
+
+        public class GDataGroupOwnerEntrys : System.Collections.CollectionBase
+        {
+            public void Add(GDataGroupOwnerEntry GDataGroupOwnerEntry)
+            {
+                List.Add(GDataGroupOwnerEntry);
+
+            }
+        }
+
+        public class GDataGroupOwnerEntry
+        {
+            public string MemberId;
+            public string MemberType;
+        }
+
+        #endregion Group
+
+        #region Contact
+
+        public class GDataContactEntrys : System.Collections.CollectionBase
+        {
+            public void Add(GDataContactEntry GDataContactEntry)
+            {
+                List.Add(GDataContactEntry);
+
+            }
+        }
+
+        public class GDataContactEntry
+        {
+            public string Name;
+            public string Email;
+            public string PhoneNumber;
+            public string PostalAddress;
+            public string City;
+            public string SelfUri;
+        }
+
+
+        #endregion Contact
+
+        #region Resource
+
+        public class ResourceEntrys : System.Collections.CollectionBase
+        {
+            public void Add(ResourceEntry ResourceEntry)
+            {
+                List.Add(ResourceEntry);
+
+            }
+        }
+
+        public class ResourceEntry
+        {
+
+            public string ResourceId;
+            public string CommonName;
+            public string Email;
+            public string Description;
+            public string Type;
+
+        }
+
+
+        public class ResourceService
+        {
+            public string AdminUser { get; set; }
+            public string Token { get; set; }
+            public string Domain { get; set; }
+        }
+
+        #endregion Resource
 
         #region XmlTypes
 
@@ -47,7 +179,7 @@ namespace Microsoft.PowerShell.GData
         public class ProfileEntry
         {
 
-            public string User;
+            public string UserName;
             public string Domain;
             public string PhoneNumber;
             public string MobilePhoneNumber;
@@ -79,15 +211,15 @@ namespace Microsoft.PowerShell.GData
 
         public class GDataUserEntry
         {
-            public string SelfUri;
-            public string FamilyName;
-            public string GivenName;
             public string UserName;
+            public string GivenName;
+            public string FamilyName;
             public bool susspended;
             public bool Admin;
             public bool AgreedToTerms;
             public bool ChangePasswordAtNextLogin;
             public int Limit;
+            public string SelfUri;
         }
 
         public class GDataUserAliasEntrys : System.Collections.CollectionBase
