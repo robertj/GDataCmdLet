@@ -97,7 +97,7 @@ namespace Microsoft.PowerShell.GData
             }
             private string _SelfUri;
 
-
+            /*
             [Parameter(
             Mandatory = false,
             HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
@@ -109,7 +109,7 @@ namespace Microsoft.PowerShell.GData
                 set { _Scope = value; }
             }
             private string _Scope;
-
+            */
             protected override void ProcessRecord()
             {
 
@@ -118,16 +118,7 @@ namespace Microsoft.PowerShell.GData
                 var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
                 var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService.ContactsService);
 
-                /*
-                var _DgcGoogle = new Contact.DgcGoogle();
-                var _Domain = _DgcGoogle.Get(_ContactService);
-                */
 
-                if (_Scope != null)
-                {
-                    _Domain = _Scope;
-                }
-               
 
                 var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
 //                var _Query = new ContactsQuery("http://www.google.com/m8/feeds/profiles/domain/domain/full");
@@ -204,7 +195,7 @@ namespace Microsoft.PowerShell.GData
                 set { _Name = value; }
             }
             private string _Name;
-            
+            /*
             [Parameter(
             Mandatory = false,
             HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
@@ -216,7 +207,7 @@ namespace Microsoft.PowerShell.GData
                 set { _Scope = value; }
             }
             private string _Scope;
-
+            */
             #endregion Parameters
 
 
@@ -231,17 +222,12 @@ namespace Microsoft.PowerShell.GData
 
                 try
                 {
-                    if (_Scope != null)
-                    {
-                        _Domain = _Scope;
-                    }
+
                     if (_SelfUri != null)
                     {
-
-
                         var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
                         var _Feed = _ContactService.ContactsService.Query(_Query);
-
+                        
                         foreach (ContactEntry _Entry in _Feed.Entries)
                         {
                             if (_Entry.SelfUri.Content == _SelfUri)
@@ -256,8 +242,9 @@ namespace Microsoft.PowerShell.GData
                     
                     else if (_Name != null)
                     {
+
                         var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
-                        var _Feed = _ContactService.ContactsService.Query(_Query);
+                        var _Feed = _ContactService.OauthContactsService.Query(_Query);
                         var _ContactsEntrys = new GDataTypes.GDataContactEntrys();
                         foreach (ContactEntry _Entry in _Feed.Entries)
                         {
@@ -265,9 +252,8 @@ namespace Microsoft.PowerShell.GData
                             {
                                 if (System.Text.RegularExpressions.Regex.IsMatch(_Entry.Title.Text, _Name))
                                 {
-                                    //var _ContactEntry = _DgcGoogleContactsService.CreateContactEntry(_Entry);
+                                    var _ContactEntry = _DgcGoogleContactsService.CreateContactEntry(_Entry);
                                     _ContactsEntrys = _DgcGoogleContactsService.AppendContactEntrys(_Entry, _ContactsEntrys);
-                                    //WriteObject(_Entry);
                                 }
                             }
 
@@ -277,15 +263,13 @@ namespace Microsoft.PowerShell.GData
                     
                     else
                     {
-                        if (_Scope != null)
-                        {
-                            _Domain = _Scope;
-                        }
+                       
                         var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
                         var _Feed = _ContactService.ContactsService.Query(_Query);
+
                         var _ContactEntrys = _DgcGoogleContactsService.CreateContactEntrys(_Feed);
                         WriteObject(_ContactEntrys, true);
-                        //WriteObject(_Feed.Entries, true);     
+
                     }
                 }
                 catch (Exception _Exception)
@@ -396,7 +380,7 @@ namespace Microsoft.PowerShell.GData
                 set { _City = value; }
             }
             private string _City;
-
+            /*
             [Parameter(
             Mandatory = false,
             HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
@@ -408,7 +392,7 @@ namespace Microsoft.PowerShell.GData
                 set { _Scope = value; }
             }
             private string _Scope;
-
+            */
             #endregion Parameters
 
 
@@ -418,13 +402,6 @@ namespace Microsoft.PowerShell.GData
 
                 var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
                 var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService.ContactsService);
-
-                if (_Scope != null)
-                {
-                    _Domain = _Scope;
-                }
-
-
                 var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
                 
                 var _Feed = _ContactService.ContactsService.Query(_Query);
@@ -590,7 +567,7 @@ namespace Microsoft.PowerShell.GData
                 set { _City = value; }
             }
             private string _City;
-
+            /*
             [Parameter(
             Mandatory = false,
             HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
@@ -602,7 +579,7 @@ namespace Microsoft.PowerShell.GData
                 set { _Scope = value; }
             }
             private string _Scope;
-
+            */
             #endregion Parameters
 
 
@@ -641,11 +618,6 @@ namespace Microsoft.PowerShell.GData
 
                 var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
                 var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService.ContactsService);
-
-                if (_Scope != null)
-                {
-                    _Domain = _Scope;
-                }
                 
                 Uri _FeedUri = new Uri(ContactsQuery.CreateContactsUri(_Domain));
 

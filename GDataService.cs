@@ -41,13 +41,34 @@ namespace Microsoft.PowerShell.GData
                Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-
             public string AdminPassword
             {
                 get { return null; }
                 set { _AdminPassword = value; }
             }
             private string _AdminPassword;
+
+            [Parameter(
+               Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string ConsumerKey
+            {
+                get { return null; }
+                set { _ConsumerKey = value; }
+            }
+            private string _ConsumerKey;
+
+            [Parameter(
+               Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string ConsumerSecret
+            {
+                get { return null; }
+                set { _ConsumerSecret = value; }
+            }
+            private string _ConsumerSecret;
 
             #endregion Parameters
 
@@ -62,25 +83,48 @@ namespace Microsoft.PowerShell.GData
                 {
                     //AppsService
                     _GDataService.AppsService = new AppsService(_Domain, _AdminUser, _AdminPassword);
+                    
                     //CalendarService
                     var _CalendarService = new CalendarService("Calendar");
-                    _CalendarService.setUserCredentials(_AdminUser, _AdminPassword);
+                    _CalendarService.setUserCredentials(_AdminUser, _AdminPassword);                    
                     _GDataService.CalendarService = _CalendarService;
+                    
+                    //OauthCalendarService
+                    if (_ConsumerKey != null)
+                    {
+                        if (_ConsumerSecret == null)
+                        {
+                            throw new Exception("-ConsumerSecret can't be null");
+                        }
+                        var _OauthCalendarService = new CalendarService("Calendar");
+                        var _Oauth = new GDataTypes.Oauth();
+                        _Oauth.ConsumerKey = _ConsumerKey;
+                        _Oauth.ConsumerSecret = _ConsumerSecret;
+                        _GDataService.Oauth = _Oauth;
+                        GOAuthRequestFactory _RequestFactory = new GOAuthRequestFactory("cl", "GDataCmdLet");
+                        _RequestFactory.ConsumerKey = _Oauth.ConsumerKey;
+                        _RequestFactory.ConsumerSecret = _Oauth.ConsumerSecret;
+                        _OauthCalendarService.RequestFactory = _RequestFactory;
+                        _GDataService.OauthCalendarService = _OauthCalendarService;
+                    }
+
                     //MailSettingsService
                     var _GoogleMailSettingsService = new GoogleMailSettingsService(_Domain, "GMailSettingsService");
                     _GoogleMailSettingsService.setUserCredentials(_AdminUser, _AdminPassword);
                     _GDataService.GoogleMailSettingsService = _GoogleMailSettingsService;
+                    
                     //ProfileService
                     var _DgcGoogleProfileService = new Dgc.GoogleProfileService();
                     _GDataService.ProfileService = _DgcGoogleProfileService.GetAuthToken(_AdminUser, _AdminPassword);
+                    
                     //ResourceService
                     var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
                     _GDataService.ResourceService = _DgcGoogleResourceService.GetAuthToken(_AdminUser, _AdminPassword);
+                    
                     //ContactsService
                     var _ContactService = new ContactsService("GData");
                     _ContactService.setUserCredentials(_AdminUser, _AdminPassword);
                     _GDataService.ContactsService = _ContactService;
-
 
                     WriteObject(_GDataService);
                 }

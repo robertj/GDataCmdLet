@@ -27,10 +27,13 @@ namespace Microsoft.PowerShell.GData
         {
             public AppsService AppsService;
             public CalendarService CalendarService;
+            public CalendarService OauthCalendarService;
             public GoogleMailSettingsService GoogleMailSettingsService;
             public GDataTypes.ProfileService ProfileService;
             public GDataTypes.ResourceService ResourceService;
             public ContactsService ContactsService;
+            public ContactsService OauthContactsService;
+            public GDataTypes.Oauth Oauth;
         }
 
         #endregion Service
@@ -110,8 +113,55 @@ namespace Microsoft.PowerShell.GData
             public string SelfUri;
         }
 
+        public class Oauth
+        {
+            public string ConsumerKey;
+            public string ConsumerSecret;
+        }
 
         #endregion Contact
+
+        #region Calendar
+
+        public class GDataCalendarEntrys : System.Collections.CollectionBase
+        {
+            public void Add(GDataCalendarEntry GDataCalendarEntry)
+            {
+                List.Add(GDataCalendarEntry);
+
+            }
+        }
+
+        public class GDataCalendarEntry
+        {
+            public string Name;
+            public string AccessLevel;
+            public string Description;
+            public string Location;
+            public string TimeZone;
+            public string Color;
+            public bool Hidden;
+            public bool Selected;
+            public string SelfUri;
+        }
+
+        public class GDataCalendarAclEntrys : System.Collections.CollectionBase
+        {
+            public void Add(GDataCalendarAclEntry GDataCalendarAclEntry)
+            {
+                List.Add(GDataCalendarAclEntry);
+
+            }
+        }
+
+        public class GDataCalendarAclEntry
+        {
+            public string UserId;
+            public string AccessLevel;
+        }
+
+        #endregion Contact
+
 
         #region Resource
 

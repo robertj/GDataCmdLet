@@ -376,7 +376,7 @@ namespace Microsoft.PowerShell.GData
                         }
                         _Entry.Login.Suspended = _SuspendedBool;
                     }
-                
+
                     var _UserEntry = _UserService.AppsService.UpdateUser(_Entry);
                     var _DgcGoogleAppsService = new Dgc.GoogleAppService();
                     var _GdataUserEntry = _DgcGoogleAppsService.CreateUserEntry(_UserEntry);
@@ -583,7 +583,7 @@ namespace Microsoft.PowerShell.GData
                         {
                             if (!_ID.Contains("@"))
                             {
-                                throw new Exception("-ID must contain EmailDomain, user@domain.com");
+                                throw new Exception("-ID must contain Domain, user@domain.com");
                             }
                             var _DgcGoogleAppsService = new Dgc.GoogleAppService();
                             var _Xml = _DgcGoogleAppsService.RetriveUserAlias(_ID, _UserService.AppsService);
@@ -683,7 +683,11 @@ namespace Microsoft.PowerShell.GData
                     {
                         if (!_NickName.Contains("@"))
                         {
-                            throw new Exception("-NickName must contain EmailDomain, user@domain.com");
+                            throw new Exception("-NickName must contain Domain, user@domain.com");
+                        }
+                        if (!_ID.Contains("@"))
+                        {
+                            throw new Exception("-ID must contain Domain, user@domain.com");
                         }
                             var _DgcGoogleAppsService = new Dgc.GoogleAppService();
                             var _Xml = _DgcGoogleAppsService.CreateUserAlias(_ID, _UserService.AppsService, _NickName);

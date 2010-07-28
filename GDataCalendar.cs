@@ -90,7 +90,7 @@ namespace Microsoft.PowerShell.GData
                 set { _CalendarService = value; }
             }
             private GDataTypes.GDataService _CalendarService;
-
+            /*
             [Parameter(
             Mandatory = true,
             HelpMessage = "User ID"
@@ -102,7 +102,7 @@ namespace Microsoft.PowerShell.GData
                 set { _ID = value; }
             }
             private string _ID;
-
+            */
 
             [Parameter(
             Mandatory = true,
@@ -128,7 +128,7 @@ namespace Microsoft.PowerShell.GData
 
                     
                     var _CalendarQuery = new CalendarQuery();
-                    _CalendarQuery.Uri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/allcalendars/full");
+                    _CalendarQuery.Uri = new Uri(_SelfUri);
                     try
                     {
                         var _CalendarFeed = (CalendarFeed)_CalendarService.CalendarService.Query(_CalendarQuery);
@@ -231,7 +231,8 @@ namespace Microsoft.PowerShell.GData
 
                         if (_CalendarName == null)
                         {
-                            WriteObject(_CalendarFeed.Entries, true);
+                            var _CalendarEntrys = _DgcGoogleCalendarService.CreateCalendarEntrys(_CalendarFeed);
+                            WriteObject(_CalendarEntrys, true);
                         }
                         else
                         {
@@ -240,11 +241,12 @@ namespace Microsoft.PowerShell.GData
                                                      where _Selection.Title.Text.ToString() == _CalendarName
                                                      select _Selection;
 
-
-                            foreach (var _Entry in _CalendarSelection)
-                            {
-                                WriteObject(_Entry, true);
+                            var _CalendarEntrys = new GDataTypes.GDataCalendarEntrys();
+                            foreach (CalendarEntry _Entry in _CalendarSelection)
+                            { 
+                                _CalendarEntrys = _DgcGoogleCalendarService.AppendCalendarEntrys(_Entry, _CalendarEntrys);
                             }
+                            WriteObject(_CalendarEntrys, true);
                         }
      
                     }
@@ -347,20 +349,23 @@ namespace Microsoft.PowerShell.GData
                 {
                     _Calendar.TimeZone = _TimeZone;
                 }
-
-                //_Calendar.
-                
-                
-
-                //_Calendar.Hidden = false;
-                //_Calendar.Color = "#2952A3";
-
-                var _PostUri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "%40" + _Domain + "/owncalendars/full");
-
                 try
                 {
-                    var _CreatedCalendar = (CalendarEntry)_CalendarService.CalendarService.Insert(_PostUri, _Calendar);
-                    WriteObject(_CreatedCalendar);
+                    if (_CalendarService.Oauth == null)
+                    {
+                        throw new Exception("User -ConsumerKey/-ConsumerSecret in New-GdataService");
+                    }
+                    if (_CalendarService.OauthCalendarService == null)
+                    {
+                        throw new Exception("User -ConsumerKey/-ConsumerSecret in New-GdataService");
+                    }
+                    var _PostUri = new Uri("http://www.google.com/calendar/feeds/default/owncalendars/full");
+                    var _OAuth2LeggedAuthenticator = new OAuth2LeggedAuthenticator("GDataCmdLet", _CalendarService.Oauth.ConsumerKey, _CalendarService.Oauth.ConsumerSecret, _ID, _Domain);
+                    var _OauthUri = _OAuth2LeggedAuthenticator.ApplyAuthenticationToUri(_PostUri);
+                    
+                    var _CreatedCalendar = (CalendarEntry)_CalendarService.OauthCalendarService.Insert(_OauthUri, _Calendar);
+                    var _CalendarEntry = _DgcGoogleCalendarService.CreateCalendarEntry(_CreatedCalendar);
+                    WriteObject(_CalendarEntry);
 
                 } catch (Exception _Exception)
                 {
@@ -393,7 +398,7 @@ namespace Microsoft.PowerShell.GData
                 set { _CalendarService = value; }
             }
             private GDataTypes.GDataService _CalendarService;
-
+            /*
             [Parameter(
             Mandatory = true,
             HelpMessage = "User ID"
@@ -405,7 +410,7 @@ namespace Microsoft.PowerShell.GData
                 set { _ID = value; }
             }
             private string _ID;
-
+            */
             [Parameter(
             Mandatory = true,
             HelpMessage = "SelfUri"
@@ -465,7 +470,8 @@ namespace Microsoft.PowerShell.GData
 
 
                 var _CalendarQuery = new CalendarQuery();
-                _CalendarQuery.Uri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/allcalendars/full");
+                //_CalendarQuery.Uri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/allcalendars/full");
+                _CalendarQuery.Uri = new Uri(_SelfUri);
                 try
                 {
                     var _CalendarFeed = (CalendarFeed)_CalendarService.CalendarService.Query(_CalendarQuery);
@@ -491,8 +497,18 @@ namespace Microsoft.PowerShell.GData
                                     _Entry.TimeZone = _TimeZone;
                                 }
 
-                                var _Result = _Entry.Update();
-                                WriteObject(_Result);
+                                _Entry.Update();
+                                
+                                _CalendarFeed = (CalendarFeed)_CalendarService.CalendarService.Query(_CalendarQuery);
+                                foreach (CalendarEntry _ResultEntry in _CalendarFeed.Entries)
+                                {
+                                    if (_ResultEntry.SelfUri.ToString() == _SelfUri)
+                                    {
+                                        var _CalendarEntry = _DgcGoogleCalendarService.CreateCalendarEntry(_ResultEntry);
+                                        WriteObject(_CalendarEntry);
+                                
+                                    }
+                                }
 
                             }
                             catch (Exception _Exception)
@@ -583,7 +599,9 @@ namespace Microsoft.PowerShell.GData
 
                         var _AclQuery = new AclQuery(_Link.HRef.ToString());
                         var _Feed = _CalendarService.CalendarService.Query(_AclQuery);
-                        WriteObject(_Feed.Entries);
+                        var _CalendarAclEntrys = _DgcGoogleCalendarService.CreateCalendarAclEntrys(_Feed);
+
+                        WriteObject(_CalendarAclEntrys);
                     }
                     
                 }
@@ -719,7 +737,8 @@ namespace Microsoft.PowerShell.GData
 
                         var _AclUri = new Uri(_Link.HRef.ToString());
                         var _AlcEntry = _CalendarService.CalendarService.Insert(_AclUri, _AclEntry) as AclEntry;
-                        WriteObject(_AclEntry);
+                        var _CalendarAclEntry = _DgcGoogleCalendarService.CreateCalendarAclEntry(_AclEntry);
+                        WriteObject(_CalendarAclEntry);
                         
                     }
                     

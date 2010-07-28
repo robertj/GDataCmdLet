@@ -18,6 +18,8 @@ using System.IO;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
+using Google.AccessControl;
+using Google.GData.AccessControl;
 
 
 namespace Microsoft.PowerShell.GData
@@ -1129,9 +1131,175 @@ namespace Microsoft.PowerShell.GData
 
                 return _Domain;
             }
-        }
 
+            #region CreateCalendarEntry
+
+            public GDataTypes.GDataCalendarEntry CreateCalendarEntry(CalendarEntry CalendarEntry)
+            {
+                var GDataCalendarEntry = new GDataTypes.GDataCalendarEntry();
+                if (CalendarEntry.Title.Text != null)
+                {
+                    GDataCalendarEntry.Name = CalendarEntry.Title.Text;
+                }
+                if (CalendarEntry.Color != null)
+                {
+                    GDataCalendarEntry.Color = CalendarEntry.Color;
+                }
+                if (CalendarEntry.Summary != null)
+                {
+                    GDataCalendarEntry.Description = CalendarEntry.Summary.Text;
+                }
+                if (CalendarEntry.Location != null)
+                {
+                    GDataCalendarEntry.Location = CalendarEntry.Location.ValueString;
+                }
+                GDataCalendarEntry.Hidden = CalendarEntry.Hidden;
+                GDataCalendarEntry.Selected = CalendarEntry.Selected;
+                if (CalendarEntry.TimeZone != null)
+                {
+                    GDataCalendarEntry.TimeZone = CalendarEntry.TimeZone;
+                }
+                if (CalendarEntry.AccessLevel != null)
+                {
+                    GDataCalendarEntry.AccessLevel = CalendarEntry.AccessLevel;
+                }
+                if (CalendarEntry.SelfUri.ToString() != null)
+                {
+                    GDataCalendarEntry.SelfUri = CalendarEntry.SelfUri.ToString();
+                }
+                return GDataCalendarEntry;
+            }
+
+            #endregion CreateCalendarEntry
+
+            #region CreateCalendarEntrys
+
+            public GDataTypes.GDataCalendarEntrys CreateCalendarEntrys(CalendarFeed CalendarEntrys)
+            {
+                var GDataCalendarEntrys = new GDataTypes.GDataCalendarEntrys();
+                foreach (CalendarEntry CalendarEntry in CalendarEntrys.Entries)
+                {
+                    var GDataCalendarEntry = new GDataTypes.GDataCalendarEntry();
+                    if (CalendarEntry.Title.Text != null)
+                    {
+                        GDataCalendarEntry.Name = CalendarEntry.Title.Text;
+                    }
+                    if (CalendarEntry.Color != null)
+                    {
+                        GDataCalendarEntry.Color = CalendarEntry.Color;
+                    }
+                    if (CalendarEntry.Summary != null)
+                    {
+                        GDataCalendarEntry.Description = CalendarEntry.Summary.Text;
+                    }
+                    if (CalendarEntry.Location != null)
+                    {
+                        GDataCalendarEntry.Location = CalendarEntry.Location.ValueString;
+                    }
+                    GDataCalendarEntry.Hidden = CalendarEntry.Hidden;
+                    GDataCalendarEntry.Selected = CalendarEntry.Selected;
+                    if (CalendarEntry.TimeZone != null)
+                    {
+                        GDataCalendarEntry.TimeZone = CalendarEntry.TimeZone;
+                    }
+                    if (CalendarEntry.AccessLevel != null)
+                    {
+                        GDataCalendarEntry.AccessLevel = CalendarEntry.AccessLevel;
+                    }
+                    if (CalendarEntry.SelfUri.ToString() != null)
+                    {
+                        GDataCalendarEntry.SelfUri = CalendarEntry.SelfUri.ToString();
+                    }
+                    GDataCalendarEntrys.Add(GDataCalendarEntry);
+                }
+                return GDataCalendarEntrys;
+            }
+
+
+
+            #endregion CreateCalendarEntrys
+
+            #region AppendCalendarEntrys
+
+            public GDataTypes.GDataCalendarEntrys AppendCalendarEntrys(CalendarEntry CalendarEntry, GDataTypes.GDataCalendarEntrys GDataCalendarEntrys)
+            {
+                //var GDataCalendarEntrys = new GDataTypes.GDataCalendarEntrys();
+
+                    var GDataCalendarEntry = new GDataTypes.GDataCalendarEntry();
+                    if (CalendarEntry.Title.Text != null)
+                    {
+                        GDataCalendarEntry.Name = CalendarEntry.Title.Text;
+                    }
+                    if (CalendarEntry.Color != null)
+                    {
+                        GDataCalendarEntry.Color = CalendarEntry.Color;
+                    }
+                    if (CalendarEntry.Summary != null)
+                    {
+                        GDataCalendarEntry.Description = CalendarEntry.Summary.Text;
+                    }
+                    if (CalendarEntry.Location != null)
+                    {
+                        GDataCalendarEntry.Location = CalendarEntry.Location.ValueString;
+                    }
+                    GDataCalendarEntry.Hidden = CalendarEntry.Hidden;
+                    GDataCalendarEntry.Selected = CalendarEntry.Selected;
+                    if (CalendarEntry.TimeZone != null)
+                    {
+                        GDataCalendarEntry.TimeZone = CalendarEntry.TimeZone;
+                    }
+                    if (CalendarEntry.AccessLevel != null)
+                    {
+                        GDataCalendarEntry.AccessLevel = CalendarEntry.AccessLevel;
+                    }
+                    if (CalendarEntry.SelfUri.ToString() != null)
+                    {
+                        GDataCalendarEntry.SelfUri = CalendarEntry.SelfUri.ToString();
+                    }
+                    GDataCalendarEntrys.Add(GDataCalendarEntry);
+                    return GDataCalendarEntrys;
+            }
+
+            #endregion AppendCalendarEntrys
+
+            #region CreateCalendarAclEntrys
+
+            public GDataTypes.GDataCalendarAclEntrys CreateCalendarAclEntrys(AclFeed CalendarAclEntrys)
+            {
+                var GDataCalendarAclEntrys = new GDataTypes.GDataCalendarAclEntrys();
+                foreach (AclEntry CalendarAclEntry in CalendarAclEntrys.Entries)
+                {
+                    var GDataCalendarAclEntry = new GDataTypes.GDataCalendarAclEntry();
+                    GDataCalendarAclEntry.UserId = CalendarAclEntry.Scope.Value;
+                    GDataCalendarAclEntry.AccessLevel = CalendarAclEntry.Role.Value.Replace("http://schemas.google.com/gCal/2005#","");
+                    GDataCalendarAclEntrys.Add(GDataCalendarAclEntry);
+                }
+                return GDataCalendarAclEntrys;
+            }
+
+            #endregion CreateCalendarAclEntrys
+
+            #region CreateCalendarAclEntry
+
+            public GDataTypes.GDataCalendarAclEntry CreateCalendarAclEntry(AclEntry CalendarAclEntry)
+            {
+                var GDataCalendarAclEntry = new GDataTypes.GDataCalendarAclEntry();
+                GDataCalendarAclEntry.UserId = CalendarAclEntry.Scope.Value;
+                GDataCalendarAclEntry.AccessLevel = CalendarAclEntry.Role.Value.Replace("http://schemas.google.com/gCal/2005#", "");
+
+                return GDataCalendarAclEntry;
+            }
+
+            #endregion CreateCalendarAclEntry
+
+
+        }
         #endregion GoogleCalendarsService
+
+ 
+
+
+        
 
         #region GoogleResourceService
 
@@ -1610,8 +1778,6 @@ namespace Microsoft.PowerShell.GData
 
                 var _ProfileEntrys = new GDataTypes.ProfileEntrys();
 
-                //_ProfileEntry.User = _ID;
-                //_ProfileEntry.Domain = _ProfileService.Domain;
                 string _ProfileLink = "http://www.google.com/m8/feeds/profiles/domain/" + _ProfileService.Domain + "/full/";
 
                 foreach (var _SEntry in _ParesdXml.ListFormat)
