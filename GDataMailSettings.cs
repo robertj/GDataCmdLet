@@ -18,23 +18,20 @@ namespace Microsoft.PowerShell.GData
 
     public class MailSetting
     {
-
         #region Pop3ActionDelete
-
 
         private class Pop3ActionDelete
         {
-            public string GetAction(bool Pop3Action)
+            public string Action;
+            public Pop3ActionDelete(bool pop3Action)
             {
-                if (Pop3Action == true)
+                if (pop3Action == true)
                 {
-                    string _Pop3Action = "DELETE";
-                    return (_Pop3Action);
+                    Action = "DELETE";
                 }
                 else
                 {
-                    string _Pop3Action = "KEEP";
-                    return (_Pop3Action);
+                    Action = "KEEP";
                 }
 
             }
@@ -42,62 +39,6 @@ namespace Microsoft.PowerShell.GData
 
         #endregion Pop3ActionDelete
         
-        #region New-GDataGDataMailSettingService
-        /*
-        [Cmdlet(VerbsCommon.New, "GDataMailSettingService")]
-        public class NewGDatMmailSettingService : Cmdlet
-        {
-
-            #region Parameters
-
-            [Parameter(
-            Mandatory = true
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminUsername
-            {
-                get { return null; }
-                set { _AdminUser = value; }
-            }
-            private string _AdminUser;
-
-            [Parameter(
-               Mandatory = true
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminPassword
-            {
-                get { return null; }
-                set { _AdminPassword = value; }
-            }
-            private string _AdminPassword;
-
-            #endregion Parameters
-
-            protected override void ProcessRecord()
-            {
-
-
-                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                var _Domain = _DgcGoogleAppsService.GetDomain(_AdminUser);
-
-                try
-                {
-                    var _GoogleMailSettingsService = new GoogleMailSettingsService(_Domain, "GMailSettingsService");
-                    _GoogleMailSettingsService.setUserCredentials(_AdminUser, _AdminPassword);
-                    WriteObject(_GoogleMailSettingsService);
-                }
-                catch (Exception _Exception)
-                {
-                    WriteObject(_Exception);
-                }
-            }
-
-
-        }
-        */
-        #endregion New-GDataGDataMailSettingService
-
         #region Set-GDataGDataMailSetting
 
         [Cmdlet(VerbsCommon.Set, "GDataMailSetting")]
@@ -106,17 +47,15 @@ namespace Microsoft.PowerShell.GData
 
             #region Parameters
 
-
             [Parameter(
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
             public GDataTypes.GDataService Service
             {
-                get { return null; }
-                set { _MailSettingsService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _MailSettingsService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true
@@ -124,10 +63,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string ID
             {
-                get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = false
@@ -135,10 +73,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string SenderAdress
             {
-                get { return null; }
-                set { _SenderAdress = value; }
+                set { senderAdress = value; }
             }
-            private string _SenderAdress;
+            private string senderAdress;
 
             [Parameter(
             Mandatory = false
@@ -146,9 +83,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public SwitchParameter IsDefault
             {
-                set { _IsDefault = value; }
+                set { isDefault = value; }
             }
-            private bool _IsDefault;
+            private bool isDefault;
 
             [Parameter(
             Mandatory = false
@@ -156,10 +93,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string Name
             {
-                get { return null; }
-                set { _Name  = value; }
+                set { name  = value; }
             }
-            private string _Name ;
+            private string name ;
 
             [Parameter(
             Mandatory = false
@@ -167,10 +103,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public SwitchParameter EnablePop3
             {
-                //get { return null; }
-                set { _EnablePop3 = value; }
+                set { enablePop3 = value; }
             }
-            private bool _EnablePop3;
+            private bool enablePop3;
 
             [Parameter(
             Mandatory = false
@@ -178,10 +113,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public SwitchParameter DisablePop3
             {
-                //get { return null; }
-                set { _DisablePop3 = value; }
+                set { disablePop3 = value; }
             }
-            private bool _DisablePop3;
+            private bool disablePop3;
 
             [Parameter(
             Mandatory = false
@@ -189,10 +123,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public SwitchParameter EnableImap
             {
-                //get { return null; }
-                set { _EnableImap = value; }
+                set { enableImap = value; }
             }
-            private bool _EnableImap;
+            private bool enableImap;
 
             [Parameter(
             Mandatory = false
@@ -200,10 +133,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public SwitchParameter DisableImap
             {
-                //get { return null; }
-                set { _DisableImap = value; }
+                set { disableImap = value; }
             }
-            private bool _DisableImap;
+            private bool disableImap;
             
             [Parameter(
             Mandatory = false
@@ -211,105 +143,91 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public SwitchParameter Pop3ActionDelete
             {
-                //get { return null; }
-                set { _Pop3ActionDelete = value; }
+                set { pop3ActionDelete = value; }
             }
-            private bool _Pop3ActionDelete;
+            private bool pop3ActionDelete;
 
             #endregion Parameters
 
-            //private string Default;
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
-                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                if (_SenderAdress != null)
+                if (senderAdress != null)
                 {
                     
-                    if (_Name  == null)
+                    if (name  == null)
                     {
                         throw new ArgumentException("Parameter Name is null"); 
                     }
 
-                    var _StringIsDefault = _IsDefault.ToString();
+                    var _stringIsDefault = isDefault.ToString();
 
 
                     try
                     {
-                        var _Entry = _MailSettingsService.GoogleMailSettingsService.CreateSendAs(_ID, _Name, _SenderAdress, _SenderAdress, _StringIsDefault);
-                        var _SenderAddressEntry = _DgcGoogleAppsService.CreateSenderAddressEntry(_Entry);
-                        WriteObject(_SenderAddressEntry);
+                        var _entry = dgcGoogleAppsService.CreateSenderAddressEntry(service.GoogleMailSettingsService.CreateSendAs(id, name, senderAdress, senderAdress, _stringIsDefault));
+                        WriteObject(_entry);
                     }
-                    catch (Exception _Exception )
+                    catch (Exception _exception   )
                     {
-                        WriteObject( _Exception );
+                        WriteObject( _exception   );
                     }
                 }
 
-                var _GetPop3Action = new Pop3ActionDelete();
-                var _Pop3Action = _GetPop3Action.GetAction(_Pop3ActionDelete);
-                
-                if (_EnablePop3 == true)
+                var _pop3Action = new Pop3ActionDelete(pop3ActionDelete).Action;
+
+                if (enablePop3 == true)
                 {
                     try
                     {
-                        var _Entry = _MailSettingsService.GoogleMailSettingsService.UpdatePop(_ID, "True", "ALL_MAIL", _Pop3Action);
-                        var _Pop3Entry = _DgcGoogleAppsService.CreatePop3Entry(_Entry);
-                        WriteObject(_Pop3Entry);
+                        var _entry = dgcGoogleAppsService.CreatePop3Entry(service.GoogleMailSettingsService.UpdatePop(id, "True", "ALL_MAIL", _pop3Action));
+                        WriteObject(_entry);
                     }
-                    catch (Exception _Exception)
+                    catch (Exception _exception  )
                     {
-                        WriteObject(_Exception);
+                        WriteObject(_exception  );
                     }
                 }
-                if (_DisablePop3 == true)
+                if (disablePop3 == true)
                 {
                     try
                     {
-                        var _Entry = _MailSettingsService.GoogleMailSettingsService.UpdatePop(_ID, "False", "ALL_MAIL", _Pop3Action);
-                        var _Pop3Entry = _DgcGoogleAppsService.CreatePop3Entry(_Entry);
-                        WriteObject(_Pop3Entry);
+                        var _entry = dgcGoogleAppsService.CreatePop3Entry(service.GoogleMailSettingsService.UpdatePop(id, "False", "ALL_MAIL", _pop3Action));
+                        WriteObject(_entry);
                     }
-                    catch (Exception _Exception)
+                    catch (Exception _exception  )
                     {
-                        WriteObject(_Exception);
+                        WriteObject(_exception  );
                     }
                 }
-                if (_EnableImap == true)
+                if (enableImap == true)
                 {
                     try
                     {
-                        var _Entry = _MailSettingsService.GoogleMailSettingsService.UpdateImap(_ID, "True");
-                        var _ImapEntry = _DgcGoogleAppsService.CreateIMapEntry(_Entry);
-                        WriteObject(_ImapEntry);
+                        var _entry = dgcGoogleAppsService.CreateIMapEntry(service.GoogleMailSettingsService.UpdateImap(id, "True"));
+                        WriteObject(_entry);
                     }
-                    catch (Exception _Exception)
+                    catch (Exception _exception  )
                     {
-                        WriteObject(_Exception);
+                        WriteObject(_exception  );
                     }
                 }
-                if (_DisableImap == true)
+                if (disableImap == true)
                 {
                     try
                     {
-                        var _Entry = _MailSettingsService.GoogleMailSettingsService.UpdateImap(_ID, "False");
-                        var _ImapEntry = _DgcGoogleAppsService.CreateIMapEntry(_Entry);
-                        WriteObject(_ImapEntry);
+                        var _entry = service.GoogleMailSettingsService.UpdateImap(id, "False");
+                        var _imapEntry = dgcGoogleAppsService.CreateIMapEntry(_entry);
+                        WriteObject(_imapEntry);
                     }
-                    catch (Exception _Exception)
+                    catch (Exception _exception  )
                     {
-                        WriteObject(_Exception);
+                        WriteObject(_exception  );
                     }
                 }
             }
         }
 
         #endregion Set-GDataMailSetting
-  
-      
-
-        
     }
-
-
 }

@@ -20,7 +20,6 @@ namespace Microsoft.PowerShell.GData
 {
     public class GDataTypes
     {
-
         #region Service
 
         public class GDataService
@@ -29,8 +28,8 @@ namespace Microsoft.PowerShell.GData
             public CalendarService CalendarService;
             public CalendarService OauthCalendarService;
             public GoogleMailSettingsService GoogleMailSettingsService;
-            public GDataTypes.ProfileService ProfileService;
-            public GDataTypes.ResourceService ResourceService;
+            public GDataTypes.GDataProfileService ProfileService;
+            public GDataTypes.GDataResourceService ResourceService;
             public ContactsService ContactsService;
             public ContactsService OauthContactsService;
             public GDataTypes.Oauth Oauth;
@@ -162,19 +161,18 @@ namespace Microsoft.PowerShell.GData
 
         #endregion Contact
 
-
         #region Resource
 
-        public class ResourceEntrys : System.Collections.CollectionBase
+        public class GDataResourceEntrys : System.Collections.CollectionBase
         {
-            public void Add(ResourceEntry ResourceEntry)
+            public void Add(GDataResourceEntry ResourceEntry)
             {
                 List.Add(ResourceEntry);
 
             }
         }
 
-        public class ResourceEntry
+        public class GDataResourceEntry
         {
 
             public string ResourceId;
@@ -186,7 +184,7 @@ namespace Microsoft.PowerShell.GData
         }
 
 
-        public class ResourceService
+        public class GDataResourceService
         {
             public string AdminUser { get; set; }
             public string Token { get; set; }
@@ -217,16 +215,16 @@ namespace Microsoft.PowerShell.GData
 
         #region Profile
 
-        public class ProfileEntrys : System.Collections.CollectionBase
+        public class GDataProfileEntrys : System.Collections.CollectionBase
         {
-            public void Add(ProfileEntry ProfileEntry)
+            public void Add(GDataProfileEntry ProfileEntry)
             {
                 List.Add(ProfileEntry);
 
             }
         }
 
-        public class ProfileEntry
+        public class GDataProfileEntry
         {
 
             public string UserName;
@@ -239,7 +237,7 @@ namespace Microsoft.PowerShell.GData
             public string PostalAddress;
         }
 
-        public class ProfileService
+        public class GDataProfileService
         {
             public string AdminUser { get; set; }
             public string Token { get; set; }
@@ -248,7 +246,7 @@ namespace Microsoft.PowerShell.GData
 
         #endregion Profile
 
-        #region user
+        #region User
 
         public class GDataUserEntrys : System.Collections.CollectionBase
         {
@@ -299,7 +297,7 @@ namespace Microsoft.PowerShell.GData
 
 
 
-        #endregion user
+        #endregion User
 
         #region MailSettings
 

@@ -16,56 +16,6 @@ namespace Microsoft.PowerShell.GData
 
     public class Group
     {        
-        #region New-GDataGroupService
-        /*
-        [Cmdlet(VerbsCommon.New, "GDataGroupService")]
-        public class NewGDataGroupService : Cmdlet
-        {
-            #region Parameters
-
-            [Parameter(
-            Mandatory = true,
-            HelpMessage = "GoogleApps admin user, admin@domain.com",
-            HelpMessageBaseName = "GoogleApps admin user, admin@domain.com"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminUsername
-            {
-                get { return null; }
-                set { _AdminUser = value; }
-            }
-            private string _AdminUser;
-
-            [Parameter(
-               Mandatory = true,
-               HelpMessage = "GoogleApps admin password"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminPassword
-            {
-                get { return null; }
-                set { _AdminPassword = value; }
-            }
-            private string _AdminPassword;
-
-            #endregion Parameters
-
-            protected override void ProcessRecord()
-            {
-
-                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                var _Domain = _DgcGoogleAppsService.GetDomain(_AdminUser);
-
-
-                var _GroupService = new AppsService(_Domain, _AdminUser, _AdminPassword);
-                WriteObject(_GroupService);
-            }
-
-
-        }
-        */
-        #endregion New-GDataGroupService
-
         #region Remove-GDataGroup
 
         [Cmdlet(VerbsCommon.Remove, "GDataGroup")]
@@ -82,9 +32,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _GroupService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _GroupService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -94,9 +44,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             #endregion Parameters
 
@@ -104,16 +54,14 @@ namespace Microsoft.PowerShell.GData
             {
                 try
                 {
-                    _GroupService.AppsService.Groups.DeleteGroup(_ID);
-                    WriteObject(_ID);
+                    service.AppsService.Groups.DeleteGroup(id);
+                    WriteObject(id);
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
-
-
         }
 
         #endregion Remove-GDataGroup
@@ -125,7 +73,6 @@ namespace Microsoft.PowerShell.GData
         {
             #region Parameters
 
-
             [Parameter(
             Mandatory = true,
             HelpMessage = "GroupService, new-GdataGroupService"
@@ -134,9 +81,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _GroupService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _GroupService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = false,
@@ -146,45 +93,41 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
-                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                if (_ID == null)
+                if (id == null)
                 {
                     try
                     {
-                        var _feed = _GroupService.AppsService.Groups.RetrieveAllGroups();
-                        var _GroupEntrys = _DgcGoogleAppsService.CreateGroupEntrys(_feed);
-                        WriteObject(_GroupEntrys,true);
+                        var _entrys = dgcGoogleAppsService.CreateGroupEntrys(service.AppsService.Groups.RetrieveAllGroups());
+                        WriteObject(_entrys, true);
                     }
-                    catch (Exception _Exception)
+                    catch (Exception _exception)
                     {
-                        WriteObject(_Exception);
+                        WriteObject(_exception);
                     }
                 }
                 else
                 {
                     try
                     {
-                        var _entry = _GroupService.AppsService.Groups.RetrieveGroup(_ID);
-                        var _GroupEntry = _DgcGoogleAppsService.CreateGroupEntry(_entry);
-                        WriteObject(_GroupEntry);
+                        var _entry = dgcGoogleAppsService.CreateGroupEntry(service.AppsService.Groups.RetrieveGroup(id));
+                        WriteObject(_entry);
                     }
-                    catch (Exception _Exception) 
+                    catch (Exception _exception) 
                     { 
-                        WriteObject(_Exception); 
+                        WriteObject(_exception); 
                     }
                 }
 
             }
-
         }
 
         #endregion Get-GDataGroup
@@ -196,7 +139,6 @@ namespace Microsoft.PowerShell.GData
         {
             #region Parameters
 
-
             [Parameter(
             Mandatory = true,
             HelpMessage = "GroupService, new-GdataGroupService"
@@ -205,9 +147,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _GroupService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _GroupService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -217,28 +159,25 @@ namespace Microsoft.PowerShell.GData
             public string Id
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
                 try
                 {
-                    var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                    var _Feed = _GroupService.AppsService.Groups.RetrieveAllMembers(_ID);
-                    var _GroupMemberEntry = _DgcGoogleAppsService.CreateGroupMemberEntrys(_Feed);
-                    WriteObject(_GroupMemberEntry, true);
+                    var _entry = dgcGoogleAppsService.CreateGroupMemberEntrys(service.AppsService.Groups.RetrieveAllMembers(id));
+                    WriteObject(_entry, true);
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
-
         }
 
         #endregion Get-GDataGroupMember
@@ -259,9 +198,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _GroupService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _GroupService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -271,9 +210,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = true,
@@ -283,28 +222,24 @@ namespace Microsoft.PowerShell.GData
             public string UserID
             {
                 get { return null; }
-                set { _UserID = value; }
+                set { userID = value; }
             }
-            private string _UserID;
+            private string userID;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
                 try 
                 {
-                    var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                    var _Entry = _GroupService.AppsService.Groups.AddMemberToGroup(_UserID, _ID);
-                    var _GroupMemberEntry = _DgcGoogleAppsService.CreateGroupMemberEntry(_Entry);
-                    WriteObject(_GroupMemberEntry);
-                }catch (Exception _Exception) 
+                    var _entry = dgcGoogleAppsService.CreateGroupMemberEntry(service.AppsService.Groups.AddMemberToGroup(userID, id));
+                    WriteObject(_entry);
+                }catch (Exception _exception) 
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
-
             }
-
         }
 
         #endregion Add-GDataGroupMember
@@ -316,7 +251,6 @@ namespace Microsoft.PowerShell.GData
         {
             #region Paradmeters
 
-
             [Parameter(
             Mandatory = true,
             HelpMessage = "GroupService, New-GDataGroupService"
@@ -325,9 +259,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _GroupService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _GroupService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -337,9 +271,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = true,
@@ -349,26 +283,25 @@ namespace Microsoft.PowerShell.GData
             public string UserID
             {
                 get { return null; }
-                set { _UserID = value; }
+                set { userID = value; }
             }
-            private string _UserID;
+            private string userID;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
                 try 
                 {
-                    _GroupService.AppsService.Groups.RemoveMemberFromGroup(_UserID, _ID);
-                    WriteObject(_UserID);
+                    service.AppsService.Groups.RemoveMemberFromGroup(userID, id);
+                    WriteObject(userID);
                 }
-                catch (Exception _Exception) 
+                catch (Exception _exception) 
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
-
         }
 
         #endregion Remove-GDataGroupMember
@@ -380,7 +313,6 @@ namespace Microsoft.PowerShell.GData
         {
             #region Paradmeters
 
-
             [Parameter(
             Mandatory = true,
             HelpMessage = "GroupService, new-GdataGroupService"
@@ -389,9 +321,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _GroupService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _GroupService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -401,29 +333,27 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
-
-                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                var _Domain = _DgcGoogleAppsService.GetDomainFromAppService(_GroupService.AppsService);
+                var _domain = dgcGoogleAppsService.GetDomainFromAppService(service.AppsService);
 
                 try
                 {
                     
-                    var _Feed = _GroupService.AppsService.Groups.RetrieveGroupOwners(_ID);
-                    var _GroupOwnerEntrys = _DgcGoogleAppsService.CreateGroupOwnerEntrys(_Feed);
+                    var _Feed = service.AppsService.Groups.RetrieveGroupOwners(id);
+                    var _GroupOwnerEntrys = dgcGoogleAppsService.CreateGroupOwnerEntrys(_Feed);
                     WriteObject(_GroupOwnerEntrys, true);
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
 
             }
@@ -439,7 +369,6 @@ namespace Microsoft.PowerShell.GData
         {
             #region Paradmeters
 
-
             [Parameter(
             Mandatory = true,
             HelpMessage = "GroupService, new-GdataGroupService"
@@ -448,9 +377,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _GroupService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _GroupService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -460,9 +389,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = true,
@@ -472,44 +401,35 @@ namespace Microsoft.PowerShell.GData
             public string UserID
             {
                 get { return null; }
-                set { _UserID = value; }
+                set { userID = value; }
             }
-            private string _UserID;
+            private string userID;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
 
-                //var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                //var _Domain = _DgcGoogleAppsService.GetDomainFromAppService(_GroupService);
-
-                var _Domain = _GroupService.AppsService.Domain.ToString();
+                var _domain = service.AppsService.Domain.ToString();
 
                 try
                 {
-                    var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                    var _UserCheck = _GroupService.AppsService.Groups.RetrieveMember(_UserID, _ID);
+                    var _userCheck = service.AppsService.Groups.RetrieveMember(userID, id);
 
-
-                    if (_UserCheck == null)
+                    if (_userCheck == null)
                     {
-                        throw new Exception(_UserID + " is note meber of " + _ID);
+                        throw new Exception(userID + " is note meber of " + id);
                     }
-                    
 
-                    var _Entry = _GroupService.AppsService.Groups.AddOwnerToGroup(_UserID, _ID);
-                    var _GroupOwnerEntry = _DgcGoogleAppsService.CreateGroupOwnerEntry(_Entry);
-                    WriteObject(_GroupOwnerEntry);
+                    var _entry = dgcGoogleAppsService.CreateGroupOwnerEntry(service.AppsService.Groups.AddOwnerToGroup(userID, id));
+                    WriteObject(_entry);
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
-
             }
-
         }
 
         #endregion Add-GDataGroupOwner
@@ -521,7 +441,6 @@ namespace Microsoft.PowerShell.GData
         {
             #region Paradmeters
 
-
             [Parameter(
             Mandatory = true,
             HelpMessage = "GroupService, new-GdataGroupService"
@@ -530,9 +449,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _GroupService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _GroupService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -542,9 +461,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = true,
@@ -554,33 +473,26 @@ namespace Microsoft.PowerShell.GData
             public string UserID
             {
                 get { return null; }
-                set { _UserID = value; }
+                set { userID = value; }
             }
-            private string _UserID;
+            private string userID;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
-
-                //var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                //var _Domain = _DgcGoogleAppsService.GetDomainFromAppService(_GroupService);
-
-                var _Domain = _GroupService.AppsService.Domain.ToString();
-
+                var _domain = service.AppsService.Domain.ToString();
                 try
                 {
-                    _GroupService.AppsService.Groups.RemoveOwnerFromGroup(_UserID, _ID);
-                    WriteObject(_ID);
+                    service.AppsService.Groups.RemoveOwnerFromGroup(userID, id);
+                    WriteObject(id);
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
-
             }
-
         }
 
         #endregion Remove-GDataGroupOwner
@@ -601,9 +513,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _GroupService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _GroupService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -613,9 +525,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = false,
@@ -625,9 +537,9 @@ namespace Microsoft.PowerShell.GData
             public string Name
             {
                 get { return null; }
-                set { _Name = value; }
+                set { name = value; }
             }
-            private string _Name;
+            private string name;
 
             [Parameter(
             Mandatory = false,
@@ -637,9 +549,9 @@ namespace Microsoft.PowerShell.GData
             public string Description
             {
                 get { return null; }
-                set { _Description = value; }
+                set { description = value; }
             }
-            private string _Description;
+            private string description;
 
             [Parameter(
             Mandatory = false,
@@ -649,47 +561,44 @@ namespace Microsoft.PowerShell.GData
             public string EmailPermission
             {
                 get { return null; }
-                set { _EmailPermission = value; }
+                set { emailPermission = value; }
             }
-            private string _EmailPermission;
+            private string emailPermission;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
-                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                AppsExtendedEntry _Group = _GroupService.AppsService.Groups.RetrieveGroup(_ID);
+                AppsExtendedEntry _group = service.AppsService.Groups.RetrieveGroup(id);
 
-                foreach (Google.GData.Extensions.Apps.PropertyElement property in _Group.Properties)
+                foreach (Google.GData.Extensions.Apps.PropertyElement property in _group.Properties)
                 {
 
-                    if (_Name == null && property.Name == "groupName")
+                    if (name == null && property.Name == "groupName")
                     {
-                        _Name = property.Value;
+                        name = property.Value;
                     }
-                    else if (_Description == null && property.Name == "description")
+                    else if (description == null && property.Name == "description")
                     {
-                        _Description = property.Value;
+                        description = property.Value;
                     }
-                    else if (_EmailPermission == null && property.Name == "emailPermission")
+                    else if (emailPermission == null && property.Name == "emailPermission")
                     {
-                        _EmailPermission = property.Value;
+                        emailPermission = property.Value;
                     }
 
                 }
                 try
                 {
-                    var _Entry = _GroupService.AppsService.Groups.UpdateGroup(_ID, _Name, _Description, _EmailPermission);
-                    var _GroupEntry = _DgcGoogleAppsService.CreateGroupEntry(_Entry);
-                    WriteObject(_GroupEntry);
+                    var _entry = dgcGoogleAppsService.CreateGroupEntry(service.AppsService.Groups.UpdateGroup(id, name, description, emailPermission));
+                    WriteObject(_entry);
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
-
         }
 
         #endregion Set-GDataGroup
@@ -700,21 +609,19 @@ namespace Microsoft.PowerShell.GData
         public class NewGDataGroup : Cmdlet
         {
 
-
             #region Parameters
 
-
             [Parameter(
-         Mandatory = true,
-         HelpMessage = "GroupService, New-GDataGroupService"
-         )]
+            Mandatory = true,
+            HelpMessage = "GroupService, New-GDataGroupService"
+            )]
             [ValidateNotNullOrEmpty]
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _GroupService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _GroupService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -724,9 +631,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = true,
@@ -736,9 +643,9 @@ namespace Microsoft.PowerShell.GData
             public string Name
             {
                 get { return null; }
-                set { _Name = value; }
+                set { name = value; }
             }
-            private string _Name;
+            private string name;
 
             [Parameter(
             Mandatory = true,
@@ -748,9 +655,9 @@ namespace Microsoft.PowerShell.GData
             public string Description
             {
                 get { return null; }
-                set { _Description = value; }
+                set { description = value; }
             }
-            private string _Description;
+            private string description;
 
             [Parameter(
             Mandatory = true,
@@ -760,34 +667,27 @@ namespace Microsoft.PowerShell.GData
             public string EmailPermission
             {
                 get { return null; }
-                set { _EmailPermission = value; }
+                set { emailPermission = value; }
             }
-            private string _EmailPermission;
+            private string emailPermission;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
-
                 try
                 {
-                    var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                    var _Entry = _GroupService.AppsService.Groups.CreateGroup(_ID, _Name, _Description, _EmailPermission);
-                    var _GroupEntry = _DgcGoogleAppsService.CreateGroupEntry(_Entry);
-                    WriteObject(_GroupEntry);
+                    var _entry = dgcGoogleAppsService.CreateGroupEntry(service.AppsService.Groups.CreateGroup(id, name, description, emailPermission));
+                    WriteObject(_entry);
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
-
         }
 
-
         #endregion New-GDataGroup
-
     }
-
 }

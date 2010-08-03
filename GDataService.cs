@@ -33,9 +33,9 @@ namespace Microsoft.PowerShell.GData
             public string AdminUsername
             {
                 get { return null; }
-                set { _AdminUser = value; }
+                set { adminUser = value; }
             }
-            private string _AdminUser;
+            private string adminUser;
 
             [Parameter(
                Mandatory = true
@@ -44,9 +44,9 @@ namespace Microsoft.PowerShell.GData
             public string AdminPassword
             {
                 get { return null; }
-                set { _AdminPassword = value; }
+                set { adminPassword = value; }
             }
-            private string _AdminPassword;
+            private string adminPassword;
 
             [Parameter(
                Mandatory = false
@@ -55,9 +55,9 @@ namespace Microsoft.PowerShell.GData
             public string ConsumerKey
             {
                 get { return null; }
-                set { _ConsumerKey = value; }
+                set { consumerKey = value; }
             }
-            private string _ConsumerKey;
+            private string consumerKey;
 
             [Parameter(
                Mandatory = false
@@ -66,77 +66,73 @@ namespace Microsoft.PowerShell.GData
             public string ConsumerSecret
             {
                 get { return null; }
-                set { _ConsumerSecret = value; }
+                set { consumerSecret = value; }
             }
-            private string _ConsumerSecret;
+            private string consumerSecret;
 
             #endregion Parameters
 
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
+            private GDataTypes.GDataService service = new GDataTypes.GDataService();
             protected override void ProcessRecord()
             {
-
-                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                var _Domain = _DgcGoogleAppsService.GetDomain(_AdminUser);
-                var _GDataService = new GDataTypes.GDataService();
+                var _domain = dgcGoogleAppsService.GetDomain(adminUser);
 
                 try
                 {
                     //AppsService
-                    _GDataService.AppsService = new AppsService(_Domain, _AdminUser, _AdminPassword);
+                    service.AppsService = new AppsService(_domain, adminUser, adminPassword);
                     
                     //CalendarService
-                    var _CalendarService = new CalendarService("Calendar");
-                    _CalendarService.setUserCredentials(_AdminUser, _AdminPassword);                    
-                    _GDataService.CalendarService = _CalendarService;
+                    var _calendarService = new CalendarService("Calendar");
+                    _calendarService.setUserCredentials(adminUser, adminPassword);                    
+                    service.CalendarService = _calendarService;
                     
                     //OauthCalendarService
-                    if (_ConsumerKey != null)
+                    if (consumerKey != null)
                     {
-                        if (_ConsumerSecret == null)
+                        if (consumerSecret == null)
                         {
                             throw new Exception("-ConsumerSecret can't be null");
                         }
-                        var _OauthCalendarService = new CalendarService("Calendar");
-                        var _Oauth = new GDataTypes.Oauth();
-                        _Oauth.ConsumerKey = _ConsumerKey;
-                        _Oauth.ConsumerSecret = _ConsumerSecret;
-                        _GDataService.Oauth = _Oauth;
-                        GOAuthRequestFactory _RequestFactory = new GOAuthRequestFactory("cl", "GDataCmdLet");
-                        _RequestFactory.ConsumerKey = _Oauth.ConsumerKey;
-                        _RequestFactory.ConsumerSecret = _Oauth.ConsumerSecret;
-                        _OauthCalendarService.RequestFactory = _RequestFactory;
-                        _GDataService.OauthCalendarService = _OauthCalendarService;
+                        var _oauthCalendarService = new CalendarService("Calendar");
+                        var _oauth = new GDataTypes.Oauth();
+                        _oauth.ConsumerKey = consumerKey;
+                        _oauth.ConsumerSecret = consumerSecret;
+                        service.Oauth = _oauth;
+                        GOAuthRequestFactory _requestFactory = new GOAuthRequestFactory("cl", "GDataCmdLet");
+                        _requestFactory.ConsumerKey = _oauth.ConsumerKey;
+                        _requestFactory.ConsumerSecret = _oauth.ConsumerSecret;
+                        _oauthCalendarService.RequestFactory = _requestFactory;
+                        service.OauthCalendarService = _oauthCalendarService;
                     }
 
                     //MailSettingsService
-                    var _GoogleMailSettingsService = new GoogleMailSettingsService(_Domain, "GMailSettingsService");
-                    _GoogleMailSettingsService.setUserCredentials(_AdminUser, _AdminPassword);
-                    _GDataService.GoogleMailSettingsService = _GoogleMailSettingsService;
+                    var _googleMailSettingsService = new GoogleMailSettingsService(_domain, "GMailSettingsService");
+                    _googleMailSettingsService.setUserCredentials(adminUser, adminPassword);
+                    service.GoogleMailSettingsService = _googleMailSettingsService;
                     
                     //ProfileService
-                    var _DgcGoogleProfileService = new Dgc.GoogleProfileService();
-                    _GDataService.ProfileService = _DgcGoogleProfileService.GetAuthToken(_AdminUser, _AdminPassword);
+                    var _dgcGoogleProfileService = new Dgc.GoogleProfileService();
+                    service.ProfileService = _dgcGoogleProfileService.GetAuthToken(adminUser, adminPassword);
                     
                     //ResourceService
-                    var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                    _GDataService.ResourceService = _DgcGoogleResourceService.GetAuthToken(_AdminUser, _AdminPassword);
+                    var _dgcGoogleResourceService = new Dgc.GoogleResourceService();
+                    service.ResourceService = _dgcGoogleResourceService.GetAuthToken(adminUser, adminPassword);
                     
                     //ContactsService
-                    var _ContactService = new ContactsService("GData");
-                    _ContactService.setUserCredentials(_AdminUser, _AdminPassword);
-                    _GDataService.ContactsService = _ContactService;
+                    var _contactService = new ContactsService("GData");
+                    _contactService.setUserCredentials(adminUser, adminPassword);
+                    service.ContactsService = _contactService;
 
-                    WriteObject(_GDataService);
+                    WriteObject(service);
                 }
-                catch (AppsException _Exception)
+                catch (AppsException _exception)
                 {
-                    WriteObject(_Exception, true);
+                    WriteObject(_exception, true);
                 }
             }
-
-
         }
-
         #endregion New-GDataUserService
 
     }

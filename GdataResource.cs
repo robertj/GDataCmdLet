@@ -13,66 +13,9 @@ using System.Xml.Linq;
 
 namespace Microsoft.PowerShell.GData
 {
-
     public class Resource
     {
 
-        #region New-GDataResourceService
-        /*
-        [Cmdlet(VerbsCommon.New, "GDataResourceService")]
-        public class NewGDataResourceService : Cmdlet
-        {
-            #region Parameters
-
-            [Parameter(
-            Mandatory = true,
-            HelpMessage = "GoogleApps admin user, admin@domain.com",
-            HelpMessageBaseName = "GoogleApps admin user, admin@domain.com"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminUsername
-            {
-                get { return null; }
-                set { _AdminUser = value; }
-            }
-            private string _AdminUser;
-
-            [Parameter(
-               Mandatory = true,
-               HelpMessage = "GoogleApps admin password"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminPassword
-            {
-                get { return null; }
-                set { _AdminPassword = value; }
-            }
-            private string _AdminPassword;
-
-            #endregion Parameters
-
-            protected override void ProcessRecord()
-            {
-
-                try
-                {
-                    var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                    var _Entry = _DgcGoogleResourceService.GetAuthToken(_AdminUser, _AdminPassword);
-
-                    WriteObject(_Entry);
-
-                }
-                catch (WebException _Exception)
-                {
-                    WriteObject(_Exception);    
-                }
-            }
-
-
-        }
-        */
-        #endregion New-GDataResourceService
-        
         #region New-GDataResource
 
         [Cmdlet(VerbsCommon.New, "GDataResource")]
@@ -87,9 +30,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _ResourceService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _ResourceService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true
@@ -98,9 +41,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = true
@@ -109,9 +52,9 @@ namespace Microsoft.PowerShell.GData
             public string Type
             {
                 get { return null; }
-                set { _Type = value; }
+                set { type = value; }
             }
-            private string _Type;
+            private string type;
 
             [Parameter(
             Mandatory = true
@@ -120,30 +63,25 @@ namespace Microsoft.PowerShell.GData
             public string Description
             {
                 get { return null; }
-                set { _Description = value; }
+                set { description = value; }
             }
-            private string _Description;
+            private string description;
 
             #endregion Parameters
-
+            private Dgc.GoogleResourceService dgcGoogleResourceService = new Dgc.GoogleResourceService();
             protected override void ProcessRecord()
             {
 
                 try
                 {
-                    var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                    var _Xml = _DgcGoogleResourceService.NewResource(_ResourceService.ResourceService, _ID, _Type, _Description);
-                    var _ResourceEntrys = _DgcGoogleResourceService.CreateResourceEntrys(_Xml, _ResourceService.ResourceService);
-                    /*
-                    XmlDocument _XmlDoc = new XmlDocument();
-                    _XmlDoc.InnerXml = _Xml;
-                    XmlElement _Entry = _XmlDoc.DocumentElement;
-                    */
-                    WriteObject(_ResourceEntrys,true);
+                    var _xml = dgcGoogleResourceService.NewResource(service.ResourceService, id, type, description);
+                    var _resourceEntrys = dgcGoogleResourceService.CreateResourceEntrys(_xml, service.ResourceService);
+
+                    WriteObject(_resourceEntrys, true);
                 }
-                catch (WebException _Exception)
+                catch (WebException _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
 
@@ -164,9 +102,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _ResourceService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _ResourceService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = false
@@ -175,51 +113,42 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             #endregion Parameters
 
+            private Dgc.GoogleResourceService dgcGoogleResourceService = new Dgc.GoogleResourceService();
             protected override void ProcessRecord()
             {
 
                 try
                 {
-                    if (_ID != null)
+                    if (id != null)
                     {
-                        var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                        var _Xml = _DgcGoogleResourceService.RetriveResource(_ResourceService.ResourceService, _ID);
-                        var _ResourceEntrys = _DgcGoogleResourceService.CreateResourceEntrys(_Xml, _ResourceService.ResourceService);
-                        /*
-                        XmlDocument _XmlDoc = new XmlDocument();
-                        _XmlDoc.InnerXml = _Xml;
-                        XmlElement _Entry = _XmlDoc.DocumentElement;
-                        */
-                        WriteObject(_ResourceEntrys,true);
+                        var _xml = dgcGoogleResourceService.RetriveResource(service.ResourceService, id);
+                        var _resourceEntrys = dgcGoogleResourceService.CreateResourceEntrys(_xml, service.ResourceService);
+
+                        WriteObject(_resourceEntrys, true);
                     }
                     else
                     {
-                        var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                        var _Xml = _DgcGoogleResourceService.RetriveAllResources(_ResourceService.ResourceService);
-                        var _ResourceEntrys = _DgcGoogleResourceService.CreateResourceEntrys(_Xml, _ResourceService.ResourceService);
-                        /*
-                        XmlDocument _XmlDoc = new XmlDocument();
-                        _XmlDoc.InnerXml = _Xml;
-                        XmlElement _Entry = _XmlDoc.DocumentElement;
-                        */
-                        WriteObject(_ResourceEntrys,true);
+                        var _xml = dgcGoogleResourceService.RetriveAllResources(service.ResourceService);
+                        var _resourceEntrys = dgcGoogleResourceService.CreateResourceEntrys(_xml, service.ResourceService);
+
+                        WriteObject(_resourceEntrys, true);
                     }
                 }
-                catch (WebException _Exception)
+                catch (WebException _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
         }
-        
+
         #endregion Get-GDataResource
-        
+
         #region Remove-GDataResource
 
         [Cmdlet(VerbsCommon.Remove, "GDataResource")]
@@ -234,9 +163,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _ResourceService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _ResourceService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true
@@ -245,32 +174,31 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             #endregion Parameters
 
+            private Dgc.GoogleResourceService dgcGoogleResourceService = new Dgc.GoogleResourceService();
             protected override void ProcessRecord()
             {
 
                 try
                 {
+                    var _xml = dgcGoogleResourceService.RemoveResources(service.ResourceService, id);
 
-                    var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                    var _Xml = _DgcGoogleResourceService.RemoveResources(_ResourceService.ResourceService, _ID);
-
-                    WriteObject(_ID);
+                    WriteObject(id);
 
                 }
-                catch (WebException _Exception)
+                catch (WebException _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
 
         }
-        
+
         #endregion Remove-GDataResource
 
         #region Set-GDataResource
@@ -287,9 +215,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _ResourceService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _ResourceService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true
@@ -298,9 +226,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = true
@@ -309,9 +237,9 @@ namespace Microsoft.PowerShell.GData
             public string Type
             {
                 get { return null; }
-                set { _Type = value; }
+                set { type = value; }
             }
-            private string _Type;
+            private string type;
 
             [Parameter(
             Mandatory = true
@@ -320,39 +248,33 @@ namespace Microsoft.PowerShell.GData
             public string Description
             {
                 get { return null; }
-                set { _Description = value; }
+                set { description = value; }
             }
-            private string _Description;
+            private string description;
 
             #endregion Parameters
 
+            private Dgc.GoogleResourceService dgcGoogleResourceService = new Dgc.GoogleResourceService();
             protected override void ProcessRecord()
             {
 
                 try
                 {
-                    var _DgcGoogleResourceService = new Dgc.GoogleResourceService();
-                    _DgcGoogleResourceService.SetResource(_ResourceService.ResourceService, _ID, _Type, _Description);
+                    dgcGoogleResourceService.SetResource(service.ResourceService, id, type, description);
 
-                    var _Xml = _DgcGoogleResourceService.RetriveResource(_ResourceService.ResourceService, _ID);
-                    var _ResourceEntrys = _DgcGoogleResourceService.CreateResourceEntrys(_Xml, _ResourceService.ResourceService);
-                    /*
-                    XmlDocument _XmlDoc = new XmlDocument();
-                    _XmlDoc.InnerXml = _Xml;
-                    XmlElement _Entry = _XmlDoc.DocumentElement;
-                    */
-                    WriteObject(_ResourceEntrys);
+                    var _xml = dgcGoogleResourceService.RetriveResource(service.ResourceService, id);
+                    var _resourceEntrys = dgcGoogleResourceService.CreateResourceEntrys(_xml, service.ResourceService);
+
+                    WriteObject(_resourceEntrys);
                 }
-                catch (WebException _Exception)
+                catch (WebException _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
 
         }
         #endregion New-GDataResource
-    
-    
-    }
 
+    }
 }

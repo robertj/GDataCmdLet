@@ -27,12 +27,11 @@ namespace Microsoft.PowerShell.GData
 
     public class Dgc
     {
-
         #region XmlReturn
         public class XmlReturn
         {
-            public string name { get; set; }
-            public string value { get; set; }
+            public string Name { get; set; }
+            public string Value { get; set; }
         }
 
         #endregion XmlReturn
@@ -51,8 +50,8 @@ namespace Microsoft.PowerShell.GData
                 ListFormat = from c in Elem.Elements(Ns + "property")
                              select new XmlReturn
                              {
-                                 name = c.Attribute("name").Value.ToString(),
-                                 value = c.Attribute("value").Value.ToString()
+                                 Name = c.Attribute("name").Value.ToString(),
+                                 Value = c.Attribute("value").Value.ToString()
                              };
 
                 
@@ -68,25 +67,22 @@ namespace Microsoft.PowerShell.GData
         {
             #region GetDomain
 
-            public string GetDomain(string AdminUser)
+            public string GetDomain(string adminUser)
             {
-                char[] delimiterChars = { '@' };
-                
-                
-                string[] temp = AdminUser.Split(delimiterChars);
-                var Domain = temp[1];
-                return Domain;
-
+                char[] _delimiterChars = { '@' };
+                string[] _temp = adminUser.Split(_delimiterChars);
+                var _domain = _temp[1];
+                return _domain;
             }
 
             #endregion GetDomain
 
             #region GetDomainFromAppService
 
-            public string GetDomainFromAppService(AppsService UserService)
+            public string GetDomainFromAppService(AppsService userService)
             {
-                string Domain = UserService.Domain;
-                return Domain;
+                string _domain = userService.Domain;
+                return _domain;
 
             }
 
@@ -94,441 +90,402 @@ namespace Microsoft.PowerShell.GData
 
             #region CreateGroupEntrys
 
-            public GDataTypes.GDataGroupEntrys CreateGroupEntrys(AppsExtendedFeed GroupEntrys)
+            public GDataTypes.GDataGroupEntrys CreateGroupEntrys(AppsExtendedFeed groupEntrys)
             {
 
-                var GDataGroupEntrys = new GDataTypes.GDataGroupEntrys();
-                foreach (AppsExtendedEntry GroupEntry in GroupEntrys.Entries)
+                var _gDataGroupEntrys = new GDataTypes.GDataGroupEntrys();
+                foreach (AppsExtendedEntry _groupEntry in groupEntrys.Entries)
                 {
-                    var GDataGroupEntry = new GDataTypes.GDataGroupEntry();
-                    GDataGroupEntry.SelfUri = GroupEntry.SelfUri.ToString();
-                    foreach (var Setting in GroupEntry.Properties)
+                    var _gDataGroupEntry = new GDataTypes.GDataGroupEntry();
+                    _gDataGroupEntry.SelfUri = _groupEntry.SelfUri.ToString();
+                    foreach (var _setting in _groupEntry.Properties)
                     {
-                        if (Setting.Name == "groupId")
+                        if (_setting.Name == "groupId")
                         {
-                            GDataGroupEntry.GroupId = Setting.Value;
+                            _gDataGroupEntry.GroupId = _setting.Value;
                         }
-                        else if (Setting.Name == "groupName")
+                        else if (_setting.Name == "groupName")
                         {
-                            GDataGroupEntry.GroupName = Setting.Value;
+                            _gDataGroupEntry.GroupName = _setting.Value;
                         }
-                        else if (Setting.Name == "description")
+                        else if (_setting.Name == "description")
                         {
-                            GDataGroupEntry.Description = Setting.Value;
+                            _gDataGroupEntry.Description = _setting.Value;
                         }
-                        else if (Setting.Name == "emailPermission")
+                        else if (_setting.Name == "emailPermission")
                         {
-                            GDataGroupEntry.EmailPermission = Setting.Value;
+                            _gDataGroupEntry.EmailPermission = _setting.Value;
                         }
 
                     }
-                    GDataGroupEntrys.Add(GDataGroupEntry);
+                    _gDataGroupEntrys.Add(_gDataGroupEntry);
                 }
 
-                return GDataGroupEntrys;
+                return _gDataGroupEntrys;
             }
 
             #endregion CreateGroupEntrys
 
             #region CreateGroupEntry
 
-            public GDataTypes.GDataGroupEntry CreateGroupEntry(AppsExtendedEntry GroupEntry)
+            public GDataTypes.GDataGroupEntry CreateGroupEntry(AppsExtendedEntry groupEntry)
             {
-                var GDataGroupEntry = new GDataTypes.GDataGroupEntry();
-                GDataGroupEntry.SelfUri = GroupEntry.SelfUri.ToString();
-                foreach (var Setting in GroupEntry.Properties)
+                var _gDataGroupEntry = new GDataTypes.GDataGroupEntry();
+                _gDataGroupEntry.SelfUri = groupEntry.SelfUri.ToString();
+                foreach (var _setting in groupEntry.Properties)
                 {
-                    if (Setting.Name == "groupId")
+                    if (_setting.Name == "groupId")
                     {
-                        GDataGroupEntry.GroupId = Setting.Value;
+                        _gDataGroupEntry.GroupId = _setting.Value;
                     }
-                    else if (Setting.Name == "groupName")
+                    else if (_setting.Name == "groupName")
                     {
-                        GDataGroupEntry.GroupName = Setting.Value;
+                        _gDataGroupEntry.GroupName = _setting.Value;
                     }
-                    else if (Setting.Name == "description")
+                    else if (_setting.Name == "description")
                     {
-                        GDataGroupEntry.Description = Setting.Value;
+                        _gDataGroupEntry.Description = _setting.Value;
                     }
-                    else if (Setting.Name == "emailPermission")
+                    else if (_setting.Name == "emailPermission")
                     {
-                        GDataGroupEntry.EmailPermission = Setting.Value;
+                        _gDataGroupEntry.EmailPermission = _setting.Value;
                     }
 
                 }
-                return GDataGroupEntry;
+                return _gDataGroupEntry;
             }
 
             #endregion CreateGroupEntry
 
             #region CreateGroupMemberEntrys
 
-            public GDataTypes.GDataGroupMemberEntrys CreateGroupMemberEntrys(AppsExtendedFeed GroupMemberEntrys)
+            public GDataTypes.GDataGroupMemberEntrys CreateGroupMemberEntrys(AppsExtendedFeed groupMemberEntrys)
             {
 
-                var GDataGroupMemberEntrys = new GDataTypes.GDataGroupMemberEntrys();
-                foreach (AppsExtendedEntry GroupMemberEntry in GroupMemberEntrys.Entries)
+                var _gDataGroupMemberEntrys = new GDataTypes.GDataGroupMemberEntrys();
+                foreach (AppsExtendedEntry _groupMemberEntry in groupMemberEntrys.Entries)
                 {
-                    var GDataGroupMemberEntry = new GDataTypes.GDataGroupMemberEntry();
-                    foreach (var Setting in GroupMemberEntry.Properties)
+                    var _gDataGroupMemberEntry = new GDataTypes.GDataGroupMemberEntry();
+                    foreach (var _setting in _groupMemberEntry.Properties)
                     {
-                        if (Setting.Name == "memberId")
+                        if (_setting.Name == "memberId")
                         {
-                            GDataGroupMemberEntry.MemberId = Setting.Value;
+                            _gDataGroupMemberEntry.MemberId = _setting.Value;
                         }
-                        else if (Setting.Name == "memberType")
+                        else if (_setting.Name == "memberType")
                         {
-                            GDataGroupMemberEntry.MemberType = Setting.Value;
+                            _gDataGroupMemberEntry.MemberType = _setting.Value;
                         }
-                        else if (Setting.Name == "directMember")
+                        else if (_setting.Name == "directMember")
                         {
-                            GDataGroupMemberEntry.DirectMember = Setting.Value;
+                            _gDataGroupMemberEntry.DirectMember = _setting.Value;
                         }
                         
                     }
-                    GDataGroupMemberEntrys.Add(GDataGroupMemberEntry);
+                    _gDataGroupMemberEntrys.Add(_gDataGroupMemberEntry);
                 }
 
-                return GDataGroupMemberEntrys;
+                return _gDataGroupMemberEntrys;
             }
 
             #endregion CreateGroupMemberEntrys
 
             #region CreateGroupMemberEntry
 
-            public GDataTypes.GDataGroupMemberEntry CreateGroupMemberEntry(AppsExtendedEntry GroupMemberEntry)
+            public GDataTypes.GDataGroupMemberEntry CreateGroupMemberEntry(AppsExtendedEntry groupMemberEntry)
             {
-                var GDataGroupMemberEntry = new GDataTypes.GDataGroupMemberEntry();
-                foreach (var Setting in GroupMemberEntry.Properties)
+                var _gDataGroupMemberEntry = new GDataTypes.GDataGroupMemberEntry();
+                foreach (var _setting in groupMemberEntry.Properties)
                 {
-                    if (Setting.Name == "memberId")
+                    if (_setting.Name == "memberId")
                     {
-                        GDataGroupMemberEntry.MemberId = Setting.Value;
+                        _gDataGroupMemberEntry.MemberId = _setting.Value;
                     }
-                    else if (Setting.Name == "memberType")
+                    else if (_setting.Name == "memberType")
                     {
-                        GDataGroupMemberEntry.MemberType = Setting.Value;
+                        _gDataGroupMemberEntry.MemberType = _setting.Value;
                     }
-                    else if (Setting.Name == "directMember")
+                    else if (_setting.Name == "directMember")
                     {
-                        GDataGroupMemberEntry.DirectMember = Setting.Value;
+                        _gDataGroupMemberEntry.DirectMember = _setting.Value;
                     }
 
                 }
-
-                return GDataGroupMemberEntry;
+                return _gDataGroupMemberEntry;
             }
 
             #endregion CreateGroupMemberEntry
 
             #region CreateGroupOwnerEntrys
 
-            public GDataTypes.GDataGroupOwnerEntrys CreateGroupOwnerEntrys(AppsExtendedFeed GroupOwnerEntrys)
+            public GDataTypes.GDataGroupOwnerEntrys CreateGroupOwnerEntrys(AppsExtendedFeed groupOwnerEntrys)
             {
-
-                var GDataGroupOwnerEntrys = new GDataTypes.GDataGroupOwnerEntrys();
-                foreach (AppsExtendedEntry GroupOwnerEntry in GroupOwnerEntrys.Entries)
+                var _gDataGroupOwnerEntrys = new GDataTypes.GDataGroupOwnerEntrys();
+                foreach (AppsExtendedEntry _groupOwnerEntry in groupOwnerEntrys.Entries)
                 {
-                    var GDataGroupOwnerEntry = new GDataTypes.GDataGroupOwnerEntry();
-                    foreach (var Setting in GroupOwnerEntry.Properties)
+                    var _gDataGroupOwnerEntry = new GDataTypes.GDataGroupOwnerEntry();
+                    foreach (var _setting in _groupOwnerEntry.Properties)
                     {
-                        if (Setting.Name == "email")
+                        if (_setting.Name == "email")
                         {
-                            GDataGroupOwnerEntry.MemberId = Setting.Value;
+                            _gDataGroupOwnerEntry.MemberId = _setting.Value;
                         }
-                        else if (Setting.Name == "type")
+                        else if (_setting.Name == "type")
                         {
-                            GDataGroupOwnerEntry.MemberType = Setting.Value;
+                            _gDataGroupOwnerEntry.MemberType = _setting.Value;
                         }
 
                     }
-                    GDataGroupOwnerEntrys.Add(GDataGroupOwnerEntry);
+                    _gDataGroupOwnerEntrys.Add(_gDataGroupOwnerEntry);
                 }
-
-                return GDataGroupOwnerEntrys;
+                return _gDataGroupOwnerEntrys;
             }
 
             #endregion CreateGroupOwnerEntrys
 
             #region CreateGroupOwnerEntry
 
-            public GDataTypes.GDataGroupOwnerEntry CreateGroupOwnerEntry(AppsExtendedEntry GroupOwnerEntry)
+            public GDataTypes.GDataGroupOwnerEntry CreateGroupOwnerEntry(AppsExtendedEntry groupOwnerEntry)
             {
-                var GDataGroupOwnerEntry = new GDataTypes.GDataGroupOwnerEntry();
-                foreach (var Setting in GroupOwnerEntry.Properties)
+                var _gDataGroupOwnerEntry = new GDataTypes.GDataGroupOwnerEntry();
+                foreach (var _setting in groupOwnerEntry.Properties)
                 {
-                    if (Setting.Name == "email")
+                    if (_setting.Name == "email")
                     {
-                        GDataGroupOwnerEntry.MemberId = Setting.Value;
+                        _gDataGroupOwnerEntry.MemberId = _setting.Value;
                     }
-                    else if (Setting.Name == "type")
+                    else if (_setting.Name == "type")
                     {
-                        GDataGroupOwnerEntry.MemberType = Setting.Value;
+                        _gDataGroupOwnerEntry.MemberType = _setting.Value;
                     }
-
                 }
-
-                return GDataGroupOwnerEntry;
+                return _gDataGroupOwnerEntry;
             }
 
             #endregion CreateGroupOwnerEntry
 
             #region CreateSenderAddressEntry
 
-            public GDataTypes.GDataSenderAddress CreateSenderAddressEntry(GoogleMailSettingsEntry MailSettingsEntry)
+            public GDataTypes.GDataSenderAddress CreateSenderAddressEntry(GoogleMailSettingsEntry mailSettingsEntry)
             {
-                var GDataMailSettingsEntry = new GDataTypes.GDataSenderAddress();
-
-                foreach (var Setting in MailSettingsEntry.Properties)
+                var _gDataMailSettingsEntry = new GDataTypes.GDataSenderAddress();
+                foreach (var _setting in mailSettingsEntry.Properties)
                 {
-                    if(Setting.Name == "address")
+                    if(_setting.Name == "address")
                     {
-                        GDataMailSettingsEntry.Address = Setting.Value;
+                        _gDataMailSettingsEntry.Address = _setting.Value;
                     }
-                    else if (Setting.Name == "replyTo")
+                    else if (_setting.Name == "replyTo")
                     {
-                        GDataMailSettingsEntry.ReplyTo = Setting.Value;
+                        _gDataMailSettingsEntry.ReplyTo = _setting.Value;
                     }
-                    else if (Setting.Name == "name")
+                    else if (_setting.Name == "name")
                     {
-                        GDataMailSettingsEntry.Name = Setting.Value;
+                        _gDataMailSettingsEntry.Name = _setting.Value;
                     }
-                    else if (Setting.Name == "makeDefault")
+                    else if (_setting.Name == "makeDefault")
                     {
-                        GDataMailSettingsEntry.Default = Setting.Value;
+                        _gDataMailSettingsEntry.Default = _setting.Value;
                     }
-
                 }
-
-                return GDataMailSettingsEntry;
+                return _gDataMailSettingsEntry;
             }
 
             #endregion CreateSenderAddressEntry
 
             #region CreateCreateIMapEntry
 
-            public GDataTypes.GDataImap CreateIMapEntry(GoogleMailSettingsEntry MailSettingsEntry)
+            public GDataTypes.GDataImap CreateIMapEntry(GoogleMailSettingsEntry mailSettingsEntry)
             {
-                var GDataImapEntry = new GDataTypes.GDataImap();
-
-                foreach (var Setting in MailSettingsEntry.Properties)
+                var _gDataImapEntry = new GDataTypes.GDataImap();
+                foreach (var _setting in mailSettingsEntry.Properties)
                 {
-                    if (Setting.Name == "enable")
+                    if (_setting.Name == "enable")
                     {
-                        GDataImapEntry.Enabled = Setting.Value;
+                        _gDataImapEntry.Enabled = _setting.Value;
                     }
                 }
-
-                return GDataImapEntry;
+                return _gDataImapEntry;
             }
 
             #endregion CreateCreateIMapEntry
 
             #region CreateCreatePop3Entry
 
-            public GDataTypes.GDataPop3 CreatePop3Entry(GoogleMailSettingsEntry MailSettingsEntry)
+            public GDataTypes.GDataPop3 CreatePop3Entry(GoogleMailSettingsEntry mailSettingsEntry)
             {
-                var GDataPop3Entry = new GDataTypes.GDataPop3();
+                var _pop3Entry = new GDataTypes.GDataPop3();
 
-                foreach (var Setting in MailSettingsEntry.Properties)
+                foreach (var _setting in mailSettingsEntry.Properties)
                 {
-                    if (Setting.Name == "enable")
+                    if (_setting.Name == "enable")
                     {
-                        GDataPop3Entry.Enabled = Setting.Value;
+                        _pop3Entry.Enabled = _setting.Value;
                     }
-                    else if (Setting.Name == "action")
+                    else if (_setting.Name == "action")
                     {
-                        GDataPop3Entry.Action = Setting.Value;
+                        _pop3Entry.Action = _setting.Value;
                     }
-                    else if (Setting.Name == "enableFor")
+                    else if (_setting.Name == "enableFor")
                     {
-                        GDataPop3Entry.EnabledFor = Setting.Value;
+                        _pop3Entry.EnabledFor = _setting.Value;
                     }
                 }
 
-                return GDataPop3Entry;
+                return _pop3Entry;
             }
 
             #endregion CreateCreatePop3Entry
 
             #region AppendUserAliasEntry
 
-            public GDataTypes.GDataUserAliasEntry AppendUserAliasEntry(string _Xml, GDataTypes.GDataUserAliasEntry GdataUserAliasEntry)
+            public GDataTypes.GDataUserAliasEntry AppendUserAliasEntry(string _Xml, GDataTypes.GDataUserAliasEntry userAliasEntry)
             {
-                var ParesdXml = new GDataTypes.ParseXML(_Xml);
-
-
-                //var AliasEntry = new GDataTypes.GDataUserAliasEntry();
-
-
-                //var GdataUserAliasEntry = new GDataTypes.GDataUserAliasEntry();
-                var GdataUserSingelAliasEntry = new GDataTypes.GDataAliasEntry();
-                foreach (var Entry in ParesdXml.ListFormat)
+                var _paresdXml = new GDataTypes.ParseXML(_Xml);
+                var _userSingelAliasEntry = new GDataTypes.GDataAliasEntry();
+                foreach (var _entry in _paresdXml.ListFormat)
                 {
-                    var GdataAliasEntry = new GDataTypes.GDataAliasEntry();
-                    foreach (var Attribute in Entry.at)
+                    var _aliasEntry = new GDataTypes.GDataAliasEntry();
+                    foreach (var _attribute in _entry.at)
                     {
-
-                        if (Attribute.Value == "aliasEmail" || Attribute.Value == "userEmail")
+                        if (_attribute.Value == "aliasEmail" || _attribute.Value == "userEmail")
                         {
-                            if (Attribute.Value == "aliasEmail")
+                            if (_attribute.Value == "aliasEmail")
                             {
-                                GdataUserSingelAliasEntry.aliasEmail = Attribute.NextAttribute.Value;
+                                _userSingelAliasEntry.aliasEmail = _attribute.NextAttribute.Value;
                             }
-                            if (Attribute.Value == "userEmail")
+                            if (_attribute.Value == "userEmail")
                             {
-                                GdataUserSingelAliasEntry.UserName = Attribute.NextAttribute.Value;
+                                _userSingelAliasEntry.UserName = _attribute.NextAttribute.Value;
                             }
-                            if (GdataUserSingelAliasEntry.UserName != null && GdataUserSingelAliasEntry.aliasEmail != null)
+                            if (_userSingelAliasEntry.UserName != null && _userSingelAliasEntry.aliasEmail != null)
                             {
-                                GdataUserAliasEntry.Add(GdataUserSingelAliasEntry);
+                                userAliasEntry.Add(_userSingelAliasEntry);
                             }
                         }
-
                     }
-                    foreach (var SubEntry in Entry.sub)
+                    foreach (var _subEntry in _entry.sub)
                     {
-
-
-                        foreach (var Attribute in SubEntry.at)
+                        foreach (var _attribute in _subEntry.at)
                         {
 
-                            if (Attribute.Value == "aliasEmail" || Attribute.Value == "userEmail")
+                            if (_attribute.Value == "aliasEmail" || _attribute.Value == "userEmail")
                             {
-                                if (Attribute.Value == "aliasEmail")
+                                if (_attribute.Value == "aliasEmail")
                                 {
-                                    GdataAliasEntry.aliasEmail = Attribute.NextAttribute.Value;
+                                    _aliasEntry.aliasEmail = _attribute.NextAttribute.Value;
                                 }
-                                if (Attribute.Value == "userEmail")
+                                if (_attribute.Value == "userEmail")
                                 {
-                                    GdataAliasEntry.UserName = Attribute.NextAttribute.Value;
+                                    _aliasEntry.UserName = _attribute.NextAttribute.Value;
                                 }
-                                if (GdataAliasEntry.UserName != null && GdataAliasEntry.aliasEmail != null)
+                                if (_aliasEntry.UserName != null && _aliasEntry.aliasEmail != null)
                                 {
-                                    GdataUserAliasEntry.Add(GdataAliasEntry);
+                                    userAliasEntry.Add(_aliasEntry);
                                 }
                             }
-
                         }
-
                     }
                 }
-
-                //return _ProfileEntry;
-                return GdataUserAliasEntry;
+                return userAliasEntry;
             }
 
             #endregion AppendUserAliasEntry
 
             #region CreateUserAliasEntry
 
-            public GDataTypes.GDataUserAliasEntry CreateUserAliasEntry(string _Xml)
+            public GDataTypes.GDataUserAliasEntry CreateUserAliasEntry(string xml)
             {
-                var ParesdXml = new GDataTypes.ParseXML(_Xml);
-
-
-                //var AliasEntry = new GDataTypes.GDataUserAliasEntry();
-
-
-                var GdataUserAliasEntry = new GDataTypes.GDataUserAliasEntry();
-                var GdataUserSingelAliasEntry = new GDataTypes.GDataAliasEntry();
-                foreach (var Entry in ParesdXml.ListFormat)
+                var _paresdXml = new GDataTypes.ParseXML(xml);
+                var _userAliasEntry = new GDataTypes.GDataUserAliasEntry();
+                var _userSingelAliasEntry = new GDataTypes.GDataAliasEntry();
+                foreach (var _entry in _paresdXml.ListFormat)
                 {
-                    var GdataAliasEntry = new GDataTypes.GDataAliasEntry();
-                    foreach (var Attribute in Entry.at)
+                    var _aliasEntry = new GDataTypes.GDataAliasEntry();
+                    foreach (var _attribute in _entry.at)
                     {
-
-                        if (Attribute.Value == "aliasEmail" || Attribute.Value == "userEmail")
+                        if (_attribute.Value == "aliasEmail" || _attribute.Value == "userEmail")
                         {
-                            if (Attribute.Value == "aliasEmail")
+                            if (_attribute.Value == "aliasEmail")
                             {
-                                GdataUserSingelAliasEntry.aliasEmail = Attribute.NextAttribute.Value;
+                                _userSingelAliasEntry.aliasEmail = _attribute.NextAttribute.Value;
                             }
-                            if (Attribute.Value == "userEmail")
+                            if (_attribute.Value == "userEmail")
                             {
-                                GdataUserSingelAliasEntry.UserName = Attribute.NextAttribute.Value;
+                                _userSingelAliasEntry.UserName = _attribute.NextAttribute.Value;
                             }
-                            if (GdataUserSingelAliasEntry.UserName != null && GdataUserSingelAliasEntry.aliasEmail != null)
+                            if (_userSingelAliasEntry.UserName != null && _userSingelAliasEntry.aliasEmail != null)
                             {
-                                GdataUserAliasEntry.Add(GdataUserSingelAliasEntry);
+                                _userAliasEntry.Add(_userSingelAliasEntry);
                             }
                         }
-
                     }
-                    foreach (var SubEntry in Entry.sub)
-                    {
-                        
-                                
-                        foreach (var Attribute in SubEntry.at)
+                    foreach (var _subEntry in _entry.sub)
+                    {       
+                        foreach (var _attribute in _subEntry.at)
                         {
-                        
-                            if (Attribute.Value == "aliasEmail" || Attribute.Value == "userEmail")
+                            if (_attribute.Value == "aliasEmail" || _attribute.Value == "userEmail")
                             {
-                                if (Attribute.Value == "aliasEmail")
+                                if (_attribute.Value == "aliasEmail")
                                 {
-                                    GdataAliasEntry.aliasEmail = Attribute.NextAttribute.Value;
+                                    _aliasEntry.aliasEmail = _attribute.NextAttribute.Value;
                                 }
-                                if (Attribute.Value == "userEmail") 
+                                if (_attribute.Value == "userEmail") 
                                 {
-                                    GdataAliasEntry.UserName = Attribute.NextAttribute.Value;
+                                    _aliasEntry.UserName = _attribute.NextAttribute.Value;
                                 }
-                                if (GdataAliasEntry.UserName != null && GdataAliasEntry.aliasEmail != null)
+                                if (_aliasEntry.UserName != null && _aliasEntry.aliasEmail != null)
                                 {
-                                    GdataUserAliasEntry.Add(GdataAliasEntry);
+                                    _userAliasEntry.Add(_aliasEntry);
                                 }
                             }
-
                         }
-
                     }
                 }
-                
-                //return _ProfileEntry;
-                return GdataUserAliasEntry;
+                return _userAliasEntry;
             }
 
             #endregion CreateAliasEntry
 
             #region CreateUserEntry
 
-            public GDataTypes.GDataUserEntry CreateUserEntry(UserEntry UserEntry)
+            public GDataTypes.GDataUserEntry CreateUserEntry(UserEntry userEntry)
             {
-                var GDataUserEntry = new GDataTypes.GDataUserEntry();
-                GDataUserEntry.UserName = UserEntry.Login.UserName;
-                GDataUserEntry.Admin = UserEntry.Login.Admin;
-                GDataUserEntry.susspended = UserEntry.Login.Suspended;
-                GDataUserEntry.AgreedToTerms = UserEntry.Login.AgreedToTerms;
-                GDataUserEntry.ChangePasswordAtNextLogin = UserEntry.Login.ChangePasswordAtNextLogin;
-                GDataUserEntry.GivenName = UserEntry.Name.GivenName;
-                GDataUserEntry.FamilyName = UserEntry.Name.FamilyName;
-                GDataUserEntry.Limit = UserEntry.Quota.Limit;
-                GDataUserEntry.SelfUri = UserEntry.SelfUri.ToString();
-
-                return GDataUserEntry;
+                var _gDataUserEntry = new GDataTypes.GDataUserEntry();
+                _gDataUserEntry.UserName = userEntry.Login.UserName;
+                _gDataUserEntry.Admin = userEntry.Login.Admin;
+                _gDataUserEntry.susspended = userEntry.Login.Suspended;
+                _gDataUserEntry.AgreedToTerms = userEntry.Login.AgreedToTerms;
+                _gDataUserEntry.ChangePasswordAtNextLogin = userEntry.Login.ChangePasswordAtNextLogin;
+                _gDataUserEntry.GivenName = userEntry.Name.GivenName;
+                _gDataUserEntry.FamilyName = userEntry.Name.FamilyName;
+                _gDataUserEntry.Limit = userEntry.Quota.Limit;
+                _gDataUserEntry.SelfUri = userEntry.SelfUri.ToString();
+                return _gDataUserEntry;
             }
 
             #endregion CreateUserEntry
 
             #region CreateUserEntrys
 
-            public GDataTypes.GDataUserEntrys CreateUserEntrys(UserFeed UserFeed)
+            public GDataTypes.GDataUserEntrys CreateUserEntrys(UserFeed _userFeed)
             {
-                var GDataUserEntrys = new GDataTypes.GDataUserEntrys();
-                foreach (UserEntry UserEntry in UserFeed.Entries)
+                var _gDataUserEntrys = new GDataTypes.GDataUserEntrys();
+                foreach (UserEntry _userEntry in _userFeed.Entries)
                 {
-                    var GDataUserEntry = new GDataTypes.GDataUserEntry();
-                    GDataUserEntry.UserName = UserEntry.Login.UserName;
-                    GDataUserEntry.Admin = UserEntry.Login.Admin;
-                    GDataUserEntry.susspended = UserEntry.Login.Suspended;
-                    GDataUserEntry.AgreedToTerms = UserEntry.Login.AgreedToTerms;
-                    GDataUserEntry.ChangePasswordAtNextLogin = UserEntry.Login.ChangePasswordAtNextLogin;
-                    GDataUserEntry.GivenName = UserEntry.Name.GivenName;
-                    GDataUserEntry.FamilyName = UserEntry.Name.FamilyName;
-                    GDataUserEntry.Limit = UserEntry.Quota.Limit;
-                    GDataUserEntry.SelfUri = UserEntry.SelfUri.ToString();
-                    GDataUserEntrys.Add(GDataUserEntry);
+                    var _gDataUserEntry = new GDataTypes.GDataUserEntry();
+                    _gDataUserEntry.UserName = _userEntry.Login.UserName;
+                    _gDataUserEntry.Admin = _userEntry.Login.Admin;
+                    _gDataUserEntry.susspended = _userEntry.Login.Suspended;
+                    _gDataUserEntry.AgreedToTerms = _userEntry.Login.AgreedToTerms;
+                    _gDataUserEntry.ChangePasswordAtNextLogin = _userEntry.Login.ChangePasswordAtNextLogin;
+                    _gDataUserEntry.GivenName = _userEntry.Name.GivenName;
+                    _gDataUserEntry.FamilyName = _userEntry.Name.FamilyName;
+                    _gDataUserEntry.Limit = _userEntry.Quota.Limit;
+                    _gDataUserEntry.SelfUri = _userEntry.SelfUri.ToString();
+                    _gDataUserEntrys.Add(_gDataUserEntry);
                 }
-                return GDataUserEntrys;
+                return _gDataUserEntrys;
             }
 
             #endregion CreateUserEntrys
@@ -558,9 +515,9 @@ namespace Microsoft.PowerShell.GData
                 
                 foreach (var x in Xml.ListFormat)
                 {
-                    if (x.name == "customerId")
+                    if (x.Name == "customerId")
                     {
-                        CustomerId = x.value;
+                        CustomerId = x.Value;
                     }
 
                 }
@@ -575,47 +532,39 @@ namespace Microsoft.PowerShell.GData
 
             #region CreateUserAlias
 
-            public string CreateUserAlias(string ID, AppsService UserService, string UserAlias)
+            public string CreateUserAlias(string ID, AppsService userService, string userAlias)
             {
-                var Domain = UserService.Domain.ToString();
-                char[] DelimiterChars = { '@' };
+                var _domain = userService.Domain.ToString();
+                char[] _delimiterChars = { '@' };
+                string[] _temp = userAlias.Split(_delimiterChars);
+                var _aliasDomain = _temp[1];
+                var _token = userService.Groups.QueryClientLoginToken();
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + _aliasDomain);
 
+                WebRequest _webRequest = WebRequest.Create(uri);
 
-                string[] temp = UserAlias.Split(DelimiterChars);
-                var AliasDomain = temp[1];
+                _webRequest.Method = "POST";
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + _token);
+
+                string _post = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:apps='http://schemas.google.com/apps/2006'><apps:property name=\"aliasEmail\" value=\"" + userAlias + "\" /><apps:property name=\"userEmail\" value=\"" + ID + "@" + _domain + "\" /></atom:entry>";
+
+                byte[] _bytes = Encoding.UTF8.GetBytes(_post);
+                Stream _OS = null;
+                _webRequest.ContentLength = _bytes.Length;   
+                _OS = _webRequest.GetRequestStream();
+                _OS.Write(_bytes, 0, _bytes.Length);      
                 
-                var Token = UserService.Groups.QueryClientLoginToken();
-
-                var uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + AliasDomain);
-
-                WebRequest WebRequest = WebRequest.Create(uri);
-
-                WebRequest.Method = "POST";
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
-
-                string Post = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:apps='http://schemas.google.com/apps/2006'><apps:property name=\"aliasEmail\" value=\"" + UserAlias + "\" /><apps:property name=\"userEmail\" value=\"" + ID + "@" + Domain + "\" /></atom:entry>";
-
-                byte[] Bytes = Encoding.UTF8.GetBytes(Post);
-                Stream OS = null;
-                WebRequest.ContentLength = Bytes.Length;   
-                OS = WebRequest.GetRequestStream();
-                OS.Write(Bytes, 0, Bytes.Length);      
+                WebResponse _webResponse = _webRequest.GetResponse();
                 
-
-                WebResponse WebResponse = WebRequest.GetResponse();
-                
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var _Result = SR.ReadToEnd().Trim();
-
-                return _Result;
-                    
- 
+                var _result = SR.ReadToEnd().Trim();
+                return _result;
             }
 
             #endregion CreateUserAlias
@@ -624,154 +573,129 @@ namespace Microsoft.PowerShell.GData
 
             public string CreateOrganizationUnit(AppsService OrgUnitService, string OrgUnitName, string OrgUnitDescription, string OrgUnitParentOrgUnitPath, bool OrgUnitBlockInheritance)
             {
-
                 return null;
-
             }
 
             #endregion CreateOrganizationUnit
 
             #region RetriveNextPage
 
-            private string NextPage;
-            public string RetriveNextPage(string Xml)
+            private string nextPage;
+            public string RetriveNextPage(string xml)
             {
-                var ParseXML = new GDataTypes.ParseXML(Xml.ToString());
-                NextPage = "";
-                foreach (var _Elements in ParseXML.ListFormat)
+                var _parseXml = new GDataTypes.ParseXML(xml.ToString());
+                nextPage = "";
+                foreach (var _elements in _parseXml.ListFormat)
                 {
-                    foreach (var _Attribute in _Elements.at)
+                    foreach (var _attribute in _elements.at)
                     {
-                        if (_Attribute.Value == "next")
+                        if (_attribute.Value == "next")
                         {
-                            NextPage = _Attribute.NextAttribute.NextAttribute.Value;
+                            nextPage = _attribute.NextAttribute.NextAttribute.Value;
                         }
                     }
                 }
-                return NextPage;
+                return nextPage;
             }
 
             #endregion RetriveNextPage
 
             #region RemoveUserAlias
 
-            public string RemoveUserAlias(AppsService UserService, string UserAlias)
+            public string RemoveUserAlias(AppsService userService, string userAlias)
             {
-                var Domain = UserService.Domain.ToString();
-                char[] DelimiterChars = { '@' };
+                var _domain = userService.Domain.ToString();
+                char[] _delimiterChars = { '@' };
+                string[] _temp = userAlias.Split(_delimiterChars);
+                var _aliasDomain = _temp[1];
+                var _token = userService.Groups.QueryClientLoginToken();
+                var _uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + _domain + "/" + userAlias);
 
+                WebRequest _webRequest = WebRequest.Create(_uri);
 
-                string[] temp = UserAlias.Split(DelimiterChars);
-                var AliasDomain = temp[1];
+                _webRequest.Method = "DELETE";
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + _token);
+                
+                string _post = "";
+                byte[] _bytes = Encoding.UTF8.GetBytes(_post);
+                Stream _OS = null;
+                _webRequest.ContentLength = _bytes.Length;
+                _OS = _webRequest.GetRequestStream();
+                _OS.Write(_bytes, 0, _bytes.Length);
 
-                var Token = UserService.Groups.QueryClientLoginToken();
+                WebResponse _webResponse = _webRequest.GetResponse();
 
-                var uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + Domain + "/" + UserAlias);
-
-                WebRequest WebRequest = WebRequest.Create(uri);
-
-                WebRequest.Method = "DELETE";
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
-
-                //string Post = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:apps='http://schemas.google.com/apps/2006'><apps:property name=\"aliasEmail\" value=\"" + UserAlias + "\" /><apps:property name=\"userEmail\" value=\"" + ID + "@" + Domain + "\" /></atom:entry>";
-                string Post = "";
-                byte[] Bytes = Encoding.UTF8.GetBytes(Post);
-                Stream OS = null;
-                WebRequest.ContentLength = Bytes.Length;
-                OS = WebRequest.GetRequestStream();
-                OS.Write(Bytes, 0, Bytes.Length);
-
-
-                WebResponse WebResponse = WebRequest.GetResponse();
-
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
-
-                var _Result = SR.ReadToEnd().Trim();
-
-                return _Result;
-
-
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
+                var _result = _SR.ReadToEnd().Trim();
+                return _result;
             }
 
             #endregion RemoveUserAlias
 
             #region RetriveUserAlias
 
-            public string RetriveUserAlias(string ID, AppsService UserService)
+            public string RetriveUserAlias(string id, AppsService userService)
             {
-                var Domain = UserService.Domain.ToString();
-                char[] DelimiterChars = { '@' };
+                var _domain = userService.Domain.ToString();
+                char[] _delimiterChars = { '@' };
+                var _token = userService.Groups.QueryClientLoginToken();
+                var _uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + _domain + "?userEmail=" + id);
 
-                var Token = UserService.Groups.QueryClientLoginToken();
+                WebRequest _webRequest = WebRequest.Create(_uri);
 
-                var uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + Domain + "?userEmail=" + ID);
+                _webRequest.Method = "GET";
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + _token);
 
-                WebRequest WebRequest = WebRequest.Create(uri);
-
-                WebRequest.Method = "GET";
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
-
-                WebResponse WebResponse = WebRequest.GetResponse();
-
-                if (WebResponse == null)
+                WebResponse _webResponse = _webRequest.GetResponse();
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var _Result = SR.ReadToEnd().Trim();
-
-                return _Result;
-
-
+                var _result = _SR.ReadToEnd().Trim();
+                return _result;
             }
 
             #endregion RetriveUserAlias
 
             #region RetriveAllUserAlias
 
-            public string RetriveAllUserAlias(AppsService UserService, string NextPage)
+            public string RetriveAllUserAlias(AppsService userService, string nextPage)
             {
-                var Domain = UserService.Domain.ToString();
-                char[] DelimiterChars = { '@' };
+                var _domain = userService.Domain.ToString();
+                char[] _delimiterChars = { '@' };
 
-                var Token = UserService.Groups.QueryClientLoginToken();
+                var _token = userService.Groups.QueryClientLoginToken();
 
-                if (NextPage == "")
+                if (nextPage == "")
                 {
-                    NextPage = "https://apps-apis.google.com/a/feeds/alias/2.0/" + Domain + "?start=alias@" + Domain;
+                    nextPage = "https://apps-apis.google.com/a/feeds/alias/2.0/" + _domain + "?start=alias@" + _domain;
                 }
 
-                var uri = new Uri(NextPage);
+                var _uri = new Uri(nextPage);
 
-                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest _webRequest = WebRequest.Create(_uri);
 
-                WebRequest.Method = "GET";
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
+                _webRequest.Method = "GET";
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + _token);
 
-                WebResponse WebResponse = WebRequest.GetResponse();
-
-                if (WebResponse == null)
+                WebResponse _webResponse = _webRequest.GetResponse();
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var _Result = SR.ReadToEnd().Trim();
-
-
-
-
-                return _Result;
-
-
+                var _result = _SR.ReadToEnd().Trim();
+                return _result;
             }
 
             #endregion RetriveAllUserAlias
@@ -780,16 +704,16 @@ namespace Microsoft.PowerShell.GData
 
             public string RetrieveAllOUs(AppsService UserService)
             {
-                var Token = UserService.Groups.QueryClientLoginToken();
+                var _token = UserService.Groups.QueryClientLoginToken();
                 var OUService = new Dgc.GoogleAppService();
-                var CustId = OUService.GetCustomerId(UserService);
+                var _custId = OUService.GetCustomerId(UserService);
                                 
-                var uri = new Uri("https://apps-apis.google.com/a/feeds/orgunit/2.0/" + CustId + "?get=all");
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/orgunit/2.0/" + _custId + "?get=all");
 
                 WebRequest WebRequest = WebRequest.Create(uri);
                 WebRequest.Method = "GET";
                 WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
+                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + _token);
 
                 WebResponse WebResponse = WebRequest.GetResponse();
 
@@ -859,77 +783,69 @@ namespace Microsoft.PowerShell.GData
             #endregion GetDomain
 
             #region SetContactTitle
-            private string EditUri;
-            private string OldTitle;
-            public string SetContactTitle(string Token, string SelfUri, string Title)
+            private string editUri;
+            private string oldTitle;
+            public string SetContactTitle(string token, string selfUri, string title)
             {
-                /*
-                var DGCGoogleAppsService = new Dgc.GoogleAppService();
-                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
-                */
-                
-                //var Domain = ResourceService.Domain;
+                var _xml = GetContact(token, selfUri);
 
-                
-                var Xml = GetContact(Token, SelfUri);
-
-                var ParedXml = new GDataTypes.ParseXML(Xml);
-                if(Xml.Contains("<title type='text'></title>"))
+                var _paredXml = new GDataTypes.ParseXML(_xml);
+                if(_xml.Contains("<title type='text'></title>"))
                 {
 
                 }
-                foreach (var Entry in ParedXml.ListFormat)
+                foreach (var _entry in _paredXml.ListFormat)
                 {
-                    if (Entry.name == "{http://www.w3.org/2005/Atom}link")
+                    if (_entry.name == "{http://www.w3.org/2005/Atom}link")
                     {
-                        foreach (var Attribute in Entry.at)
+                        foreach (var _attribute in _entry.at)
                         {
-                            if (Attribute.Value == "edit")
+                            if (_attribute.Value == "edit")
                             {
-                                EditUri = Attribute.NextAttribute.NextAttribute.Value;
+                                editUri = _attribute.NextAttribute.NextAttribute.Value;
                             }
                         }
                     }
-                    if (Entry.name == "{http://www.w3.org/2005/Atom}title")
+                    if (_entry.name == "{http://www.w3.org/2005/Atom}title")
                     {
-                        if (Entry.value != null)
+                        if (_entry.value != null)
                         {
-                            OldTitle = "<title type='text'>" + Entry.value + "</title>";
+                            oldTitle = "<title type='text'>" + _entry.value + "</title>";
                         }
                         else
                         {
-                            OldTitle = "<title type='text'></title>";
+                            oldTitle = "<title type='text'></title>";
                         }
                     }
                 }
 
-                var uri = new Uri(EditUri);
+                var _uri = new Uri(editUri);
 
-                var NewXml = Xml.Replace(OldTitle, "<title type='text'>" + Title + "</title>");
+                var _newXml = _xml.Replace(oldTitle, "<title type='text'>" + title + "</title>");
 
-                WebRequest WebRequest = WebRequest.Create(uri);
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                WebRequest _webRequest = WebRequest.Create(_uri);
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
                 
-                WebRequest.Method = "PUT";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
-                byte[] Bytes = Encoding.UTF8.GetBytes(NewXml);
-                Stream OS = null;
-                WebRequest.ContentLength = Bytes.Length;
-                OS = WebRequest.GetRequestStream();
-                OS.Write(Bytes, 0, Bytes.Length);
+                _webRequest.Method = "PUT";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + token);
+                byte[] _bytes = Encoding.UTF8.GetBytes(_newXml);
+                Stream _OS = null;
+                _webRequest.ContentLength = _bytes.Length;
+                _OS = _webRequest.GetRequestStream();
+                _OS.Write(_bytes, 0, _bytes.Length);
 
-                OS.Close();
+                _OS.Close();
 
-                WebResponse WebResponse = WebRequest.GetResponse();
+                WebResponse _webResponse = _webRequest.GetResponse();
 
 
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var _Result = SR.ReadToEnd().Trim();
+                var _Result = _SR.ReadToEnd().Trim();
 
                 return _Result;
             }
@@ -938,34 +854,25 @@ namespace Microsoft.PowerShell.GData
 
             #region GetContact
 
-            public string GetContact(string Token, string SelfUri)
+            public string GetContact(string token, string selfUri)
             {
-                /*
-                var DGCGoogleAppsService = new Dgc.GoogleAppService();
-                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
-                */
-                
-                //var Domain = ResourceService.Domain;
+                var _uri = new Uri(selfUri);
 
-                var uri = new Uri(SelfUri);
+                WebRequest _webRequest = WebRequest.Create(_uri);
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Method = "Get";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + token);
 
-                // parameters: name1=value1&name2=value2
-
-                WebRequest WebRequest = WebRequest.Create(uri);
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Method = "Get";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + Token);
-
-                WebResponse WebResponse = WebRequest.GetResponse();
+                WebResponse _webResponse = _webRequest.GetResponse();
 
 
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var _Result = SR.ReadToEnd().Trim();
+                var _Result = _SR.ReadToEnd().Trim();
 
                 return _Result;
             }
@@ -974,144 +881,144 @@ namespace Microsoft.PowerShell.GData
 
             #region CreateContactEntry
 
-            public GDataTypes.GDataContactEntry CreateContactEntry(ContactEntry ContactEntry)
+            public GDataTypes.GDataContactEntry CreateContactEntry(ContactEntry contactEntry)
             {
-                var GDataContactEntry = new GDataTypes.GDataContactEntry();
-                GDataContactEntry.Name = ContactEntry.Title.Text;
-                foreach (var EmailEntry in ContactEntry.Emails)
+                var _gDataContactEntry = new GDataTypes.GDataContactEntry();
+                _gDataContactEntry.Name = contactEntry.Title.Text;
+                foreach (var _emailEntry in contactEntry.Emails)
                 {
-                    if (EmailEntry.Work == true)
+                    if (_emailEntry.Work == true)
                     {
-                        GDataContactEntry.Email = EmailEntry.Address;
+                        _gDataContactEntry.Email = _emailEntry.Address;
                     }
                 }
-                foreach (var PhoneNumberEntry in ContactEntry.Phonenumbers)
+                foreach (var _phoneNumberEntry in contactEntry.Phonenumbers)
                 {
-                    if (PhoneNumberEntry.Work == true)
+                    if (_phoneNumberEntry.Work == true)
                     {
-                        GDataContactEntry.PhoneNumber = PhoneNumberEntry.Value;
+                        _gDataContactEntry.PhoneNumber = _phoneNumberEntry.Value;
                     }
                 }
-                foreach (var PostaAddressEntry in ContactEntry.PostalAddresses)
+                foreach (var _postaAddressEntry in contactEntry.PostalAddresses)
                 {
-                    if (PostaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                    if (_postaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
                     {
-                        GDataContactEntry.PostalAddress = PostaAddressEntry.FormattedAddress;
-                        GDataContactEntry.City = PostaAddressEntry.City;
+                        _gDataContactEntry.PostalAddress = _postaAddressEntry.FormattedAddress;
+                        _gDataContactEntry.City = _postaAddressEntry.City;
                     }
                 }
-                GDataContactEntry.SelfUri = ContactEntry.SelfUri.ToString();
-                return GDataContactEntry;
+                _gDataContactEntry.SelfUri = contactEntry.SelfUri.ToString();
+                return _gDataContactEntry;
             }
 
             #endregion CreateContactEntry
 
             #region CreateContactModifidEntry
 
-            public GDataTypes.GDataContactEntry CreateContactModifidEntry(ContactEntry ContactEntry, string Name)
+            public GDataTypes.GDataContactEntry CreateContactModifidEntry(ContactEntry contactEntry, string name)
             {
-                var GDataContactEntry = new GDataTypes.GDataContactEntry();
-                GDataContactEntry.Name = Name;
-                foreach (var EmailEntry in ContactEntry.Emails)
+                var _gDataContactEntry = new GDataTypes.GDataContactEntry();
+                _gDataContactEntry.Name = name;
+                foreach (var _emailEntry in contactEntry.Emails)
                 {
-                    if (EmailEntry.Work == true)
+                    if (_emailEntry.Work == true)
                     {
-                        GDataContactEntry.Email = EmailEntry.Address;
+                        _gDataContactEntry.Email = _emailEntry.Address;
                     }
                 }
-                foreach (var PhoneNumberEntry in ContactEntry.Phonenumbers)
+                foreach (var _phoneNumberEntry in contactEntry.Phonenumbers)
                 {
-                    if (PhoneNumberEntry.Work == true)
+                    if (_phoneNumberEntry.Work == true)
                     {
-                        GDataContactEntry.PhoneNumber = PhoneNumberEntry.Value;
+                        _gDataContactEntry.PhoneNumber = _phoneNumberEntry.Value;
                     }
                 }
-                foreach (var PostaAddressEntry in ContactEntry.PostalAddresses)
+                foreach (var _postaAddressEntry in contactEntry.PostalAddresses)
                 {
-                    if (PostaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                    if (_postaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
                     {
-                        GDataContactEntry.PostalAddress = PostaAddressEntry.FormattedAddress;
-                        GDataContactEntry.City = PostaAddressEntry.City;
+                        _gDataContactEntry.PostalAddress = _postaAddressEntry.FormattedAddress;
+                        _gDataContactEntry.City = _postaAddressEntry.City;
                     }
                 }
-                GDataContactEntry.SelfUri = ContactEntry.SelfUri.ToString();
-                return GDataContactEntry;
+                _gDataContactEntry.SelfUri = contactEntry.SelfUri.ToString();
+                return _gDataContactEntry;
             }
 
             #endregion CreateContactModifidEntry
 
             #region CreateContactEntrys
 
-            public GDataTypes.GDataContactEntrys CreateContactEntrys(ContactsFeed ContactEntrys)
+            public GDataTypes.GDataContactEntrys CreateContactEntrys(ContactsFeed contactEntrys)
             {
-                var GDataContactEntrys = new GDataTypes.GDataContactEntrys();
+                var _gDataContactEntrys = new GDataTypes.GDataContactEntrys();
 
-                foreach (ContactEntry ContactEntry in ContactEntrys.Entries)
+                foreach (ContactEntry _contactEntry in contactEntrys.Entries)
                 {
-                    var GDataContactEntry = new GDataTypes.GDataContactEntry();
-                    GDataContactEntry.Name = ContactEntry.Title.Text;
-                    foreach (var EmailEntry in ContactEntry.Emails)
+                    var _gDataContactEntry = new GDataTypes.GDataContactEntry();
+                    _gDataContactEntry.Name = _contactEntry.Title.Text;
+                    foreach (var _emailEntry in _contactEntry.Emails)
                     {
-                        if (EmailEntry.Work == true)
+                        if (_emailEntry.Work == true)
                         {
-                            GDataContactEntry.Email = EmailEntry.Address;
+                            _gDataContactEntry.Email = _emailEntry.Address;
                         }
                     }
-                    foreach (var PhoneNumberEntry in ContactEntry.Phonenumbers)
+                    foreach (var _phoneNumberEntry in _contactEntry.Phonenumbers)
                     {
-                        if (PhoneNumberEntry.Work == true)
+                        if (_phoneNumberEntry.Work == true)
                         {
-                            GDataContactEntry.PhoneNumber = PhoneNumberEntry.Value;
+                            _gDataContactEntry.PhoneNumber = _phoneNumberEntry.Value;
                         }
                     }
-                    foreach (var PostaAddressEntry in ContactEntry.PostalAddresses)
+                    foreach (var _postaAddressEntry in _contactEntry.PostalAddresses)
                     {
-                        if (PostaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                        if (_postaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
                         {
-                            GDataContactEntry.PostalAddress = PostaAddressEntry.FormattedAddress;
-                            GDataContactEntry.City = PostaAddressEntry.City;
+                            _gDataContactEntry.PostalAddress = _postaAddressEntry.FormattedAddress;
+                            _gDataContactEntry.City = _postaAddressEntry.City;
                         }
                     }
-                    GDataContactEntry.SelfUri = ContactEntry.SelfUri.ToString();
-                    GDataContactEntrys.Add(GDataContactEntry);
+                    _gDataContactEntry.SelfUri = _contactEntry.SelfUri.ToString();
+                    _gDataContactEntrys.Add(_gDataContactEntry);
                 }
-                return GDataContactEntrys;
+                return _gDataContactEntrys;
             }
             #endregion CreateContactEntrys
 
             #region AppendContactEntrys
 
-            public GDataTypes.GDataContactEntrys AppendContactEntrys(ContactEntry ContactEntry, GDataTypes.GDataContactEntrys GDataContactEntrys)
+            public GDataTypes.GDataContactEntrys AppendContactEntrys(ContactEntry contactEntry, GDataTypes.GDataContactEntrys gDataContactEntrys)
             {
-                    var GDataContactEntry = new GDataTypes.GDataContactEntry();
+                    var _gDataContactEntry = new GDataTypes.GDataContactEntry();
 
-                    GDataContactEntry.Name = ContactEntry.Title.Text;
-                    foreach (var EmailEntry in ContactEntry.Emails)
+                    _gDataContactEntry.Name = contactEntry.Title.Text;
+                    foreach (var _emailEntry in contactEntry.Emails)
                     {
-                        if (EmailEntry.Work == true)
+                        if (_emailEntry.Work == true)
                         {
-                            GDataContactEntry.Email = EmailEntry.Address;
+                            _gDataContactEntry.Email = _emailEntry.Address;
                         }
                     }
-                    foreach (var PhoneNumberEntry in ContactEntry.Phonenumbers)
+                    foreach (var _phoneNumberEntry in contactEntry.Phonenumbers)
                     {
-                        if (PhoneNumberEntry.Work == true)
+                        if (_phoneNumberEntry.Work == true)
                         {
-                            GDataContactEntry.PhoneNumber = PhoneNumberEntry.Value;
+                            _gDataContactEntry.PhoneNumber = _phoneNumberEntry.Value;
                         }
                     }
-                    foreach (var PostaAddressEntry in ContactEntry.PostalAddresses)
+                    foreach (var _postaAddressEntry in contactEntry.PostalAddresses)
                     {
-                        if (PostaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                        if (_postaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
                         {
-                            GDataContactEntry.PostalAddress = PostaAddressEntry.FormattedAddress;
-                            GDataContactEntry.City = PostaAddressEntry.City;
+                            _gDataContactEntry.PostalAddress = _postaAddressEntry.FormattedAddress;
+                            _gDataContactEntry.City = _postaAddressEntry.City;
                         }
                     }
-                    GDataContactEntry.SelfUri = ContactEntry.SelfUri.ToString();
-                    GDataContactEntrys.Add(GDataContactEntry);
+                    _gDataContactEntry.SelfUri = contactEntry.SelfUri.ToString();
+                    gDataContactEntrys.Add(_gDataContactEntry);
 
-                return GDataContactEntrys;
+                return gDataContactEntrys;
             }
             #endregion AppendContactEntrys
         }
@@ -1122,97 +1029,97 @@ namespace Microsoft.PowerShell.GData
 
         public class GoogleCalendarsService
         {
-            public string GetDomain(CalendarService CalendarService)
+            public string GetDomain(CalendarService calendarService)
             {
 
-                char[] delimiterChars = { '@' };
-                string[] _temp = CalendarService.Credentials.Username.ToString().Split(delimiterChars);
-                var _Domain = _temp[1];
+                char[] _delimiterChars = { '@' };
+                string[] _temp = calendarService.Credentials.Username.ToString().Split(_delimiterChars);
+                var _domain = _temp[1];
 
-                return _Domain;
+                return _domain;
             }
 
             #region CreateCalendarEntry
 
-            public GDataTypes.GDataCalendarEntry CreateCalendarEntry(CalendarEntry CalendarEntry)
+            public GDataTypes.GDataCalendarEntry CreateCalendarEntry(CalendarEntry calendarEntry)
             {
-                var GDataCalendarEntry = new GDataTypes.GDataCalendarEntry();
-                if (CalendarEntry.Title.Text != null)
+                var _gDataCalendarEntry = new GDataTypes.GDataCalendarEntry();
+                if (calendarEntry.Title.Text != null)
                 {
-                    GDataCalendarEntry.Name = CalendarEntry.Title.Text;
+                    _gDataCalendarEntry.Name = calendarEntry.Title.Text;
                 }
-                if (CalendarEntry.Color != null)
+                if (calendarEntry.Color != null)
                 {
-                    GDataCalendarEntry.Color = CalendarEntry.Color;
+                    _gDataCalendarEntry.Color = calendarEntry.Color;
                 }
-                if (CalendarEntry.Summary != null)
+                if (calendarEntry.Summary != null)
                 {
-                    GDataCalendarEntry.Description = CalendarEntry.Summary.Text;
+                    _gDataCalendarEntry.Description = calendarEntry.Summary.Text;
                 }
-                if (CalendarEntry.Location != null)
+                if (calendarEntry.Location != null)
                 {
-                    GDataCalendarEntry.Location = CalendarEntry.Location.ValueString;
+                    _gDataCalendarEntry.Location = calendarEntry.Location.ValueString;
                 }
-                GDataCalendarEntry.Hidden = CalendarEntry.Hidden;
-                GDataCalendarEntry.Selected = CalendarEntry.Selected;
-                if (CalendarEntry.TimeZone != null)
+                _gDataCalendarEntry.Hidden = calendarEntry.Hidden;
+                _gDataCalendarEntry.Selected = calendarEntry.Selected;
+                if (calendarEntry.TimeZone != null)
                 {
-                    GDataCalendarEntry.TimeZone = CalendarEntry.TimeZone;
+                    _gDataCalendarEntry.TimeZone = calendarEntry.TimeZone;
                 }
-                if (CalendarEntry.AccessLevel != null)
+                if (calendarEntry.AccessLevel != null)
                 {
-                    GDataCalendarEntry.AccessLevel = CalendarEntry.AccessLevel;
+                    _gDataCalendarEntry.AccessLevel = calendarEntry.AccessLevel;
                 }
-                if (CalendarEntry.SelfUri.ToString() != null)
+                if (calendarEntry.SelfUri.ToString() != null)
                 {
-                    GDataCalendarEntry.SelfUri = CalendarEntry.SelfUri.ToString();
+                    _gDataCalendarEntry.SelfUri = calendarEntry.SelfUri.ToString();
                 }
-                return GDataCalendarEntry;
+                return _gDataCalendarEntry;
             }
 
             #endregion CreateCalendarEntry
 
             #region CreateCalendarEntrys
 
-            public GDataTypes.GDataCalendarEntrys CreateCalendarEntrys(CalendarFeed CalendarEntrys)
+            public GDataTypes.GDataCalendarEntrys CreateCalendarEntrys(CalendarFeed calendarEntrys)
             {
-                var GDataCalendarEntrys = new GDataTypes.GDataCalendarEntrys();
-                foreach (CalendarEntry CalendarEntry in CalendarEntrys.Entries)
+                var _gDataCalendarEntrys = new GDataTypes.GDataCalendarEntrys();
+                foreach (CalendarEntry _calendarEntry in calendarEntrys.Entries)
                 {
-                    var GDataCalendarEntry = new GDataTypes.GDataCalendarEntry();
-                    if (CalendarEntry.Title.Text != null)
+                    var _gDataCalendarEntry = new GDataTypes.GDataCalendarEntry();
+                    if (_calendarEntry.Title.Text != null)
                     {
-                        GDataCalendarEntry.Name = CalendarEntry.Title.Text;
+                        _gDataCalendarEntry.Name = _calendarEntry.Title.Text;
                     }
-                    if (CalendarEntry.Color != null)
+                    if (_calendarEntry.Color != null)
                     {
-                        GDataCalendarEntry.Color = CalendarEntry.Color;
+                        _gDataCalendarEntry.Color = _calendarEntry.Color;
                     }
-                    if (CalendarEntry.Summary != null)
+                    if (_calendarEntry.Summary != null)
                     {
-                        GDataCalendarEntry.Description = CalendarEntry.Summary.Text;
+                        _gDataCalendarEntry.Description = _calendarEntry.Summary.Text;
                     }
-                    if (CalendarEntry.Location != null)
+                    if (_calendarEntry.Location != null)
                     {
-                        GDataCalendarEntry.Location = CalendarEntry.Location.ValueString;
+                        _gDataCalendarEntry.Location = _calendarEntry.Location.ValueString;
                     }
-                    GDataCalendarEntry.Hidden = CalendarEntry.Hidden;
-                    GDataCalendarEntry.Selected = CalendarEntry.Selected;
-                    if (CalendarEntry.TimeZone != null)
+                    _gDataCalendarEntry.Hidden = _calendarEntry.Hidden;
+                    _gDataCalendarEntry.Selected = _calendarEntry.Selected;
+                    if (_calendarEntry.TimeZone != null)
                     {
-                        GDataCalendarEntry.TimeZone = CalendarEntry.TimeZone;
+                        _gDataCalendarEntry.TimeZone = _calendarEntry.TimeZone;
                     }
-                    if (CalendarEntry.AccessLevel != null)
+                    if (_calendarEntry.AccessLevel != null)
                     {
-                        GDataCalendarEntry.AccessLevel = CalendarEntry.AccessLevel;
+                        _gDataCalendarEntry.AccessLevel = _calendarEntry.AccessLevel;
                     }
-                    if (CalendarEntry.SelfUri.ToString() != null)
+                    if (_calendarEntry.SelfUri.ToString() != null)
                     {
-                        GDataCalendarEntry.SelfUri = CalendarEntry.SelfUri.ToString();
+                        _gDataCalendarEntry.SelfUri = _calendarEntry.SelfUri.ToString();
                     }
-                    GDataCalendarEntrys.Add(GDataCalendarEntry);
+                    _gDataCalendarEntrys.Add(_gDataCalendarEntry);
                 }
-                return GDataCalendarEntrys;
+                return _gDataCalendarEntrys;
             }
 
 
@@ -1221,85 +1128,77 @@ namespace Microsoft.PowerShell.GData
 
             #region AppendCalendarEntrys
 
-            public GDataTypes.GDataCalendarEntrys AppendCalendarEntrys(CalendarEntry CalendarEntry, GDataTypes.GDataCalendarEntrys GDataCalendarEntrys)
+            public GDataTypes.GDataCalendarEntrys AppendCalendarEntrys(CalendarEntry calendarEntry, GDataTypes.GDataCalendarEntrys gDataCalendarEntrys)
             {
-                //var GDataCalendarEntrys = new GDataTypes.GDataCalendarEntrys();
-
-                    var GDataCalendarEntry = new GDataTypes.GDataCalendarEntry();
-                    if (CalendarEntry.Title.Text != null)
-                    {
-                        GDataCalendarEntry.Name = CalendarEntry.Title.Text;
-                    }
-                    if (CalendarEntry.Color != null)
-                    {
-                        GDataCalendarEntry.Color = CalendarEntry.Color;
-                    }
-                    if (CalendarEntry.Summary != null)
-                    {
-                        GDataCalendarEntry.Description = CalendarEntry.Summary.Text;
-                    }
-                    if (CalendarEntry.Location != null)
-                    {
-                        GDataCalendarEntry.Location = CalendarEntry.Location.ValueString;
-                    }
-                    GDataCalendarEntry.Hidden = CalendarEntry.Hidden;
-                    GDataCalendarEntry.Selected = CalendarEntry.Selected;
-                    if (CalendarEntry.TimeZone != null)
-                    {
-                        GDataCalendarEntry.TimeZone = CalendarEntry.TimeZone;
-                    }
-                    if (CalendarEntry.AccessLevel != null)
-                    {
-                        GDataCalendarEntry.AccessLevel = CalendarEntry.AccessLevel;
-                    }
-                    if (CalendarEntry.SelfUri.ToString() != null)
-                    {
-                        GDataCalendarEntry.SelfUri = CalendarEntry.SelfUri.ToString();
-                    }
-                    GDataCalendarEntrys.Add(GDataCalendarEntry);
-                    return GDataCalendarEntrys;
+                var _gDataCalendarEntry = new GDataTypes.GDataCalendarEntry();
+                if (calendarEntry.Title.Text != null)
+                {
+                    _gDataCalendarEntry.Name = calendarEntry.Title.Text;
+                }
+                if (calendarEntry.Color != null)
+                {
+                    _gDataCalendarEntry.Color = calendarEntry.Color;
+                }
+                if (calendarEntry.Summary != null)
+                {
+                    _gDataCalendarEntry.Description = calendarEntry.Summary.Text;
+                }
+                if (calendarEntry.Location != null)
+                {
+                    _gDataCalendarEntry.Location = calendarEntry.Location.ValueString;
+                }
+                _gDataCalendarEntry.Hidden = calendarEntry.Hidden;
+                _gDataCalendarEntry.Selected = calendarEntry.Selected;
+                if (calendarEntry.TimeZone != null)
+                {
+                    _gDataCalendarEntry.TimeZone = calendarEntry.TimeZone;
+                }
+                if (calendarEntry.AccessLevel != null)
+                {
+                    _gDataCalendarEntry.AccessLevel = calendarEntry.AccessLevel;
+                }
+                if (calendarEntry.SelfUri.ToString() != null)
+                {
+                    _gDataCalendarEntry.SelfUri = calendarEntry.SelfUri.ToString();
+                }
+                gDataCalendarEntrys.Add(_gDataCalendarEntry);
+                return gDataCalendarEntrys;
             }
 
             #endregion AppendCalendarEntrys
 
             #region CreateCalendarAclEntrys
 
-            public GDataTypes.GDataCalendarAclEntrys CreateCalendarAclEntrys(AclFeed CalendarAclEntrys)
+            public GDataTypes.GDataCalendarAclEntrys CreateCalendarAclEntrys(AclFeed calendarAclEntrys)
             {
-                var GDataCalendarAclEntrys = new GDataTypes.GDataCalendarAclEntrys();
-                foreach (AclEntry CalendarAclEntry in CalendarAclEntrys.Entries)
+                var _gDataCalendarAclEntrys = new GDataTypes.GDataCalendarAclEntrys();
+                foreach (AclEntry _calendarAclEntry in calendarAclEntrys.Entries)
                 {
-                    var GDataCalendarAclEntry = new GDataTypes.GDataCalendarAclEntry();
-                    GDataCalendarAclEntry.UserId = CalendarAclEntry.Scope.Value;
-                    GDataCalendarAclEntry.AccessLevel = CalendarAclEntry.Role.Value.Replace("http://schemas.google.com/gCal/2005#","");
-                    GDataCalendarAclEntrys.Add(GDataCalendarAclEntry);
+                    var _gDataCalendarAclEntry = new GDataTypes.GDataCalendarAclEntry();
+                    _gDataCalendarAclEntry.UserId = _calendarAclEntry.Scope.Value;
+                    _gDataCalendarAclEntry.AccessLevel = _calendarAclEntry.Role.Value.Replace("http://schemas.google.com/gCal/2005#","");
+                    _gDataCalendarAclEntrys.Add(_gDataCalendarAclEntry);
                 }
-                return GDataCalendarAclEntrys;
+                return _gDataCalendarAclEntrys;
             }
 
             #endregion CreateCalendarAclEntrys
 
             #region CreateCalendarAclEntry
 
-            public GDataTypes.GDataCalendarAclEntry CreateCalendarAclEntry(AclEntry CalendarAclEntry)
+            public GDataTypes.GDataCalendarAclEntry CreateCalendarAclEntry(AclEntry calendarAclEntry)
             {
-                var GDataCalendarAclEntry = new GDataTypes.GDataCalendarAclEntry();
-                GDataCalendarAclEntry.UserId = CalendarAclEntry.Scope.Value;
-                GDataCalendarAclEntry.AccessLevel = CalendarAclEntry.Role.Value.Replace("http://schemas.google.com/gCal/2005#", "");
+                var _gDataCalendarAclEntry = new GDataTypes.GDataCalendarAclEntry();
+                _gDataCalendarAclEntry.UserId = calendarAclEntry.Scope.Value;
+                _gDataCalendarAclEntry.AccessLevel = calendarAclEntry.Role.Value.Replace("http://schemas.google.com/gCal/2005#", "");
 
-                return GDataCalendarAclEntry;
+                return _gDataCalendarAclEntry;
             }
 
             #endregion CreateCalendarAclEntry
-
-
         }
+
         #endregion GoogleCalendarsService
-
- 
-
-
-        
 
         #region GoogleResourceService
 
@@ -1315,389 +1214,346 @@ namespace Microsoft.PowerShell.GData
 
             #region GetAuthToken
 
-            public GDataTypes.ResourceService GetAuthToken(string AdminUser, string AdminPassword)
+            public GDataTypes.GDataResourceService GetAuthToken(string adminUser, string adminPassword)
             {
-                var uri = new Uri("https://www.google.com/accounts/ClientLogin");
+                var _uri = new Uri("https://www.google.com/accounts/ClientLogin");
 
-                // parameters: name1=value1&name2=value2    
-                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest _webRequest = WebRequest.Create(_uri);
 
-                WebRequest.ContentType = "application/x-www-form-urlencoded";
-                WebRequest.Method = "POST";
+                _webRequest.ContentType = "application/x-www-form-urlencoded";
+                _webRequest.Method = "POST";
 
-                byte[] Bytes = Encoding.UTF8.GetBytes("&Email=" + AdminUser + "&Passwd=" + AdminPassword.Replace("@", "%40") + "&accountType=HOSTED_OR_GOOGLE&service=apps&source=companyName-applicationName-versionID");
-                Stream OS = null;
+                byte[] _bytes = Encoding.UTF8.GetBytes("&Email=" + adminUser + "&Passwd=" + adminPassword.Replace("@", "%40") + "&accountType=HOSTED_OR_GOOGLE&service=apps&source=companyName-applicationName-versionID");
+                Stream _OS = null;
 
-                WebRequest.ContentLength = Bytes.Length;   //Count bytes to send
-                OS = WebRequest.GetRequestStream();
-                OS.Write(Bytes, 0, Bytes.Length);         //Send it
+                _webRequest.ContentLength = _bytes.Length;   
+                _OS = _webRequest.GetRequestStream();
+                _OS.Write(_bytes, 0, _bytes.Length);
 
-                OS.Close();
+                _OS.Close();
 
+                WebResponse _webResponse = _webRequest.GetResponse();
 
-                WebResponse WebResponse = WebRequest.GetResponse();
-
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var Result = SR.ReadToEnd().Trim();
-
-
-                char[] _Deliminator = { ';' };
-
-                var ResE = Result.Replace("Auth=", ";");
-                var ResS = ResE.Split(_Deliminator);
-                var Token = ResS[1].ToString();
-
-                char[] delimiterChars = { '@' };
+                var _result = _SR.ReadToEnd().Trim();
 
 
-                string[] temp = AdminUser.Split(delimiterChars);
-                var Domain = temp[1];
+                char[] _deliminator = { ';' };
+
+                var _resE = _result.Replace("Auth=", ";");
+                var _resS = _resE.Split(_deliminator);
+                var _token = _resS[1].ToString();
+
+                char[] _delimiterChars = { '@' };
+
+                string[] _temp = adminUser.Split(_delimiterChars);
+                var _domain = _temp[1];
 
                 
-                var _Entry = new GDataTypes.ResourceService
+                var _entry = new GDataTypes.GDataResourceService
                 {
-                    AdminUser = AdminUser,
-                    Token = Token,
-                    Domain = Domain,
+                    AdminUser = adminUser,
+                    Token = _token,
+                    Domain = _domain,
                 };
-                
-               
 
-                return _Entry;
+                return _entry;
             }
 
             #endregion GetAuthToken
 
             #region CreateResourceEntrys
 
-            public GDataTypes.ResourceEntrys CreateResourceEntrys(string Xml, GDataTypes.ResourceService ResourceService)
+            public GDataTypes.GDataResourceEntrys CreateResourceEntrys(string xml, GDataTypes.GDataResourceService resourceService)
             {
-                var ParesdXml = new GDataTypes.ParseXML(Xml);
+                var _paresdXml = new GDataTypes.ParseXML(xml);
 
 
-                var GDataResourceEntrys = new GDataTypes.ResourceEntrys();
-                var GdataSingelResourceEntry = new GDataTypes.ResourceEntry();
-                foreach (var SEntry in ParesdXml.ListFormat)
+                var _gDataResourceEntrys = new GDataTypes.GDataResourceEntrys();
+                var _gdataSingelResourceEntry = new GDataTypes.GDataResourceEntry();
+                foreach (var _sEntry in _paresdXml.ListFormat)
                 {
-                    foreach (var Attribute in SEntry.at)
+                    foreach (var _attribute in _sEntry.at)
                     {
 
-                        if (Attribute.Value == "resourceId" || Attribute.Value == "resourceCommonName" || Attribute.Value == "resourceEmail" || Attribute.Value == "resourceDescription" || Attribute.Value == "resourceType")
+                        if (_attribute.Value == "resourceId" || _attribute.Value == "resourceCommonName" || _attribute.Value == "resourceEmail" || _attribute.Value == "resourceDescription" || _attribute.Value == "resourceType")
                         {
 
-                            if (Attribute.Value == "resourceId")
+                            if (_attribute.Value == "resourceId")
                             {
-                                if (Attribute.NextAttribute.Value != null)
+                                if (_attribute.NextAttribute.Value != null)
                                 {
-                                    GdataSingelResourceEntry.ResourceId = Attribute.NextAttribute.Value;
+                                    _gdataSingelResourceEntry.ResourceId = _attribute.NextAttribute.Value;
                                 }
                                 else
                                 {
-                                    GdataSingelResourceEntry.ResourceId = "_EMPTY_";
+                                    _gdataSingelResourceEntry.ResourceId = "_EMPTY_";
                                 }
                             }
-                            if (Attribute.Value == "resourceCommonName")
+                            if (_attribute.Value == "resourceCommonName")
                             {
-                                if (Attribute.NextAttribute.Value != null)
+                                if (_attribute.NextAttribute.Value != null)
                                 {
-                                    GdataSingelResourceEntry.CommonName = Attribute.NextAttribute.Value;
+                                    _gdataSingelResourceEntry.CommonName = _attribute.NextAttribute.Value;
                                 }
                                 else
                                 {
-                                    GdataSingelResourceEntry.CommonName = "_EMPTY_";
+                                    _gdataSingelResourceEntry.CommonName = "_EMPTY_";
                                 }
                             }
-                            if (Attribute.Value == "resourceEmail")
+                            if (_attribute.Value == "resourceEmail")
                             {
-                                if (Attribute.NextAttribute.Value != null)
+                                if (_attribute.NextAttribute.Value != null)
                                 {
-                                    GdataSingelResourceEntry.Email = Attribute.NextAttribute.Value;
+                                    _gdataSingelResourceEntry.Email = _attribute.NextAttribute.Value;
                                 }
                                 else
                                 {
-                                    GdataSingelResourceEntry.Email = "_EMPTY_";
+                                    _gdataSingelResourceEntry.Email = "_EMPTY_";
                                 }
                             }
-                            if (Attribute.Value == "resourceDescription")
+                            if (_attribute.Value == "resourceDescription")
                             {
-                                if (Attribute.NextAttribute.Value != null)
+                                if (_attribute.NextAttribute.Value != null)
                                 {
-                                    GdataSingelResourceEntry.Description = Attribute.NextAttribute.Value;
+                                    _gdataSingelResourceEntry.Description = _attribute.NextAttribute.Value;
                                 }
                                 else
                                 {
-                                    GdataSingelResourceEntry.Description = "_EMPTY_";
+                                    _gdataSingelResourceEntry.Description = "_EMPTY_";
                                 }
                             }
-                            if (Attribute.Value == "resourceType")
+                            if (_attribute.Value == "resourceType")
                             {
-                                if (Attribute.NextAttribute.Value != null)
+                                if (_attribute.NextAttribute.Value != null)
                                 {
-                                    GdataSingelResourceEntry.Type = Attribute.NextAttribute.Value;
+                                    _gdataSingelResourceEntry.Type = _attribute.NextAttribute.Value;
                                 }
                                 else
                                 {
-                                    GdataSingelResourceEntry.Type = "_EMPTY_";
+                                    _gdataSingelResourceEntry.Type = "_EMPTY_";
                                 }
                             }
                         }
 
                     }
-                    //if (GdataSingelResourceEntry.ResourceId != null && GdataSingelResourceEntry.CommonName != null && GdataSingelResourceEntry.Description != null && GdataSingelResourceEntry.Email != null && GdataSingelResourceEntry.Type != null)
-                    //{
-                    //    GDataResourceEntrys.Add(GdataSingelResourceEntry);
-                    //}
-
-                    var GdataResourceEntry = new GDataTypes.ResourceEntry();
-                    foreach (var SubEntry in SEntry.sub)
+                    
+                    var _gdataResourceEntry = new GDataTypes.GDataResourceEntry();
+                    foreach (var _subEntry in _sEntry.sub)
                     {
-                        foreach (var Attribute in SubEntry.at)
+                        foreach (var _attribute in _subEntry.at)
                         {
 
-                            if (Attribute.Value == "resourceId" || Attribute.Value == "resourceCommonName" || Attribute.Value == "resourceEmail" || Attribute.Value == "resourceDescription" || Attribute.Value == "resourceType")
+                            if (_attribute.Value == "resourceId" || _attribute.Value == "resourceCommonName" || _attribute.Value == "resourceEmail" || _attribute.Value == "resourceDescription" || _attribute.Value == "resourceType")
                             {
 
-                                if (Attribute.Value == "resourceId")
+                                if (_attribute.Value == "resourceId")
                                 {
 
-                                    GdataResourceEntry.ResourceId = Attribute.NextAttribute.Value;
+                                    _gdataResourceEntry.ResourceId = _attribute.NextAttribute.Value;
                                 }
-                                if (Attribute.Value == "resourceCommonName")
+                                if (_attribute.Value == "resourceCommonName")
                                 {
 
-                                    GdataResourceEntry.CommonName = Attribute.NextAttribute.Value;
+                                    _gdataResourceEntry.CommonName = _attribute.NextAttribute.Value;
                                 }
-                                if (Attribute.Value == "resourceEmail")
+                                if (_attribute.Value == "resourceEmail")
                                 {
 
-                                    GdataResourceEntry.Email = Attribute.NextAttribute.Value;
+                                    _gdataResourceEntry.Email = _attribute.NextAttribute.Value;
                                 }
-                                if (Attribute.Value == "resourceDescription")
+                                if (_attribute.Value == "resourceDescription")
                                 {
 
-                                    GdataResourceEntry.Description = Attribute.NextAttribute.Value;
+                                    _gdataResourceEntry.Description = _attribute.NextAttribute.Value;
                                 }
-                                if (Attribute.Value == "resourceType")
+                                if (_attribute.Value == "resourceType")
                                 {
 
-                                    GdataResourceEntry.Type = Attribute.NextAttribute.Value;
+                                    _gdataResourceEntry.Type = _attribute.NextAttribute.Value;
                                 }
 
                             }
 
                         }
                     }
-                    if (GdataResourceEntry.ResourceId != null)
+                    if (_gdataResourceEntry.ResourceId != null)
                     {
-                        GDataResourceEntrys.Add(GdataResourceEntry);
+                        _gDataResourceEntrys.Add(_gdataResourceEntry);
                     }
                 }
-                if (GdataSingelResourceEntry.ResourceId != null)
+                if (_gdataSingelResourceEntry.ResourceId != null)
                 {
-                    GDataResourceEntrys.Add(GdataSingelResourceEntry);
+                    _gDataResourceEntrys.Add(_gdataSingelResourceEntry);
                 }
-                return GDataResourceEntrys;
+                return _gDataResourceEntrys;
             }
 
             #endregion CreateResourceEntrys
 
             #region NewResource
 
-            public string NewResource(GDataTypes.ResourceService ResourceService, string ResourceId, string ResourceType, string ResurceDescription)
+            public string NewResource(GDataTypes.GDataResourceService resourceService, string resourceId, string resourceType, string resurceDescription)
             {
-                /*
-                var DGCGoogleAppsService = new Dgc.GoogleAppService();
-                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
-                */
+                var _domain = resourceService.Domain;
 
-                var Domain = ResourceService.Domain;
+                var _uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + _domain);
+                WebRequest _webRequest = WebRequest.Create(_uri);
 
-                var uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + Domain);
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Method = "POST";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + resourceService.Token);
+                byte[] _bytes = Encoding.UTF8.GetBytes("<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:apps='http://schemas.google.com/apps/2006'><apps:property name='resourceId' value='" + resourceId + "'/><apps:property name='resourceCommonName' value='" + resourceId + "'/><apps:property name='resourceDescription' value='" + resurceDescription + "'/><apps:property name='resourceType' value='" + resourceType + "'/></atom:entry>");
+                Stream _OS = null;
+                _webRequest.ContentLength = _bytes.Length;   
+                _OS = _webRequest.GetRequestStream();
+                _OS.Write(_bytes, 0, _bytes.Length);         
 
-                // parameters: name1=value1&name2=value2    
-                WebRequest WebRequest = WebRequest.Create(uri);
+                _OS.Close();
 
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Method = "POST";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
-                byte[] Bytes = Encoding.UTF8.GetBytes("<atom:entry xmlns:atom='http://www.w3.org/2005/Atom' xmlns:apps='http://schemas.google.com/apps/2006'><apps:property name='resourceId' value='" + ResourceId + "'/><apps:property name='resourceCommonName' value='" + ResourceId + "'/><apps:property name='resourceDescription' value='" + ResurceDescription + "'/><apps:property name='resourceType' value='" + ResourceType + "'/></atom:entry>");
-                Stream OS = null;
-                WebRequest.ContentLength = Bytes.Length;   
-                OS = WebRequest.GetRequestStream();
-                OS.Write(Bytes, 0, Bytes.Length);         
-
-                OS.Close();
-
-                WebResponse WebResponse = WebRequest.GetResponse();
+                WebResponse _webResponse = _webRequest.GetResponse();
 
 
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var _Result = SR.ReadToEnd().Trim();
-
-                return _Result;
+                var _result = _SR.ReadToEnd().Trim();
+                return _result;
             }
 
             #endregion NewResource
 
             #region RetriveResource
 
-            public string RetriveResource(GDataTypes.ResourceService ResourceService, string ResourceId)
+            public string RetriveResource(GDataTypes.GDataResourceService ResourceService, string ResourceId)
             {
-                /*
-                var DGCGoogleAppsService = new Dgc.GoogleAppService();
-                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
-                */
+                var _domain = ResourceService.Domain;
+                var _uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + _domain + "/" + ResourceId);
 
-                var Domain = ResourceService.Domain;
+                WebRequest _webRequest = WebRequest.Create(_uri);
 
-                var uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + Domain + "/" + ResourceId);
-
-                // parameters: name1=value1&name2=value2    
-                WebRequest WebRequest = WebRequest.Create(uri);
-
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Method = "GET";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Method = "GET";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
              
 
-                WebResponse WebResponse = WebRequest.GetResponse();
+                WebResponse _webResponse = _webRequest.GetResponse();
 
 
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var _Result = SR.ReadToEnd().Trim();
+                var _result = _SR.ReadToEnd().Trim();
 
-                return _Result;
+                return _result;
             }
 
             #endregion RetriveResource
 
             #region RetriveResource
 
-            public string RetriveAllResources(GDataTypes.ResourceService ResourceService)
+            public string RetriveAllResources(GDataTypes.GDataResourceService resourceService)
             {
-                /*
-                var DGCGoogleAppsService = new Dgc.GoogleAppService();
-                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
-                */
+                var _domain = resourceService.Domain;
 
-                var Domain = ResourceService.Domain;
+                var _uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + _domain + "/");
+ 
+                WebRequest webRequest = WebRequest.Create(_uri);
 
-                var uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + Domain + "/");
-
-                // parameters: name1=value1&name2=value2    
-                WebRequest WebRequest = WebRequest.Create(uri);
-
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Method = "GET";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
+                webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                webRequest.Method = "GET";
+                webRequest.Headers.Add("Authorization: GoogleLogin auth=" + resourceService.Token);
 
 
-                WebResponse WebResponse = WebRequest.GetResponse();
+                WebResponse webResponse = webRequest.GetResponse();
 
 
-                if (WebResponse == null)
+                if (webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(webResponse.GetResponseStream());
 
-                var _Result = SR.ReadToEnd().Trim();
+                var _result = _SR.ReadToEnd().Trim();
 
-                return _Result;
+                return _result;
             }
 
             #endregion RetriveAllResources
 
             #region RemoveResource
 
-            public string RemoveResources(GDataTypes.ResourceService ResourceService, string ResourceID)
+            public string RemoveResources(GDataTypes.GDataResourceService resourceService, string resourceID)
             {
-                /*
-                var DGCGoogleAppsService = new Dgc.GoogleAppService();
-                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
-                */
+                var _domain = resourceService.Domain;
 
-                var Domain = ResourceService.Domain;
+                var _uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + _domain + "/" + resourceID);
+                
+                WebRequest _webRequest = WebRequest.Create(_uri);
 
-                var uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + Domain + "/" + ResourceID);
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Method = "DELETE";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + resourceService.Token);
 
-                // parameters: name1=value1&name2=value2    
-                WebRequest WebRequest = WebRequest.Create(uri);
-
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Method = "DELETE";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
-
-                WebResponse WebResponse = WebRequest.GetResponse();
+                WebResponse _webResponse = _webRequest.GetResponse();
 
 
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var _Result = SR.ReadToEnd().Trim();
+                var _result = _SR.ReadToEnd().Trim();
 
-                return _Result;
+                return _result;
             }
 
             #endregion RemoveResources
 
             #region SetResource
 
-            public string SetResource(GDataTypes.ResourceService ResourceService, string ResourceID, string ResourceDescription, string ResourceType)
+            public string SetResource(GDataTypes.GDataResourceService resourceService, string resourceID, string resourceDescription, string resourceType)
             {
-                /*
-                var DGCGoogleAppsService = new Dgc.GoogleAppService();
-                var Domain = DGCGoogleAppsService.GetDomain(ResourceService.AdminUser);
-                */
+                var _domain = resourceService.Domain;
 
-                var Domain = ResourceService.Domain;
+                var _uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + _domain + "/" + resourceID);
 
-                var uri = new Uri("https://apps-apis.google.com/a/feeds/calendar/resource/2.0/" + Domain + "/" + ResourceID);
+                WebRequest _webRequest = WebRequest.Create(_uri);
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Method = "PUT";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + resourceService.Token);
+                byte[] _bytes = Encoding.UTF8.GetBytes("<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceCommonName' value='" + resourceID + "'/><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceDescription' value='" + resourceDescription + "'/><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceType' value='" + resourceType + "'/></atom:entry>");
+                Stream _OS = null;
+                _webRequest.ContentLength = _bytes.Length;
+                _OS = _webRequest.GetRequestStream();
+                _OS.Write(_bytes, 0, _bytes.Length);
 
-                // parameters: name1=value1&name2=value2
+                _OS.Close();
 
-                WebRequest WebRequest = WebRequest.Create(uri);
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Method = "PUT";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ResourceService.Token);
-                byte[] Bytes = Encoding.UTF8.GetBytes("<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceCommonName' value='" + ResourceID + "'/><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceDescription' value='" + ResourceDescription + "'/><apps:property xmlns:apps='http://schemas.google.com/apps/2006' name='resourceType' value='" + ResourceType + "'/></atom:entry>");
-                Stream OS = null;
-                WebRequest.ContentLength = Bytes.Length;
-                OS = WebRequest.GetRequestStream();
-                OS.Write(Bytes, 0, Bytes.Length);
-
-                OS.Close();
-
-                WebResponse WebResponse = WebRequest.GetResponse();
+                WebResponse _webResponse = _webRequest.GetResponse();
 
 
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var _Result = SR.ReadToEnd().Trim();
+                var _result = _SR.ReadToEnd().Trim();
 
-                return _Result;
+                return _result;
             }
 
             #endregion SetResources
@@ -1712,529 +1568,511 @@ namespace Microsoft.PowerShell.GData
 
             #region GetAuthToken
 
-            public GDataTypes.ProfileService GetAuthToken(string AdminUser, string AdminPassword)
+            public GDataTypes.GDataProfileService GetAuthToken(string adminUser, string adminPassword)
             {
-                var uri = new Uri("https://www.google.com/accounts/ClientLogin");
+                var _uri = new Uri("https://www.google.com/accounts/ClientLogin");
 
-                WebRequest WebRequest = WebRequest.Create(uri);
+                WebRequest _webRequest = WebRequest.Create(_uri);
 
-                WebRequest.ContentType = "application/x-www-form-urlencoded";
-                WebRequest.Method = "POST";
-                WebRequest.Headers.Add("GData-Version: 3.0");
-                byte[] Bytes = Encoding.UTF8.GetBytes("&Email=" + AdminUser.Replace("@", "%40") + "&Passwd=" + AdminPassword + "&accountType=HOSTED&service=cp&source=dgctest.com-GDataCmdLet-v0508");
-                Stream OS = null;
+                _webRequest.ContentType = "application/x-www-form-urlencoded";
+                _webRequest.Method = "POST";
+                _webRequest.Headers.Add("GData-Version: 3.0");
+                byte[] _bytes = Encoding.UTF8.GetBytes("&Email=" + adminUser.Replace("@", "%40") + "&Passwd=" + adminPassword + "&accountType=HOSTED&service=cp&source=dgctest.com-GDataCmdLet-v0508");
+                Stream _OS = null;
 
-                WebRequest.ContentLength = Bytes.Length;   
-                OS = WebRequest.GetRequestStream();
-                OS.Write(Bytes, 0, Bytes.Length);    
+                _webRequest.ContentLength = _bytes.Length;   
+                _OS = _webRequest.GetRequestStream();
+                _OS.Write(_bytes, 0, _bytes.Length);    
 
-                OS.Close();
+                _OS.Close();
 
 
-                WebResponse WebResponse = WebRequest.GetResponse();
+                WebResponse _webResponse = _webRequest.GetResponse();
 
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var Result = SR.ReadToEnd().Trim();
-
-
-                char[] _Deliminator = { ';' };
-
-                var ResE = Result.Replace("Auth=", ";");
-                var ResS = ResE.Split(_Deliminator);
-                var Token = ResS[1].ToString();
-
-                char[] delimiterChars = { '@' };
+                var _result = _SR.ReadToEnd().Trim();
 
 
-                string[] temp = AdminUser.Split(delimiterChars);
-                var Domain = temp[1];
+                char[] _deliminator = { ';' };
+
+                var _resE = _result.Replace("Auth=", ";");
+                var _resS = _resE.Split(_deliminator);
+                var _token = _resS[1].ToString();
+
+                char[] _delimiterChars = { '@' };
 
 
-                var _Entry = new GDataTypes.ProfileService
+                string[] _temp = adminUser.Split(_delimiterChars);
+                var _domain = _temp[1];
+
+
+                var _entry = new GDataTypes.GDataProfileService
                 {
-                    AdminUser = AdminUser,
-                    Token = Token,
-                    Domain = Domain,
+                    AdminUser = adminUser,
+                    Token = _token,
+                    Domain = _domain,
                 };
 
 
 
-                return _Entry;
+                return _entry;
             }
 
             #endregion GetAuthToken
 
             #region CreateProfileEntrys
 
-            public GDataTypes.ProfileEntrys CreateProfileEntrys(string _Xml, GDataTypes.ProfileService _ProfileService)
+            public GDataTypes.GDataProfileEntrys CreateProfileEntrys(string xml, GDataTypes.GDataProfileService profileService)
             {
-                var _ParesdXml = new GDataTypes.ParseXML(_Xml);
+                var _paresdXml = new GDataTypes.ParseXML(xml);
 
 
-                var _ProfileEntrys = new GDataTypes.ProfileEntrys();
+                var _profileEntrys = new GDataTypes.GDataProfileEntrys();
 
-                string _ProfileLink = "http://www.google.com/m8/feeds/profiles/domain/" + _ProfileService.Domain + "/full/";
+                string _profileLink = "http://www.google.com/m8/feeds/profiles/domain/" + profileService.Domain + "/full/";
 
-                foreach (var _SEntry in _ParesdXml.ListFormat)
+                foreach (var _sEntry in _paresdXml.ListFormat)
                 {
-                    if (_SEntry.name == "{http://www.w3.org/2005/Atom}entry")
+                    if (_sEntry.name == "{http://www.w3.org/2005/Atom}entry")
                     {
-                        var _ProfileEntry = new GDataTypes.ProfileEntry();
-                        _ProfileEntry.Domain = _ProfileService.Domain;
-                        foreach (var _Entry in _SEntry.sub)
+                        var _profileEntry = new GDataTypes.GDataProfileEntry();
+                        _profileEntry.Domain = profileService.Domain;
+                        foreach (var _entry in _sEntry.sub)
                         {
-                            if (_Entry.name == "{http://www.w3.org/2005/Atom}id")
+                            if (_entry.name == "{http://www.w3.org/2005/Atom}id")
                             {
-                                _ProfileEntry.UserName = _Entry.value.Replace(_ProfileLink,"");
+                                _profileEntry.UserName = _entry.value.Replace(_profileLink,"");
                             }
-                            if (_Entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
+                            if (_entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
                             {
-                                foreach (var _Attribute in _Entry.at)
+                                foreach (var _attribute in _entry.at)
                                 {
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#home")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#home")
                                     {
-                                        _ProfileEntry.HomePostalAddress = _Entry.value;
+                                        _profileEntry.HomePostalAddress = _entry.value;
                                     }
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#work")
                                     {
-                                        _ProfileEntry.PostalAddress = _Entry.value;
+                                        _profileEntry.PostalAddress = _entry.value;
                                     }
                                 }
                             }
-                            if (_Entry.name == "{http://schemas.google.com/g/2005}phoneNumber")
+                            if (_entry.name == "{http://schemas.google.com/g/2005}phoneNumber")
                             {
-                                foreach (var _Attribute in _Entry.at)
+                                foreach (var _attribute in _entry.at)
                                 {
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#other")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#other")
                                     {
-                                        _ProfileEntry.OtherPhoneNumber = _Entry.value;
+                                        _profileEntry.OtherPhoneNumber = _entry.value;
                                     }
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#work")
                                     {
-                                        _ProfileEntry.PhoneNumber = _Entry.value;
+                                        _profileEntry.PhoneNumber = _entry.value;
                                     }
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#mobile")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#mobile")
                                     {
-                                        _ProfileEntry.MobilePhoneNumber = _Entry.value;
+                                        _profileEntry.MobilePhoneNumber = _entry.value;
                                     }
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#home")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#home")
                                     {
-                                        _ProfileEntry.HomePhoneNumber = _Entry.value;
+                                        _profileEntry.HomePhoneNumber = _entry.value;
                                     }
                                 }
                             }
                         }
-                        _ProfileEntrys.Add(_ProfileEntry);
+                        _profileEntrys.Add(_profileEntry);
                     }
                 }
 
 
-                return _ProfileEntrys;
+                return _profileEntrys;
             }
 
             #endregion CreateProfileEntrys
 
             #region AppendProfileEntrys
 
-            public GDataTypes.ProfileEntrys AppendProfileEntrys(string _Xml, GDataTypes.ProfileService _ProfileService, GDataTypes.ProfileEntrys _ProfileEntrys)
+            public GDataTypes.GDataProfileEntrys AppendProfileEntrys(string xml, GDataTypes.GDataProfileService profileService, GDataTypes.GDataProfileEntrys profileEntrys)
             {
-                var _ParesdXml = new GDataTypes.ParseXML(_Xml);
+                var _paresdXml = new GDataTypes.ParseXML(xml);
+                string _profileLink = "http://www.google.com/m8/feeds/profiles/domain/" + profileService.Domain + "/full/";
 
-
-                //var _ProfileEntrys = new GDataTypes.ProfileEntrys();
-
-                //_ProfileEntry.User = _ID;
-                //_ProfileEntry.Domain = _ProfileService.Domain;
-                string _ProfileLink = "http://www.google.com/m8/feeds/profiles/domain/" + _ProfileService.Domain + "/full/";
-
-                foreach (var _SEntry in _ParesdXml.ListFormat)
+                foreach (var _sEntry in _paresdXml.ListFormat)
                 {
-                    if (_SEntry.name == "{http://www.w3.org/2005/Atom}entry")
+                    if (_sEntry.name == "{http://www.w3.org/2005/Atom}entry")
                     {
-                        var _ProfileEntry = new GDataTypes.ProfileEntry();
-                        _ProfileEntry.Domain = _ProfileService.Domain;
-                        foreach (var _Entry in _SEntry.sub)
+                        var _profileEntry = new GDataTypes.GDataProfileEntry();
+                        _profileEntry.Domain = profileService.Domain;
+                        foreach (var _entry in _sEntry.sub)
                         {
-                            if (_Entry.name == "{http://www.w3.org/2005/Atom}id")
+                            if (_entry.name == "{http://www.w3.org/2005/Atom}id")
                             {
-                                _ProfileEntry.UserName = _Entry.value.Replace(_ProfileLink, "");
+                                _profileEntry.UserName = _entry.value.Replace(_profileLink, "");
                             }
-                            if (_Entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
+                            if (_entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
                             {
-                                foreach (var _Attribute in _Entry.at)
+                                foreach (var _attribute in _entry.at)
                                 {
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#home")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#home")
                                     {
-                                        _ProfileEntry.HomePostalAddress = _Entry.value;
+                                        _profileEntry.HomePostalAddress = _entry.value;
                                     }
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#work")
                                     {
-                                        _ProfileEntry.PostalAddress = _Entry.value;
+                                        _profileEntry.PostalAddress = _entry.value;
                                     }
                                 }
                             }
-                            if (_Entry.name == "{http://schemas.google.com/g/2005}phoneNumber")
+                            if (_entry.name == "{http://schemas.google.com/g/2005}phoneNumber")
                             {
-                                foreach (var _Attribute in _Entry.at)
+                                foreach (var _attribute in _entry.at)
                                 {
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#other")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#other")
                                     {
-                                        _ProfileEntry.OtherPhoneNumber = _Entry.value;
+                                        _profileEntry.OtherPhoneNumber = _entry.value;
                                     }
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#work")
                                     {
-                                        _ProfileEntry.PhoneNumber = _Entry.value;
+                                        _profileEntry.PhoneNumber = _entry.value;
                                     }
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#mobile")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#mobile")
                                     {
-                                        _ProfileEntry.MobilePhoneNumber = _Entry.value;
+                                        _profileEntry.MobilePhoneNumber = _entry.value;
                                     }
-                                    if (_Attribute.Value == "http://schemas.google.com/g/2005#home")
+                                    if (_attribute.Value == "http://schemas.google.com/g/2005#home")
                                     {
-                                        _ProfileEntry.HomePhoneNumber = _Entry.value;
+                                        _profileEntry.HomePhoneNumber = _entry.value;
                                     }
                                 }
                             }
                         }
-                        _ProfileEntrys.Add(_ProfileEntry);
+                        profileEntrys.Add(_profileEntry);
                     }
                 }
 
 
-                return _ProfileEntrys;
+                return profileEntrys;
             }
 
             #endregion AppendProfileEntrys
 
             #region CreateProfileEntry
 
-            public GDataTypes.ProfileEntry CreateProfileEntry(string _Xml, string ID, GDataTypes.ProfileService _ProfileService)
+            public GDataTypes.GDataProfileEntry CreateProfileEntry(string xml, string id, GDataTypes.GDataProfileService profileService)
             {
-                var _ParesdXml = new GDataTypes.ParseXML(_Xml);
+                var _paresdXml = new GDataTypes.ParseXML(xml);
 
 
-                var _ProfileEntry = new GDataTypes.ProfileEntry();
+                var _profileEntry = new GDataTypes.GDataProfileEntry();
 
-                _ProfileEntry.Domain = _ProfileService.Domain;
-                string _ProfileLink = "http://www.google.com/m8/feeds/profiles/domain/" + _ProfileService.Domain + "/full/";
+                _profileEntry.Domain = profileService.Domain;
+                string _profileLink = "http://www.google.com/m8/feeds/profiles/domain/" + profileService.Domain + "/full/";
 
-                foreach (var _Entry in _ParesdXml.ListFormat)
+                foreach (var _entry in _paresdXml.ListFormat)
                 {
-                    if (_Entry.name == "{http://www.w3.org/2005/Atom}id")
+                    if (_entry.name == "{http://www.w3.org/2005/Atom}id")
                     {
-                        _ProfileEntry.UserName = _Entry.value.Replace(_ProfileLink, "");
+                        _profileEntry.UserName = _entry.value.Replace(_profileLink, "");
                     }
-                    if (_Entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
+                    if (_entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
                     {
-                        foreach (var _Attribute in _Entry.at)
+                        foreach (var _attribute in _entry.at)
                         {
-                            if (_Attribute.Value == "http://schemas.google.com/g/2005#home")
+                            if (_attribute.Value == "http://schemas.google.com/g/2005#home")
                             {
-                                _ProfileEntry.HomePostalAddress = _Entry.value;
+                                _profileEntry.HomePostalAddress = _entry.value;
                             }
-                            if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
+                            if (_attribute.Value == "http://schemas.google.com/g/2005#work")
                             {
-                                _ProfileEntry.PostalAddress = _Entry.value;
+                                _profileEntry.PostalAddress = _entry.value;
                             }
                         }
                     }
-                    if (_Entry.name == "{http://schemas.google.com/g/2005}phoneNumber")
+                    if (_entry.name == "{http://schemas.google.com/g/2005}phoneNumber")
                     {
-                        foreach (var _Attribute in _Entry.at)
+                        foreach (var _attribute in _entry.at)
                         {
-                            if (_Attribute.Value == "http://schemas.google.com/g/2005#other")
+                            if (_attribute.Value == "http://schemas.google.com/g/2005#other")
                             {
-                                _ProfileEntry.OtherPhoneNumber = _Entry.value;
+                                _profileEntry.OtherPhoneNumber = _entry.value;
                             }
-                            if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
+                            if (_attribute.Value == "http://schemas.google.com/g/2005#work")
                             {
-                                _ProfileEntry.PhoneNumber = _Entry.value;
+                                _profileEntry.PhoneNumber = _entry.value;
                             }
-                            if (_Attribute.Value == "http://schemas.google.com/g/2005#mobile")
+                            if (_attribute.Value == "http://schemas.google.com/g/2005#mobile")
                             {
-                                _ProfileEntry.MobilePhoneNumber = _Entry.value;
+                                _profileEntry.MobilePhoneNumber = _entry.value;
                             }
-                            if (_Attribute.Value == "http://schemas.google.com/g/2005#home")
+                            if (_attribute.Value == "http://schemas.google.com/g/2005#home")
                             {
-                                _ProfileEntry.HomePhoneNumber = _Entry.value;
+                                _profileEntry.HomePhoneNumber = _entry.value;
                             }
                         }
                     }
-
-
                 }
-                //return _ProfileEntry;
-                return _ProfileEntry;
+                return _profileEntry;
             }
 
             #endregion CreateProfileEntrys
 
             #region GetProfiles
 
-            public string GetProfiles(GDataTypes.ProfileService ProfileService, string NextPage)
+            public string GetProfiles(GDataTypes.GDataProfileService profileService, string nextPage)
             {
 
-                var Domain = ProfileService.Domain;
+                var _domain = profileService.Domain;
 
-                if (NextPage == "")
+                if (nextPage == "")
                 {
-                    NextPage = "https://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full";
+                    nextPage = "https://www.google.com/m8/feeds/profiles/domain/" + _domain + "/full";
                 }
 
-                var uri = new Uri(NextPage);
+                var _uri = new Uri(nextPage);
+
+                WebRequest _webRequest = WebRequest.Create(_uri);
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Method = "Get";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + profileService.Token);
+                _webRequest.Headers.Add("GData-Version: 3.0");
 
 
-
-                WebRequest WebRequest = WebRequest.Create(uri);
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Method = "Get";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ProfileService.Token);
-                WebRequest.Headers.Add("GData-Version: 3.0");
+                WebResponse _webResponse = _webRequest.GetResponse();
 
 
-                WebResponse WebResponse = WebRequest.GetResponse();
-
-
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var Result = SR.ReadToEnd().Trim();
+                var _result = _SR.ReadToEnd().Trim();
 
-                return Result;
+                return _result;
             }
 
             #endregion GetProfiles
 
             #region GetProfile
 
-            public string GetProfile(GDataTypes.ProfileService ProfileService, string ID)
+            public string GetProfile(GDataTypes.GDataProfileService profileService, string id)
             {
 
-                var Domain = ProfileService.Domain;
+                var Domain = profileService.Domain;
 
-                var uri = new Uri("https://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID);
-
-
-
-                WebRequest WebRequest = WebRequest.Create(uri);
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Method = "Get";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ProfileService.Token);
-                WebRequest.Headers.Add("GData-Version: 3.0");
+                var _uri = new Uri("https://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + id);
 
 
-                WebResponse WebResponse = WebRequest.GetResponse();
+
+                WebRequest _webRequest = WebRequest.Create(_uri);
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Method = "Get";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + profileService.Token);
+                _webRequest.Headers.Add("GData-Version: 3.0");
 
 
-                if (WebResponse == null)
+                WebResponse _webResponse = _webRequest.GetResponse();
+
+
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var Result = SR.ReadToEnd().Trim();
+                var _result = _SR.ReadToEnd().Trim();
 
-                return Result;
+                return _result;
             }
 
             #endregion GetProfile
 
             #region SetProfile
 
-            private string Res;
-            private XElement Elem;
-            private XNamespace Ns;
-            private string NewXml;
+            private string res;
+            private XElement elem;
+            private XNamespace ns;
+            private string newXml;
 
-            public string SetProfile(GDataTypes.ProfileService ProfileService, string ID, string PostalAddress, string PhoneNumber, string MobilePhoneNumber, string OtherPhoneNumber, string HomePostalAddress, string HomePhoneNumber)
+            public string SetProfile(GDataTypes.GDataProfileService profileService, string id, string postalAddress, string phoneNumber, string mobilePhoneNumber, string otherPhoneNumber, string homePostalAddress, string homePhoneNumber)
             {
 
-                var Domain = ProfileService.Domain;
+                var _domain = profileService.Domain;
 
-                var uri = new Uri("http://www.google.com/m8/feeds/profiles/domain/" + Domain + "/full/" + ID);
+                var _uri = new Uri("http://www.google.com/m8/feeds/profiles/domain/" + _domain + "/full/" + id);
 
-                var GoogleProfileService = new GoogleProfileService();
-                Res = GoogleProfileService.GetProfile(ProfileService, ID);
+                var _googleProfileService = new GoogleProfileService();
+                res = _googleProfileService.GetProfile(profileService, id);
 
 
 
-                Elem = XElement.Parse(Res.ToString().Trim());
+                elem = XElement.Parse(res.ToString().Trim());
 
-                Ns = "http://schemas.google.com/g/2005";
+                ns = "http://schemas.google.com/g/2005";
 
-                string FormatedRes = Res.Replace("\"", "'");
+                string _formatedRes = res.Replace("\"", "'");
 
-                if (PostalAddress != null)
+                if (postalAddress != null)
                 {
-                    if (FormatedRes.Contains("gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work'"))
+                    if (_formatedRes.Contains("gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work'"))
                     {
 
-                        foreach (var Element in Elem.Elements(Ns + "structuredPostalAddress"))
+                        foreach (var _element in elem.Elements(ns + "structuredPostalAddress"))
                         {
-                            if (Element.FirstAttribute.Value == "http://schemas.google.com/g/2005#work")
+                            if (_element.FirstAttribute.Value == "http://schemas.google.com/g/2005#work")
                             {
 
-                                Element.SetElementValue(Ns + "formattedAddress", PostalAddress);
+                                _element.SetElementValue(ns + "formattedAddress", postalAddress);
                             }
 
 
                         }
-                        NewXml = Elem.ToString();
+                        newXml = elem.ToString();
                     }
                     else
                     {
-                        NewXml = Elem.ToString().Replace("</entry>", "<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work'><gd:formattedAddress>" + PostalAddress + "</gd:formattedAddress></gd:structuredPostalAddress></entry>");
-                        Elem = XElement.Parse(NewXml.ToString().Trim());
+                        newXml = elem.ToString().Replace("</entry>", "<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#work'><gd:formattedAddress>" + postalAddress + "</gd:formattedAddress></gd:structuredPostalAddress></entry>");
+                        elem = XElement.Parse(newXml.ToString().Trim());
                     }
                 }
 
-                if (HomePostalAddress != null)
+                if (homePostalAddress != null)
                 {
-                    if (FormatedRes.Contains("gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#home'"))
+                    if (_formatedRes.Contains("gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#home'"))
                     {
 
-                        foreach (var Element in Elem.Elements(Ns + "structuredPostalAddress"))
+                        foreach (var _element in elem.Elements(ns + "structuredPostalAddress"))
                         {
 
-                            if (Element.FirstAttribute.Value == "http://schemas.google.com/g/2005#home")
+                            if (_element.FirstAttribute.Value == "http://schemas.google.com/g/2005#home")
                             {
-                                //Element.SetValue(PhoneNumber);
-
-                                Element.SetElementValue(Ns + "formattedAddress", HomePostalAddress);
+                                _element.SetElementValue(ns + "formattedAddress", homePostalAddress);
                             }
 
                         }
-                        NewXml = Elem.ToString();
+                        newXml = elem.ToString();
                     }
                     else
                     {
-                        NewXml = Elem.ToString().Replace("</entry>", "<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#home'><gd:formattedAddress>" + HomePostalAddress + "</gd:formattedAddress></gd:structuredPostalAddress></entry>");
-                        Elem = XElement.Parse(NewXml.ToString().Trim());
+                        newXml = elem.ToString().Replace("</entry>", "<gd:structuredPostalAddress rel='http://schemas.google.com/g/2005#home'><gd:formattedAddress>" + homePostalAddress + "</gd:formattedAddress></gd:structuredPostalAddress></entry>");
+                        elem = XElement.Parse(newXml.ToString().Trim());
                     }
                 }
 
-                if (PhoneNumber != null)
+                if (phoneNumber != null)
                 {
-                    if (Res.Contains("phoneNumber rel='http://schemas.google.com/g/2005#work'"))
+                    if (res.Contains("phoneNumber rel='http://schemas.google.com/g/2005#work'"))
                     {
 
-                        foreach (var Element in Elem.Elements(Ns + "phoneNumber"))
+                        foreach (var _element in elem.Elements(ns + "phoneNumber"))
                         {
 
-                            if (Element.FirstAttribute.Value == "http://schemas.google.com/g/2005#work")
+                            if (_element.FirstAttribute.Value == "http://schemas.google.com/g/2005#work")
                             {
-                                Element.SetValue(PhoneNumber);
+                                _element.SetValue(phoneNumber);
                             }
-                            NewXml = Elem.ToString();
+                            newXml = elem.ToString();
                         }
                     }
                     else
                     {
-                        NewXml = Elem.ToString().Replace("</entry>", "<gd:phoneNumber rel='http://schemas.google.com/g/2005#work' primary='true'>" + PhoneNumber + "</gd:phoneNumber></entry>");
-                        Elem = XElement.Parse(NewXml.ToString().Trim());
+                        newXml = elem.ToString().Replace("</entry>", "<gd:phoneNumber rel='http://schemas.google.com/g/2005#work' primary='true'>" + phoneNumber + "</gd:phoneNumber></entry>");
+                        elem = XElement.Parse(newXml.ToString().Trim());
                     }
                 }
 
-                if (MobilePhoneNumber != null)
+                if (mobilePhoneNumber != null)
                 {
-                    if (Res.Contains("phoneNumber rel='http://schemas.google.com/g/2005#mobile'"))
+                    if (res.Contains("phoneNumber rel='http://schemas.google.com/g/2005#mobile'"))
                     {
-                        foreach (var Element in Elem.Elements(Ns + "phoneNumber"))
+                        foreach (var _element in elem.Elements(ns + "phoneNumber"))
                         {
-                            if (Element.FirstAttribute.Value == "http://schemas.google.com/g/2005#mobile")
+                            if (_element.FirstAttribute.Value == "http://schemas.google.com/g/2005#mobile")
                             {
-                                Element.SetValue(MobilePhoneNumber);
+                                _element.SetValue(mobilePhoneNumber);
                             }
                         }
-                        NewXml = Elem.ToString();
+                        newXml = elem.ToString();
                     }
                     else
                     {
-                        NewXml = Elem.ToString().Replace("</entry>", "<gd:phoneNumber rel='http://schemas.google.com/g/2005#mobile'>" + MobilePhoneNumber + "</gd:phoneNumber></entry>");
-                        Elem = XElement.Parse(NewXml.ToString().Trim());
+                        newXml = elem.ToString().Replace("</entry>", "<gd:phoneNumber rel='http://schemas.google.com/g/2005#mobile'>" + mobilePhoneNumber + "</gd:phoneNumber></entry>");
+                        elem = XElement.Parse(newXml.ToString().Trim());
                     }
                 }
 
-                if (OtherPhoneNumber != null)
+                if (otherPhoneNumber != null)
                 {
-                    if (Res.Contains("phoneNumber rel='http://schemas.google.com/g/2005#other'"))
+                    if (res.Contains("phoneNumber rel='http://schemas.google.com/g/2005#other'"))
                     {
-                        foreach (var Element in Elem.Elements(Ns + "phoneNumber"))
+                        foreach (var _element in elem.Elements(ns + "phoneNumber"))
                         {
-                            if (Element.FirstAttribute.Value == "http://schemas.google.com/g/2005#other")
+                            if (_element.FirstAttribute.Value == "http://schemas.google.com/g/2005#other")
                             {
-                                Element.SetValue(OtherPhoneNumber);
+                                _element.SetValue(otherPhoneNumber);
                             }
-                            NewXml = Elem.ToString();
-                        }
-                    }
-                    else
-                    {
-                        NewXml = Elem.ToString().Replace("</entry>", "<gd:phoneNumber rel='http://schemas.google.com/g/2005#other'>" + MobilePhoneNumber + "</gd:phoneNumber></entry>");
-                        Elem = XElement.Parse(NewXml.ToString().Trim());
-                    }
-                }
-
-                if (HomePhoneNumber != null)
-                {
-                    if (Res.Contains("phoneNumber rel='http://schemas.google.com/g/2005#home'"))
-                    {
-                        foreach (var Element in Elem.Elements(Ns + "phoneNumber"))
-                        {
-                            if (Element.FirstAttribute.Value == "http://schemas.google.com/g/2005#home")
-                            {
-                                Element.SetValue(HomePhoneNumber);
-                            }
-                            NewXml = Elem.ToString();
+                            newXml = elem.ToString();
                         }
                     }
                     else
                     {
-                        NewXml = Elem.ToString().Replace("</entry>", "<gd:phoneNumber rel='http://schemas.google.com/g/2005#home'>" + HomePhoneNumber + "</gd:phoneNumber></entry>");
-                        Elem = XElement.Parse(NewXml.ToString().Trim());
+                        newXml = elem.ToString().Replace("</entry>", "<gd:phoneNumber rel='http://schemas.google.com/g/2005#other'>" + mobilePhoneNumber + "</gd:phoneNumber></entry>");
+                        elem = XElement.Parse(newXml.ToString().Trim());
                     }
                 }
 
+                if (homePhoneNumber != null)
+                {
+                    if (res.Contains("phoneNumber rel='http://schemas.google.com/g/2005#home'"))
+                    {
+                        foreach (var _element in elem.Elements(ns + "phoneNumber"))
+                        {
+                            if (_element.FirstAttribute.Value == "http://schemas.google.com/g/2005#home")
+                            {
+                                _element.SetValue(homePhoneNumber);
+                            }
+                            newXml = elem.ToString();
+                        }
+                    }
+                    else
+                    {
+                        newXml = elem.ToString().Replace("</entry>", "<gd:phoneNumber rel='http://schemas.google.com/g/2005#home'>" + homePhoneNumber + "</gd:phoneNumber></entry>");
+                        elem = XElement.Parse(newXml.ToString().Trim());
+                    }
+                }
 
-                // parameters: name1=value1&name2=value2
+                WebRequest _webRequest = WebRequest.Create(_uri);
+                _webRequest.ContentType = "application/atom+xml; charset=UTF-8";
+                _webRequest.Method = "PUT";
+                _webRequest.Headers.Add("Authorization: GoogleLogin auth=" + profileService.Token);
+                _webRequest.Headers.Add("GData-Version: 3.0");
 
-                WebRequest WebRequest = WebRequest.Create(uri);
-                WebRequest.ContentType = "application/atom+xml; charset=UTF-8";
-                WebRequest.Method = "PUT";
-                WebRequest.Headers.Add("Authorization: GoogleLogin auth=" + ProfileService.Token);
-                WebRequest.Headers.Add("GData-Version: 3.0");
+                var _post = newXml;
 
-                var Post = NewXml;
+                byte[] _bytes = Encoding.UTF8.GetBytes(_post);
+                Stream _OS = null;
+                _webRequest.ContentLength = _bytes.Length;
+                _OS = _webRequest.GetRequestStream();
+                _OS.Write(_bytes, 0, _bytes.Length);
 
-                byte[] Bytes = Encoding.UTF8.GetBytes(Post);
-                Stream OS = null;
-                WebRequest.ContentLength = Bytes.Length;
-                OS = WebRequest.GetRequestStream();
-                OS.Write(Bytes, 0, Bytes.Length);
+                _OS.Close();
 
-                OS.Close();
+                WebResponse _webResponse = _webRequest.GetResponse();
 
-
-                WebResponse WebResponse = WebRequest.GetResponse();
-
-
-                if (WebResponse == null)
+                if (_webResponse == null)
                 {
                     throw new Exception("WebResponse is null");
                 }
-                StreamReader SR = new StreamReader(WebResponse.GetResponseStream());
+                StreamReader _SR = new StreamReader(_webResponse.GetResponseStream());
 
-                var Result = SR.ReadToEnd().Trim();
+                var _result = _SR.ReadToEnd().Trim();
 
-                return Result;
+                return _result;
 
             }
 

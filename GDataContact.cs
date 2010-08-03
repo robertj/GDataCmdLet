@@ -15,58 +15,6 @@ namespace Microsoft.PowerShell.GData
     public class Contact
     {
 
-        #region New-GDataContactService
-        /*
-        [Cmdlet(VerbsCommon.New, "GDataContactService")]
-        public class NewGDataContactService : Cmdlet
-        {
-            #region Parameters
-
-            [Parameter(
-            Mandatory = true,
-            HelpMessage = "GoogleApps admin user, admin@domain.com"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminUsername
-            {
-                get { return null; }
-                set { _AdminUser = value; }
-            }
-            private string _AdminUser;
-
-            [Parameter(
-               Mandatory = true,
-               HelpMessage = "GoogleApps admin password"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminPassword
-            {
-                get { return null; }
-                set { _AdminPassword = value; }
-            }
-            private string _AdminPassword;
-
-            #endregion Parameters
-
-            protected override void ProcessRecord()
-            {
-                try
-                {
-                    ContactsService _ContactService = new ContactsService("GData");
-                    _ContactService.setUserCredentials(_AdminUser, _AdminPassword);
-
-                    WriteObject(_ContactService);
-                }
-                catch (Exception _Exception)
-                {
-                    WriteObject(_Exception);
-                }
-            }
-
-        }
-        */
-        #endregion New-GdataContactService
-
         #region Remove-GDataContact
 
         [Cmdlet(VerbsCommon.Remove, "GDataContact")]
@@ -81,9 +29,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _ContactService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _ContactService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -93,47 +41,25 @@ namespace Microsoft.PowerShell.GData
             public string SelfUri
             {
                 get { return null; }
-                set { _SelfUri = value; }
+                set { selfUri = value; }
             }
-            private string _SelfUri;
+            private string selfUri;
 
-            /*
-            [Parameter(
-            Mandatory = false,
-            HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string Scope
-            {
-                get { return null; }
-                set { _Scope = value; }
-            }
-            private string _Scope;
-            */
+            private Dgc.GoogleContactsService dgcGoogleContactsService = new Dgc.GoogleContactsService();
+
             protected override void ProcessRecord()
             {
-
-
-
-                var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
-                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService.ContactsService);
-
-
-
-                var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
-//                var _Query = new ContactsQuery("http://www.google.com/m8/feeds/profiles/domain/domain/full");
-                var _Feed = _ContactService.ContactsService.Query(_Query);
-
-
-                
-                foreach (var _Entry in _Feed.Entries)
+                var _domain = dgcGoogleContactsService.GetDomain(service.ContactsService);
+                var _query = new ContactsQuery(ContactsQuery.CreateContactsUri(_domain));
+                var _feed = service.ContactsService.Query(_query);
+                foreach (var _entry in _feed.Entries)
                 {
-                    if (_Entry.SelfUri.Content == _SelfUri)
+                    if (_entry.SelfUri.Content == selfUri)
                     {
                         try
                         {
-                            _ContactService.ContactsService.Delete(_Entry);
-                            WriteObject(_Entry, true);
+                            service.ContactsService.Delete(_entry);
+                            WriteObject(_entry, true);
                         }
                         catch (Exception _Exception)
                         {
@@ -168,9 +94,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _ContactService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _ContactService;
+            private GDataTypes.GDataService service;
  
             [Parameter(
             Mandatory = false,
@@ -180,9 +106,9 @@ namespace Microsoft.PowerShell.GData
             public string SelfUri
             {
                 get { return null; }
-                set { _SelfUri = value; }
+                set { selfUri = value; }
             }
-            private string _SelfUri;
+            private string selfUri;
             
             [Parameter(
             Mandatory = false,
@@ -192,95 +118,66 @@ namespace Microsoft.PowerShell.GData
             public string Name
             {
                 get { return null; }
-                set { _Name = value; }
+                set { name = value; }
             }
-            private string _Name;
-            /*
-            [Parameter(
-            Mandatory = false,
-            HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string Scope
-            {
-                get { return null; }
-                set { _Scope = value; }
-            }
-            private string _Scope;
-            */
+            private string name;
+            
             #endregion Parameters
 
-
+            private Dgc.GoogleContactsService dgcGoogleContactsService = new Dgc.GoogleContactsService(); 
             protected override void ProcessRecord()
             {
-
-
-                var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
-                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService.ContactsService);
-
-
-
+                var _domain = dgcGoogleContactsService.GetDomain(service.ContactsService);
                 try
                 {
-
-                    if (_SelfUri != null)
+                    if (selfUri != null)
                     {
-                        var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
-                        var _Feed = _ContactService.ContactsService.Query(_Query);
+                        var _query = new ContactsQuery(ContactsQuery.CreateContactsUri(_domain));
+                        var _feed = service.ContactsService.Query(_query);
                         
-                        foreach (ContactEntry _Entry in _Feed.Entries)
+                        foreach (ContactEntry _entry in _feed.Entries)
                         {
-                            if (_Entry.SelfUri.Content == _SelfUri)
+                            if (_entry.SelfUri.Content == selfUri)
                             {
-                                var _ContactEntry = _DgcGoogleContactsService.CreateContactEntry(_Entry);
-                                WriteObject(_ContactEntry);
+                                var _contactEntry = dgcGoogleContactsService.CreateContactEntry(_entry);
+                                WriteObject(_contactEntry);
                             }
-
                         }
-                        
                     }
-                    
-                    else if (_Name != null)
+                    else if (name != null)
                     {
 
-                        var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
-                        var _Feed = _ContactService.OauthContactsService.Query(_Query);
-                        var _ContactsEntrys = new GDataTypes.GDataContactEntrys();
-                        foreach (ContactEntry _Entry in _Feed.Entries)
+                        var _query = new ContactsQuery(ContactsQuery.CreateContactsUri(_domain));
+                        var _feed = service.OauthContactsService.Query(_query);
+                        var _contactsEntrys = new GDataTypes.GDataContactEntrys();
+                        foreach (ContactEntry _entry in _feed.Entries)
                         {
-                            if (_Entry.Title.Text != null)
+                            if (_entry.Title.Text != null)
                             {
-                                if (System.Text.RegularExpressions.Regex.IsMatch(_Entry.Title.Text, _Name))
+                                if (System.Text.RegularExpressions.Regex.IsMatch(_entry.Title.Text, name))
                                 {
-                                    var _ContactEntry = _DgcGoogleContactsService.CreateContactEntry(_Entry);
-                                    _ContactsEntrys = _DgcGoogleContactsService.AppendContactEntrys(_Entry, _ContactsEntrys);
+                                    var _contactEntry = dgcGoogleContactsService.CreateContactEntry(_entry);
+                                    _contactsEntrys = dgcGoogleContactsService.AppendContactEntrys(_entry, _contactsEntrys);
                                 }
                             }
 
                         }
-                        WriteObject(_ContactsEntrys, true);
+                        WriteObject(_contactsEntrys, true);
                     }
-                    
                     else
-                    {
-                       
-                        var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
-                        var _Feed = _ContactService.ContactsService.Query(_Query);
-
-                        var _ContactEntrys = _DgcGoogleContactsService.CreateContactEntrys(_Feed);
-                        WriteObject(_ContactEntrys, true);
-
+                    {  
+                        var _query = new ContactsQuery(ContactsQuery.CreateContactsUri(_domain));
+                        var _feed = service.ContactsService.Query(_query);
+                        var _contactEntrys = dgcGoogleContactsService.CreateContactEntrys(_feed);
+                        WriteObject(_contactEntrys, true);
                     }
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception); 
+                    WriteObject(_exception); 
 
                 }
-                
-
             }
-
         }
 
         #endregion Get-GDataContact
@@ -293,7 +190,6 @@ namespace Microsoft.PowerShell.GData
             
             #region Parameters
 
-
             [Parameter(
             Mandatory = true,
             HelpMessage = "ContactService, new-GdataContactService"
@@ -302,9 +198,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _ContactService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _ContactService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -314,9 +210,9 @@ namespace Microsoft.PowerShell.GData
             public string SelfUri
             {
                 get { return null; }
-                set { _SelfUri = value; }
+                set { selfUri = value; }
             }
-            private string _SelfUri;
+            private string selfUri;
 
             [Parameter(
              Mandatory = false,
@@ -326,9 +222,9 @@ namespace Microsoft.PowerShell.GData
             public string EmailAddress
             {
                 get { return null; }
-                set { _EmailAddress = value; }
+                set { emailAddress = value; }
             }
-            private string _EmailAddress;
+            private string emailAddress;
 
             [Parameter(
                Mandatory = false,
@@ -338,9 +234,9 @@ namespace Microsoft.PowerShell.GData
             public string Name
             {
                 get { return null; }
-                set { _Name = value; }
+                set { name = value; }
             }
-            private string _Name;
+            private string name;
 
 
             [Parameter(
@@ -351,9 +247,9 @@ namespace Microsoft.PowerShell.GData
             public string PhoneNumber
             {
                 get { return null; }
-                set { _PhoneNumber = value; }
+                set { phoneNumber = value; }
             }
-            private string _PhoneNumber;
+            private string phoneNumber;
 
 
             [Parameter(
@@ -364,9 +260,9 @@ namespace Microsoft.PowerShell.GData
             public string PostalAddress
             {
                 get { return null; }
-                set { _PostalAddress = value; }
+                set { postalAddress = value; }
             }
-            private string _PostalAddress;
+            private string postalAddress;
 
 
             [Parameter(
@@ -377,109 +273,84 @@ namespace Microsoft.PowerShell.GData
             public string City
             {
                 get { return null; }
-                set { _City = value; }
+                set { city = value; }
             }
-            private string _City;
-            /*
-            [Parameter(
-            Mandatory = false,
-            HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string Scope
-            {
-                get { return null; }
-                set { _Scope = value; }
-            }
-            private string _Scope;
-            */
+            private string city;
+            
             #endregion Parameters
 
-
+            private Dgc.GoogleContactsService dgcGoogleContactsService = new Dgc.GoogleContactsService();
             protected override void ProcessRecord()
             {
-
-
-                var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
-                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService.ContactsService);
-                var _Query = new ContactsQuery(ContactsQuery.CreateContactsUri(_Domain));
-                
-                var _Feed = _ContactService.ContactsService.Query(_Query);
-
-                foreach (ContactEntry _Entry in _Feed.Entries)
+                var _domain = dgcGoogleContactsService.GetDomain(service.ContactsService);
+                var _query = new ContactsQuery(ContactsQuery.CreateContactsUri(_domain));
+                var _feed = service.ContactsService.Query(_query);
+                foreach (ContactEntry _entry in _feed.Entries)
                 {
-                    if (_Entry.SelfUri.Content == _SelfUri)
+                    if (_entry.SelfUri.Content == selfUri)
                     {
                         
-                        if (_EmailAddress != null)
+                        if (emailAddress != null)
                         {
-                            var primaryEmail = new EMail();
-                            primaryEmail.Address = _EmailAddress;
-                            primaryEmail.Primary = true;
-                            primaryEmail.Rel = ContactsRelationships.IsWork;
-                            _Entry.Emails.Add(primaryEmail);
+                            var _primaryEmail = new EMail();
+                            _primaryEmail.Address = emailAddress;
+                            _primaryEmail.Primary = true;
+                            _primaryEmail.Rel = ContactsRelationships.IsWork;
+                            _entry.Emails.Add(_primaryEmail);
                         }
 
-                        if (_PhoneNumber != null)
+                        if (phoneNumber != null)
                         {
-                            _Entry.Phonenumbers.Clear();
-                            var phoneNumber = new PhoneNumber(_PhoneNumber);
-                            phoneNumber.Primary = true;
-                            phoneNumber.Rel = ContactsRelationships.IsWork;
-                            _Entry.Phonenumbers.Add(phoneNumber);
+                            _entry.Phonenumbers.Clear();
+                            var _phoneNumber = new PhoneNumber(phoneNumber);
+                            _phoneNumber.Primary = true;
+                            _phoneNumber.Rel = ContactsRelationships.IsWork;
+                            _entry.Phonenumbers.Add(_phoneNumber);
                         }
 
-                        if (_PostalAddress != null)
+                        if (postalAddress != null)
                         {
-                            _Entry.PostalAddresses.Clear();
-                            //var postalAddress = new PostalAddress();
-                            var postalAddress = new StructuredPostalAddress();
-                            //postalAddress.Value = _PostalAddress;
-                            postalAddress.FormattedAddress = _PostalAddress;
-                            postalAddress.Primary = true;
-                            postalAddress.Rel = ContactsRelationships.IsWork;
-                            if (_City != null)
+                            _entry.PostalAddresses.Clear();
+                            var _postalAddress = new StructuredPostalAddress();
+                            _postalAddress.FormattedAddress = postalAddress;
+                            _postalAddress.Primary = true;
+                            _postalAddress.Rel = ContactsRelationships.IsWork;
+                            if (city != null)
                             {
-                                postalAddress.City = _City;
+                                _postalAddress.City = city;
                             }
                             else
                             {
 
                             }
-                            _Entry.PostalAddresses.Add(postalAddress);
-                            
-
-                        
+                            _entry.PostalAddresses.Add(_postalAddress);           
                         }
 
-                        Uri _FeedUri = new Uri(ContactsQuery.CreateContactsUri(_Domain));
+                        Uri _feedUri = new Uri(ContactsQuery.CreateContactsUri(_domain));
 
                         try
                         {
-                            ContactEntry _UpdateEntry = (ContactEntry)_ContactService.ContactsService.Update(_Entry);
-                            if (_Name != null)
+                            ContactEntry _updateEntry = (ContactEntry)service.ContactsService.Update(_entry);
+                            if (name != null)
                             {
-                                var _Token = _ContactService.ContactsService.QueryClientLoginToken();
-                                _DgcGoogleContactsService.SetContactTitle(_Token, _Entry.SelfUri.ToString(), _Name);
-                                var _ContactEntry = _DgcGoogleContactsService.CreateContactModifidEntry(_UpdateEntry, _Name);
-                                WriteObject(_ContactEntry);
+                                var _token = service.ContactsService.QueryClientLoginToken();
+                                dgcGoogleContactsService.SetContactTitle(_token, _entry.SelfUri.ToString(), name);
+                                var _contactEntry = dgcGoogleContactsService.CreateContactModifidEntry(_updateEntry, name);
+                                WriteObject(_contactEntry);
                             }
                             else
                             {
-                                var _ContactEntry = _DgcGoogleContactsService.CreateContactEntry(_UpdateEntry);
-                                WriteObject(_ContactEntry);
+                                var _contactEntry = dgcGoogleContactsService.CreateContactEntry(_updateEntry);
+                                WriteObject(_contactEntry);
                             }
                         }
-                        catch (Exception _Exception)
+                        catch (Exception _exception)
                         {
-                            WriteObject(_Exception);
+                            WriteObject(_exception);
                         }
                     }
-
                 }
-            }      
-
-
+            }
         }
 
         #endregion Set-GDataContact
@@ -489,8 +360,6 @@ namespace Microsoft.PowerShell.GData
         [Cmdlet(VerbsCommon.New, "GDataContact")]
         public class NewGDataContact : Cmdlet
         {
-
-
             #region Parameters
 
 
@@ -502,9 +371,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _ContactService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _ContactService;
+            private GDataTypes.GDataService service;
 
             
             [Parameter(
@@ -515,9 +384,9 @@ namespace Microsoft.PowerShell.GData
             public string EmailAddress
             {
                 get { return null; }
-                set { _EmailAddress = value; }
+                set { emailAddress = value; }
             }
-            private string _EmailAddress;
+            private string emailAddress;
             
             [Parameter(
                Mandatory = true,
@@ -527,9 +396,9 @@ namespace Microsoft.PowerShell.GData
             public string Name
             {
                 get { return null; }
-                set { _Name = value; }
+                set { name = value; }
             }
-            private string _Name;
+            private string name;
             
             [Parameter(
                Mandatory = false,
@@ -539,9 +408,9 @@ namespace Microsoft.PowerShell.GData
             public string PhoneNumber
             {
                 get { return null; }
-                set { _PhoneNumber = value; }
+                set { phoneNumber = value; }
             }
-            private string _PhoneNumber;
+            private string phoneNumber;
 
             
             [Parameter(
@@ -552,9 +421,9 @@ namespace Microsoft.PowerShell.GData
             public string PostalAddress
             {
                 get { return null; }
-                set { _PostalAddress = value; }
+                set { postalAddress = value; }
             }
-            private string _PostalAddress;
+            private string postalAddress;
 
             [Parameter(
             Mandatory = false,
@@ -564,82 +433,62 @@ namespace Microsoft.PowerShell.GData
             public string City
             {
                 get { return null; }
-                set { _City = value; }
+                set { city = value; }
             }
-            private string _City;
-            /*
-            [Parameter(
-            Mandatory = false,
-            HelpMessage = "Defult is domain shared, user@domian.com to manage user contacts"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string Scope
-            {
-                get { return null; }
-                set { _Scope = value; }
-            }
-            private string _Scope;
-            */
+            private string city;
+            
             #endregion Parameters
 
-
+            private Dgc.GoogleContactsService dgcGoogleContactsService = new Dgc.GoogleContactsService();
             protected override void ProcessRecord()
             {
-                var _NewEntry = new ContactEntry();
-                EMail primaryEmail = new EMail();
-                primaryEmail.Address = _EmailAddress;
-                primaryEmail.Primary = true;
-                primaryEmail.Rel = ContactsRelationships.IsWork;
-                _NewEntry.Emails.Add(primaryEmail);
+                var _newEntry = new ContactEntry();
+                EMail _primaryEmail = new EMail();
+                _primaryEmail.Address = emailAddress;
+                _primaryEmail.Primary = true;
+                _primaryEmail.Rel = ContactsRelationships.IsWork;
+                _newEntry.Emails.Add(_primaryEmail);
             
-                if (_PhoneNumber != null)
+                if (phoneNumber != null)
                 {
-                    var phoneNumber = new PhoneNumber(_PhoneNumber);
-                    phoneNumber.Primary = true;
-                    phoneNumber.Rel = ContactsRelationships.IsWork;
-                    _NewEntry.Phonenumbers.Add(phoneNumber);
+                    var _phoneNumber = new PhoneNumber(phoneNumber);
+                    _phoneNumber.Primary = true;
+                    _phoneNumber.Rel = ContactsRelationships.IsWork;
+                    _newEntry.Phonenumbers.Add(_phoneNumber);
                 }
 
-                if (_PostalAddress != null)
+                if (postalAddress != null)
                 {
                     //var postalAddress = new PostalAddress();
-                    var postalAddress = new StructuredPostalAddress();
+                    var _postalAddress = new StructuredPostalAddress();
                     //postalAddress.Value = _PostalAddress;
-                    postalAddress.FormattedAddress = _PostalAddress;
-                    postalAddress.Primary = true;
-                    postalAddress.Rel = ContactsRelationships.IsWork;
-                    if (_City != null)
+                    _postalAddress.FormattedAddress = postalAddress;
+                    _postalAddress.Primary = true;
+                    _postalAddress.Rel = ContactsRelationships.IsWork;
+                    if (city != null)
                     {
-                        postalAddress.City = _City;
+                        _postalAddress.City = city;
                     }
                     
-                    _NewEntry.PostalAddresses.Add(postalAddress);
+                    _newEntry.PostalAddresses.Add(_postalAddress);
                 }
 
-                var _DgcGoogleContactsService = new Dgc.GoogleContactsService();
-                var _Domain = _DgcGoogleContactsService.GetDomain(_ContactService.ContactsService);
+                var _domain = dgcGoogleContactsService.GetDomain(service.ContactsService);
                 
-                Uri _FeedUri = new Uri(ContactsQuery.CreateContactsUri(_Domain));
-
-
+                Uri _feedUri = new Uri(ContactsQuery.CreateContactsUri(_domain));
                 try
                 {
-                    ContactEntry _Entry = (ContactEntry)_ContactService.ContactsService.Insert(_FeedUri, _NewEntry);
-                    var _Token = _ContactService.ContactsService.QueryClientLoginToken();
-                    //FuglyFix for Google bugs
-                    _DgcGoogleContactsService.SetContactTitle(_Token,_Entry.SelfUri.ToString(),_Name);
-                    var _ContactEntry = _DgcGoogleContactsService.CreateContactModifidEntry(_Entry, _Name);
-                    WriteObject(_ContactEntry);
+                    ContactEntry _entry = (ContactEntry)service.ContactsService.Insert(_feedUri, _newEntry);
+                    var _token = service.ContactsService.QueryClientLoginToken();
+                    dgcGoogleContactsService.SetContactTitle(_token,_entry.SelfUri.ToString(),name);
+                    var _contactEntry = dgcGoogleContactsService.CreateContactModifidEntry(_entry, name);
+                    WriteObject(_contactEntry);
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
-
-
-
-
         }
 
         #endregion New-GDataContact

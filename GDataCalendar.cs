@@ -59,10 +59,10 @@ namespace Microsoft.PowerShell.GData
                 //var _DgcGoogleAppsService = new Dgc.GoogleAppService();
                 //var _Domain = _DgcGoogleAppsService.GetDomain(_AdminUser);
 
-                var _CalendarService = new CalendarService("Calendar");
-                _CalendarService.setUserCredentials(_AdminUser, _AdminPassword);
+                var service = new CalendarService("Calendar");
+                service.setUserCredentials(_AdminUser, _AdminPassword);
                
-                WriteObject(_CalendarService);
+                WriteObject(service);
                
             }
 
@@ -87,22 +87,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _CalendarService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _CalendarService;
-            /*
-            [Parameter(
-            Mandatory = true,
-            HelpMessage = "User ID"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string ID
-            {
-                get { return null; }
-                set { _ID = value; }
-            }
-            private string _ID;
-            */
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -112,55 +99,42 @@ namespace Microsoft.PowerShell.GData
             public string SelfUri
             {
                 get { return null; }
-                set { _SelfUri = value; }
+                set { selfUri = value; }
             }
-            private string _SelfUri;
+            private string selfUri;
 
             #endregion Parameters
 
+            private Dgc.GoogleCalendarsService dgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
             protected override void ProcessRecord()
             {
-                
-
-
-                    var _DgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
-                    var _Domain = _DgcGoogleCalendarService.GetDomain(_CalendarService.CalendarService);
-
-                    
-                    var _CalendarQuery = new CalendarQuery();
-                    _CalendarQuery.Uri = new Uri(_SelfUri);
-                    try
+                var _domain = dgcGoogleCalendarService.GetDomain(service.CalendarService);
+                var _calendarQuery = new CalendarQuery();
+                _calendarQuery.Uri = new Uri(selfUri);
+                try
+                {
+                    var _calendarFeed = (CalendarFeed)service.CalendarService.Query(_calendarQuery);
+                    foreach (var _entry in _calendarFeed.Entries)
                     {
-                        var _CalendarFeed = (CalendarFeed)_CalendarService.CalendarService.Query(_CalendarQuery);
-
-
-                        foreach (var _Entry in _CalendarFeed.Entries)
+                        if (_entry.SelfUri.ToString() == selfUri)
                         {
-                            if (_Entry.SelfUri.ToString() == _SelfUri)
+                            try
                             {
-
-                                try
-                                {
-                                    _Entry.Delete();
-                                    WriteObject(_Entry);
-
-                                }
-                                catch (Exception _Exception)
-                                {
-                                    WriteObject(_Exception);
-                                }
+                                _entry.Delete();
+                                WriteObject(_entry);
                             }
-
-
+                            catch (Exception _exception)
+                            {
+                                WriteObject(_exception);
+                            }
                         }
                     }
-                    catch (Exception _Exception)
-                    {
-                        WriteObject(_Exception);
-                    }
-            }
-
-
+                }
+                catch (Exception _exception)
+                {
+                    WriteObject(_exception);
+                }
+           }
         }
 
         #endregion Remove-GDataCalendar
@@ -181,9 +155,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _CalendarService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _CalendarService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -193,9 +167,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = false,
@@ -205,55 +179,48 @@ namespace Microsoft.PowerShell.GData
             public string CalendarName
             {
                 get { return null; }
-                set { _CalendarName = value; }
+                set { _calendarName = value; }
             }
-            private string _CalendarName;
+            private string _calendarName;
 
             #endregion Parameters
 
 
+            private Dgc.GoogleCalendarsService dgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
+                
             protected override void ProcessRecord()
             {
-
-           
-
-                    var _DgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
-                    var _Domain = _DgcGoogleCalendarService.GetDomain(_CalendarService.CalendarService);
-
-                    
-                    var _CalendarQuery = new CalendarQuery();
-                    _CalendarQuery.Uri = new Uri("https://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/allcalendars/full");
+                var _domain = dgcGoogleCalendarService.GetDomain(service.CalendarService);
+                var _calendarQuery = new CalendarQuery();
+                _calendarQuery.Uri = new Uri("https://www.google.com/calendar/feeds/" + id + "@" + _domain + "/allcalendars/full");
                    
-                    try
+                try
+                {
+                    var _calendarFeed = service.CalendarService.Query(_calendarQuery);
+
+                    if (_calendarName == null)
                     {
-
-                        var _CalendarFeed = _CalendarService.CalendarService.Query(_CalendarQuery);
-
-                        if (_CalendarName == null)
-                        {
-                            var _CalendarEntrys = _DgcGoogleCalendarService.CreateCalendarEntrys(_CalendarFeed);
-                            WriteObject(_CalendarEntrys, true);
-                        }
-                        else
-                        {
-
-                            var _CalendarSelection = from _Selection in _CalendarFeed.Entries
-                                                     where _Selection.Title.Text.ToString() == _CalendarName
-                                                     select _Selection;
-
-                            var _CalendarEntrys = new GDataTypes.GDataCalendarEntrys();
-                            foreach (CalendarEntry _Entry in _CalendarSelection)
-                            { 
-                                _CalendarEntrys = _DgcGoogleCalendarService.AppendCalendarEntrys(_Entry, _CalendarEntrys);
-                            }
-                            WriteObject(_CalendarEntrys, true);
-                        }
-     
+                        var _calendarEntrys = dgcGoogleCalendarService.CreateCalendarEntrys(_calendarFeed);
+                        WriteObject(_calendarEntrys, true);
                     }
-                    catch (Exception _Exception)
+                    else
                     {
-                        WriteObject(_Exception);
+                        var _calendarSelection = from _selection in _calendarFeed.Entries
+                                                    where _selection.Title.Text.ToString() == _calendarName
+                                                    select _selection;
+
+                        var _calendarEntrys = new GDataTypes.GDataCalendarEntrys();
+                        foreach (CalendarEntry _entry in _calendarSelection)
+                        { 
+                            _calendarEntrys = dgcGoogleCalendarService.AppendCalendarEntrys(_entry, _calendarEntrys);
+                        }
+                        WriteObject(_calendarEntrys, true);
                     }
+                }
+                catch (Exception _exception)
+                {
+                    WriteObject(_exception);
+                }
             }
 
         }
@@ -276,9 +243,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _CalendarService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _CalendarService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -288,9 +255,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = true,
@@ -300,9 +267,9 @@ namespace Microsoft.PowerShell.GData
             public string CalendarName
             {
                 get { return null; }
-                set { _CalendarName = value; }
+                set { calendarName = value; }
             }
-            private string _CalendarName;
+            private string calendarName;
 
             [Parameter(
             Mandatory = false,
@@ -312,9 +279,9 @@ namespace Microsoft.PowerShell.GData
             public string Description
             {
                 get { return null; }
-                set { _Description = value; }
+                set { description = value; }
             }
-            private string _Description;
+            private string description;
 
             [Parameter(
             Mandatory = false,
@@ -324,57 +291,51 @@ namespace Microsoft.PowerShell.GData
             public string TimeZone
             {
                 get { return null; }
-                set { _TimeZone = value; }
+                set { timeZone = value; }
             }
-            private string _TimeZone;
-
+            private string timeZone;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleCalendarsService dgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
             protected override void ProcessRecord()
             {
+                var _domain = dgcGoogleCalendarService.GetDomain(service.CalendarService);
 
-                var _DgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
-                var _Domain = _DgcGoogleCalendarService.GetDomain(_CalendarService.CalendarService);
+                var _calendar = new CalendarEntry();
+                _calendar.Title.Text = calendarName;
 
-                var _Calendar = new CalendarEntry();
-                _Calendar.Title.Text = _CalendarName;
-
-                if (_Description != null)
+                if (description != null)
                 {
-                    _Calendar.Summary.Text = _Description;
+                    _calendar.Summary.Text = description;
                 }
-                if (_TimeZone != null)
+                if (timeZone != null)
                 {
-                    _Calendar.TimeZone = _TimeZone;
+                    _calendar.TimeZone = timeZone;
                 }
                 try
                 {
-                    if (_CalendarService.Oauth == null)
+                    if (service.Oauth == null)
                     {
                         throw new Exception("User -ConsumerKey/-ConsumerSecret in New-GdataService");
                     }
-                    if (_CalendarService.OauthCalendarService == null)
+                    if (service.OauthCalendarService == null)
                     {
                         throw new Exception("User -ConsumerKey/-ConsumerSecret in New-GdataService");
                     }
-                    var _PostUri = new Uri("http://www.google.com/calendar/feeds/default/owncalendars/full");
-                    var _OAuth2LeggedAuthenticator = new OAuth2LeggedAuthenticator("GDataCmdLet", _CalendarService.Oauth.ConsumerKey, _CalendarService.Oauth.ConsumerSecret, _ID, _Domain);
-                    var _OauthUri = _OAuth2LeggedAuthenticator.ApplyAuthenticationToUri(_PostUri);
+                    var _postUri = new Uri("http://www.google.com/calendar/feeds/default/owncalendars/full");
+                    var _oAuth2LeggedAuthenticator = new OAuth2LeggedAuthenticator("GDataCmdLet", service.Oauth.ConsumerKey, service.Oauth.ConsumerSecret, id, _domain);
+                    var _oAuthUri = _oAuth2LeggedAuthenticator.ApplyAuthenticationToUri(_postUri);
                     
-                    var _CreatedCalendar = (CalendarEntry)_CalendarService.OauthCalendarService.Insert(_OauthUri, _Calendar);
-                    var _CalendarEntry = _DgcGoogleCalendarService.CreateCalendarEntry(_CreatedCalendar);
-                    WriteObject(_CalendarEntry);
+                    var _createdCalendar = (CalendarEntry)service.OauthCalendarService.Insert(_oAuthUri, _calendar);
+                    var _calendarEntry = dgcGoogleCalendarService.CreateCalendarEntry(_createdCalendar);
+                    WriteObject(_calendarEntry);
 
-                } catch (Exception _Exception)
+                } catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
-
-
             }
-
         }
 
         #endregion New-GDataCalendar
@@ -395,22 +356,10 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _CalendarService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _CalendarService;
-            /*
-            [Parameter(
-            Mandatory = true,
-            HelpMessage = "User ID"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string ID
-            {
-                get { return null; }
-                set { _ID = value; }
-            }
-            private string _ID;
-            */
+            private GDataTypes.GDataService service;
+
             [Parameter(
             Mandatory = true,
             HelpMessage = "SelfUri"
@@ -419,9 +368,9 @@ namespace Microsoft.PowerShell.GData
             public string SelfUri
             {
                 get { return null; }
-                set { _SelfUri = value; }
+                set { selfUri = value; }
             }
-            private string _SelfUri;
+            private string selfUri;
 
             [Parameter(
             Mandatory = false,
@@ -431,9 +380,9 @@ namespace Microsoft.PowerShell.GData
             public string Description
             {
                 get { return null; }
-                set { _Description = value; }
+                set { description = value; }
             }
-            private string _Description;
+            private string description;
 
             [Parameter(
             Mandatory = false,
@@ -443,9 +392,9 @@ namespace Microsoft.PowerShell.GData
             public string CalendarName
             {
                 get { return null; }
-                set { _CalendarName = value; }
+                set { calendarName = value; }
             }
-            private string _CalendarName;
+            private string calendarName;
 
             [Parameter(
             Mandatory = false,
@@ -455,74 +404,64 @@ namespace Microsoft.PowerShell.GData
             public string TimeZone
             {
                 get { return null; }
-                set { _TimeZone = value; }
+                set { timeZone = value; }
             }
-            private string _TimeZone;
+            private string timeZone;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleCalendarsService dgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
             protected override void ProcessRecord()
             {
+                var _domain = dgcGoogleCalendarService.GetDomain(service.CalendarService);
 
-                var _DgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
-                var _Domain = _DgcGoogleCalendarService.GetDomain(_CalendarService.CalendarService);
-
-
-                var _CalendarQuery = new CalendarQuery();
-                //_CalendarQuery.Uri = new Uri("http://www.google.com/calendar/feeds/" + _ID + "@" + _Domain + "/allcalendars/full");
-                _CalendarQuery.Uri = new Uri(_SelfUri);
+                var _calendarQuery = new CalendarQuery();
+                _calendarQuery.Uri = new Uri(selfUri);
                 try
                 {
-                    var _CalendarFeed = (CalendarFeed)_CalendarService.CalendarService.Query(_CalendarQuery);
-
-
-                    foreach (CalendarEntry _Entry in _CalendarFeed.Entries)
+                    var _calendarFeed = (CalendarFeed)service.CalendarService.Query(_calendarQuery);
+                    foreach (CalendarEntry _entry in _calendarFeed.Entries)
                     {
-                        if (_Entry.SelfUri.ToString() == _SelfUri)
+                        if (_entry.SelfUri.ToString() == selfUri)
                         {
                             try
                             {
+                                if (calendarName != null)
+                                {
+                                    _entry.Title.Text = calendarName;
+                                }
+                                if (description != null)
+                                {
+                                    _entry.Summary.Text = description;
+                                }
+                                if (timeZone != null)
+                                {
+                                    _entry.TimeZone = timeZone;
+                                }
 
-                                if (_CalendarName != null)
-                                {
-                                    _Entry.Title.Text = _CalendarName;
-                                }
-                                if (_Description != null)
-                                {
-                                    _Entry.Summary.Text = _Description;
-                                }
-                                if (_TimeZone != null)
-                                {
-                                    _Entry.TimeZone = _TimeZone;
-                                }
-
-                                _Entry.Update();
+                                _entry.Update();
                                 
-                                _CalendarFeed = (CalendarFeed)_CalendarService.CalendarService.Query(_CalendarQuery);
-                                foreach (CalendarEntry _ResultEntry in _CalendarFeed.Entries)
+                                _calendarFeed = (CalendarFeed)service.CalendarService.Query(_calendarQuery);
+                                foreach (CalendarEntry _resultEntry in _calendarFeed.Entries)
                                 {
-                                    if (_ResultEntry.SelfUri.ToString() == _SelfUri)
+                                    if (_resultEntry.SelfUri.ToString() == selfUri)
                                     {
-                                        var _CalendarEntry = _DgcGoogleCalendarService.CreateCalendarEntry(_ResultEntry);
-                                        WriteObject(_CalendarEntry);
+                                        var _calendarEntry = dgcGoogleCalendarService.CreateCalendarEntry(_resultEntry);
+                                        WriteObject(_calendarEntry);
                                 
                                     }
                                 }
-
                             }
-                            catch (Exception _Exception)
+                            catch (Exception _exception)
                             {
-                                WriteObject(_Exception);
+                                WriteObject(_exception);
                             }
                         }
-
-
                     }
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
 
             }
@@ -547,9 +486,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _CalendarService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _CalendarService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -559,60 +498,49 @@ namespace Microsoft.PowerShell.GData
             public string SelfUri
             {
                 get { return null; }
-                set { _SelfUri = value; }
+                set { selfUri = value; }
             }
-            private string _SelfUri;
+            private string selfUri;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleCalendarsService dgcGoogleCalendarService = new Dgc.GoogleCalendarsService();  
             protected override void ProcessRecord()
             {
-
-                var _DgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
-                var _Domain = _DgcGoogleCalendarService.GetDomain(_CalendarService.CalendarService);
-
-                var _Query = new CalendarQuery();
-                _Query.Uri = new Uri(_SelfUri);
-
+                var _domain = dgcGoogleCalendarService.GetDomain(service.CalendarService);
+                var _query = new CalendarQuery();
+                _query.Uri = new Uri(selfUri);
 
                 try
                 {
-                    var _Entry = _CalendarService.CalendarService.Query(_Query);
+                    var _entry = service.CalendarService.Query(_query);
+                    var _links = _entry.Entries[0].Links;
 
-                    //WriteObject(_Entry);
-
-                    var _Links = _Entry.Entries[0].Links;
-
-                    if (_Links == null) 
+                    if (_links == null) 
                     {
                         throw new Exception("AclFeed new null");
                     }
 
 
-                    var _LinkSelection = from _Selection in _Links
-                                         where _Selection.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList"
-                                         select _Selection;
+                    var _linkSelection = from _selection in _links
+                                         where _selection.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList"
+                                         select _selection;
 
-                    foreach (var _Link in _LinkSelection)
+                    foreach (var _link in _linkSelection)
                     {
+                        var _aclQuery = new AclQuery(_link.HRef.ToString());
+                        var _feed = service.CalendarService.Query(_aclQuery);
+                        var _calendarAclEntrys = dgcGoogleCalendarService.CreateCalendarAclEntrys(_feed);
 
-                        var _AclQuery = new AclQuery(_Link.HRef.ToString());
-                        var _Feed = _CalendarService.CalendarService.Query(_AclQuery);
-                        var _CalendarAclEntrys = _DgcGoogleCalendarService.CreateCalendarAclEntrys(_Feed);
-
-                        WriteObject(_CalendarAclEntrys);
+                        WriteObject(_calendarAclEntrys);
                     }
                     
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
-
-
             }
-
         }
 
         #endregion Get-GDataCalendarAcl
@@ -633,9 +561,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _CalendarService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _CalendarService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -645,9 +573,9 @@ namespace Microsoft.PowerShell.GData
             public string SelfUri
             {
                 get { return null; }
-                set { _SelfUri = value; }
+                set { selfUri = value; }
             }
-            private string _SelfUri;
+            private string selfUri;
 
             [Parameter(
             Mandatory = true,
@@ -657,9 +585,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = true,
@@ -669,89 +597,77 @@ namespace Microsoft.PowerShell.GData
             public string Role
             {
                 get { return null; }
-                set { _Role = value; }
+                set { _role = value; }
             }
-            private string _Role;
-
+            private string _role;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleCalendarsService dgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
+                
             protected override void ProcessRecord()
             {
+                var _domain = dgcGoogleCalendarService.GetDomain(service.CalendarService);
 
-                var _DgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
-                var _Domain = _DgcGoogleCalendarService.GetDomain(_CalendarService.CalendarService);
-
-                var _Query = new CalendarQuery();
-                _Query.Uri = new Uri(_SelfUri);
-
+                var _query = new CalendarQuery();
+                _query.Uri = new Uri(selfUri);
 
                 try
                 {
-                    var _Entry = _CalendarService.CalendarService.Query(_Query);
+                    var _entry = service.CalendarService.Query(_query);
+                    var _links = _entry.Entries[0].Links;
 
-                    //WriteObject(_Entry);
-
-                    var _Links = _Entry.Entries[0].Links;
-
-                    if (_Links == null)
+                    if (_links == null)
                     {
                         throw new Exception("AclFeed new null");
                     }
 
-                    var _LinkSelection = from _Selection in _Links
-                                         where _Selection.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList"
-                                         select _Selection;
+                    var _linkSelection = from _selection in _links
+                                         where _selection.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList"
+                                         select _selection;
 
 
 
-                    foreach (var _Link in _LinkSelection)
+                    foreach (var _link in _linkSelection)
                     {
 
-                        var _AclEntry = new AclEntry();
-                        _AclEntry.Scope = new AclScope();
-                        _AclEntry.Scope.Type = AclScope.SCOPE_USER;
-                        _AclEntry.Scope.Value = _ID;
+                        var _aclEntry = new AclEntry();
+                        _aclEntry.Scope = new AclScope();
+                        _aclEntry.Scope.Type = AclScope.SCOPE_USER;
+                        _aclEntry.Scope.Value = id;
 
-                        if (_Role.ToUpper() == "FREEBUSY")
+                        if (_role.ToUpper() == "FREEBUSY")
                         {
-                            _AclEntry.Role = AclRole.ACL_CALENDAR_FREEBUSY;
+                            _aclEntry.Role = AclRole.ACL_CALENDAR_FREEBUSY;
                         }
-                        else if (_Role.ToUpper() == "READ")
+                        else if (_role.ToUpper() == "READ")
                         {
-                            _AclEntry.Role = AclRole.ACL_CALENDAR_READ;
+                            _aclEntry.Role = AclRole.ACL_CALENDAR_READ;
                         }
-                        else if (_Role.ToUpper() == "EDITOR")
+                        else if (_role.ToUpper() == "EDITOR")
                         {
-                            _AclEntry.Role = AclRole.ACL_CALENDAR_EDITOR;
+                            _aclEntry.Role = AclRole.ACL_CALENDAR_EDITOR;
                         }
-                        else if (_Role.ToUpper() == "OWNER")
+                        else if (_role.ToUpper() == "OWNER")
                         {
-                            _AclEntry.Role = AclRole.ACL_CALENDAR_OWNER;
+                            _aclEntry.Role = AclRole.ACL_CALENDAR_OWNER;
                         }
                         else
                         {
                             throw new Exception("-Role needs a FREEBUSY/READ/EDITOR/OWNER parameter");
                         }
 
-                        var _AclUri = new Uri(_Link.HRef.ToString());
-                        var _AlcEntry = _CalendarService.CalendarService.Insert(_AclUri, _AclEntry) as AclEntry;
-                        var _CalendarAclEntry = _DgcGoogleCalendarService.CreateCalendarAclEntry(_AclEntry);
-                        WriteObject(_CalendarAclEntry);
-                        
+                        var _aclUri = new Uri(_link.HRef.ToString());
+                        var _alcEntry = service.CalendarService.Insert(_aclUri, _aclEntry) as AclEntry;
+                        var _calendarAclEntry = dgcGoogleCalendarService.CreateCalendarAclEntry(_aclEntry);
+                        WriteObject(_calendarAclEntry);   
                     }
-                    
-
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
-
-
             }
-
         }
 
         #endregion Add-GDataCalendarAcl
@@ -763,7 +679,6 @@ namespace Microsoft.PowerShell.GData
         {
             #region Parameters
 
-
             [Parameter(
             Mandatory = true,
             HelpMessage = "GDataCalendar, new-GDataCalendarService"
@@ -772,9 +687,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _CalendarService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _CalendarService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true,
@@ -784,9 +699,9 @@ namespace Microsoft.PowerShell.GData
             public string SelfUri
             {
                 get { return null; }
-                set { _SelfUri = value; }
+                set { selfUri = value; }
             }
-            private string _SelfUri;
+            private string selfUri;
 
             [Parameter(
             Mandatory = true,
@@ -796,64 +711,58 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleCalendarsService dgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
+                
             protected override void ProcessRecord()
             {
-
-                var _DgcGoogleCalendarService = new Dgc.GoogleCalendarsService();
-                var _Domain = _DgcGoogleCalendarService.GetDomain(_CalendarService.CalendarService);
-
-                var _Query = new CalendarQuery();
-                _Query.Uri = new Uri(_SelfUri);
-
+                var _domain = dgcGoogleCalendarService.GetDomain(service.CalendarService);
+                var _query = new CalendarQuery();
+                _query.Uri = new Uri(selfUri);
 
                 try
                 {
-                    var _Entry = _CalendarService.CalendarService.Query(_Query);
+                    var _entry = service.CalendarService.Query(_query);
+                    var _links = _entry.Entries[0].Links;
 
-                    //WriteObject(_Entry);
-
-                    var _Links = _Entry.Entries[0].Links;
-
-                    if (_Links == null)
+                    if (_links == null)
                     {
                         throw new Exception("AclFeed new null");
                     }
 
 
-                    var _LinkSelection = from _Selection in _Links
-                                where _Selection.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList"
-                                select _Selection;
+                    var _linkSelection = from _selection in _links
+                                where _selection.Rel.ToString() == "http://schemas.google.com/acl/2007#accessControlList"
+                                select _selection;
 
-                    foreach (var _Link in _LinkSelection)
+                    foreach (var _Link in _linkSelection)
                     {
 
-                        var _AclQuery = new AclQuery(_Link.HRef.ToString());
-                        var _Feed = _CalendarService.CalendarService.Query(_AclQuery);
+                        var _aclQuery = new AclQuery(_Link.HRef.ToString());
+                        var _Feed = service.CalendarService.Query(_aclQuery);
 
-                        var _FeedSelection = from AclEntry _Selection in _Feed.Entries
-                                    where _Selection.Scope.Value.ToString() == _ID
-                                    select _Selection;
+                        var _feedSelection = from AclEntry _selection in _Feed.Entries
+                                    where _selection.Scope.Value.ToString() == id
+                                    select _selection;
 
 
 
-                        foreach (AclEntry _AclEntry in _FeedSelection)
+                        foreach (AclEntry _aclEntry in _feedSelection)
                         {
-                                _AclEntry.Delete();
-                                WriteObject(_ID);
+                                _aclEntry.Delete();
+                                WriteObject(id);
                         }
                     
                     }   
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
 
             }

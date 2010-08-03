@@ -17,71 +17,11 @@ namespace Microsoft.PowerShell.GData
 {
     public class User
     {
-
-        #region New-GDataUserService
-        /*
-        [Cmdlet(VerbsCommon.New, "GDataUserService")]
-        public class NewGDataUserService : Cmdlet
-        {
-
-            #region Parameters
-
-            [Parameter(
-            Mandatory = true
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminUsername
-            {
-                get { return null; }
-                set { _AdminUser = value; }
-            }
-            private string _AdminUser;
-
-            [Parameter(
-               Mandatory = true
-            )]
-            [ValidateNotNullOrEmpty]
-           
-            public string AdminPassword
-            {
-                get { return null; }
-                set { _AdminPassword = value; }
-            }
-            private string _AdminPassword;
-
-            #endregion Parameters
-
-            protected override void ProcessRecord()
-            {
-
-                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                var _Domain = _DgcGoogleAppsService.GetDomain(_AdminUser);
-
-
-                try
-                {
-                    var _UserService = new AppsService(_Domain, _AdminUser, _AdminPassword);
-                                  
-
-                    WriteObject(_UserService);
-                }
-                catch (AppsException _Exception)
-                {
-                    WriteObject(_Exception,true);
-                }
-            }
-
-
-        }
-        */
-        #endregion New-GDataUserService
-
         #region Remove-GDatauser
 
         [Cmdlet(VerbsCommon.Remove, "GDataUser")]
         public class RemoveGDataUser : Cmdlet
         {
-
             #region Parameters
             [Parameter(
             Mandatory = true
@@ -89,10 +29,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public GDataTypes.GDataService Service
             {
-                get { return null; }
-                set { _UserService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _UserService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true
@@ -100,10 +39,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string ID
             {
-                get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             #endregion Parameters
 
@@ -111,16 +49,14 @@ namespace Microsoft.PowerShell.GData
             {
                 try
                 {
-                    _UserService.AppsService.DeleteUser(_ID);
-                    WriteObject(_ID);
+                    service.AppsService.DeleteUser(id);
+                    WriteObject(id);
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
-
-
         }
 
         #endregion Remove-GDataUser
@@ -138,10 +74,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public GDataTypes.GDataService Service
             {
-                get { return null; }
-                set { _UserService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _UserService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = false
@@ -149,42 +84,39 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string ID
             {
-                get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
-                var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                if (_ID == null)
+                if (id == null)
                 {
                     try
                     {
-                        var _Feed = _UserService.AppsService.RetrieveAllUsers();
-                        var _GDataUserEntrys = _DgcGoogleAppsService.CreateUserEntrys(_Feed);
-                        WriteObject(_GDataUserEntrys, true);
+                        var _feed = service.AppsService.RetrieveAllUsers();
+                        var _userEntrys = dgcGoogleAppsService.CreateUserEntrys(_feed);
+                        WriteObject(_userEntrys, true);
                     }
-                    catch (Exception _Exception)
+                    catch (Exception _exception)
                     {
-                        WriteObject(_Exception);
+                        WriteObject(_exception);
                     }
                 }
                 else
                 {
                     try
                     {
-                        var _UserEntry = _UserService.AppsService.RetrieveUser(_ID);
-
-                        var _GdataUserEntry = _DgcGoogleAppsService.CreateUserEntry(_UserEntry);
-                        WriteObject(_GdataUserEntry);
+                        var _entry = service.AppsService.RetrieveUser(id);
+                        var _userEntry = dgcGoogleAppsService.CreateUserEntry(_entry);
+                        WriteObject(_userEntry);
                     }
-                    catch (AppsException _Exception)
+                    catch (AppsException _exception)
                     {
-                        WriteObject(_Exception,true);
+                        WriteObject(_exception,true);
                     }
                 }
 
@@ -202,17 +134,15 @@ namespace Microsoft.PowerShell.GData
 
             #region Parameters
 
-
             [Parameter(
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
             public GDataTypes.GDataService Service
             {
-                get { return null; }
-                set { _UserService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _UserService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true
@@ -220,10 +150,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string ID
             {
-                get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = false
@@ -231,10 +160,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string GivenName
             {
-                get { return null; }
-                set { _GivenName = value; }
+                set { givenName = value; }
             }
-            private string _GivenName;
+            private string givenName;
 
             [Parameter(
             Mandatory = false
@@ -242,10 +170,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string FamilyName
             {
-                get { return null; }
-                set { _FamilyName = value; }
+                set { familyName = value; }
             }
-            private string _FamilyName;
+            private string familyName;
 
             [Parameter(
             Mandatory = false
@@ -253,10 +180,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string Passsword
             {
-                get { return null; }
-                set { _Password = value; }
+                set { password = value; }
             }
-            private string _Password;
+            private string password;
 
             [Parameter(
             Mandatory = false
@@ -264,127 +190,123 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string NewID
             {
-                get { return null; }
-                set { _NewId = value; }
+                set { newID = value; }
             }
-            private string _NewId;
+            private string newID;
 
             [Parameter(Mandatory = false)]
             [ValidateNotNullOrEmpty]
             public string ChangePassNextLogon
             {
-                get { return null; }
-                set { _ChangePassNextLogon = value; }
+                set { changePassNextLogon = value; }
             }
-            private string _ChangePassNextLogon;
-            private bool _ChPass;
+            private string changePassNextLogon;
+            private bool chPass;
 
             [Parameter(Mandatory = false)]
             public string IsAdmin
             {
-                get { return null; }
-                set { _IsAdmin = value; }
+                set { isAdmin = value; }
             }
-            private string _IsAdmin;
-            private bool _IsAdminBool;
+            private string isAdmin;
+            private bool isAdminBool;
+
             [Parameter(Mandatory = false)]
             public string Suspended
             {
-                get { return null; }
-                set { _Suspended = value; }
+                set { suspended = value; }
             }
-            private string _Suspended;
-            private bool _SuspendedBool;
+            private string suspended;
+            private bool suspendedBool;
           
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
-                var _Entry = _UserService.AppsService.RetrieveUser(_ID);
+                var _entry = service.AppsService.RetrieveUser(id);
 
-                if (_FamilyName != null)
+                if (familyName != null)
                 {
-                    _Entry.Name.FamilyName = _FamilyName;
+                    _entry.Name.FamilyName = familyName;
                 }
-                if (_GivenName != null)
+                if (givenName != null)
                 {
-                    _Entry.Name.GivenName = _GivenName;
+                    _entry.Name.GivenName = givenName;
                 }
-                if (_Password != null)
+                if (password != null)
                 {
-                    _Entry.Login.Password = _Password;
+                    _entry.Login.Password = password;
                 }
-                if (_NewId != null)
+                if (newID != null)
                 {
-                    _Entry.Login.UserName = _NewId;
+                    _entry.Login.UserName = newID;
                 }
                 
                 try
                 {
 
-                    if (_ChangePassNextLogon != null)
+                    if (changePassNextLogon != null)
                     {
-                        _ChangePassNextLogon = _ChangePassNextLogon.ToLower();
-                        if (_ChangePassNextLogon == "true")
+                        changePassNextLogon = changePassNextLogon.ToLower();
+                        if (changePassNextLogon == "true")
                         {
-                            _ChPass = true;
+                            chPass = true;
                         }
-                        else if (_ChangePassNextLogon == "false")
+                        else if (changePassNextLogon == "false")
                         {
-                            _ChPass = false;
+                            chPass = false;
                         }
                         else
                         {
                             throw new Exception("-ChangePassNextLogon needs a true or false statement");
                         }
-                        _Entry.Login.ChangePasswordAtNextLogin = _ChPass;
+                        _entry.Login.ChangePasswordAtNextLogin = chPass;
                     }
 
-                    if (_IsAdmin != null)
+                    if (isAdmin != null)
                     {
-                        _IsAdmin = _IsAdmin.ToLower();
-                        if (_IsAdmin == "true")
+                        isAdmin = isAdmin.ToLower();
+                        if (isAdmin == "true")
                         {
-                            _IsAdminBool = true;
+                            isAdminBool = true;
                         }
-                        else if (_IsAdmin == "false")
+                        else if (isAdmin == "false")
                         {
-                            _IsAdminBool = false;
+                            isAdminBool = false;
                         }
                         else
                         {
                             throw new Exception("-IsAdmin needs a true or false statement");
                         }
-                        _Entry.Login.Admin = _IsAdminBool;
+                        _entry.Login.Admin = isAdminBool;
                     }
 
-                    if (_Suspended != null)
+                    if (suspended != null)
                     {
-                        _Suspended = _Suspended.ToLower();
-                        if (_Suspended == "true")
+                        suspended = suspended.ToLower();
+                        if (suspended == "true")
                         {
-                            _SuspendedBool = true;
+                            suspendedBool = true;
                         }
-                        else if (_Suspended == "false")
+                        else if (suspended == "false")
                         {
-                            _SuspendedBool = false;
+                            suspendedBool = false;
                         }
                         else
                         {
                             throw new Exception("-Suspended needs a true or false statement");
                         }
-                        _Entry.Login.Suspended = _SuspendedBool;
+                        _entry.Login.Suspended = suspendedBool;
                     }
 
-                    var _UserEntry = _UserService.AppsService.UpdateUser(_Entry);
-                    var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                    var _GdataUserEntry = _DgcGoogleAppsService.CreateUserEntry(_UserEntry);
-                    WriteObject(_GdataUserEntry);
+                    
+                    var _userEntry = dgcGoogleAppsService.CreateUserEntry(service.AppsService.UpdateUser(_entry));
+                    WriteObject(_userEntry);
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
 
@@ -398,7 +320,6 @@ namespace Microsoft.PowerShell.GData
         public class NewGDataUser : Cmdlet
         {
 
-
             #region Parameters
 
             [Parameter(
@@ -407,10 +328,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public GDataTypes.GDataService Service
             {
-                get { return null; }
-                set { _UserService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _UserService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true
@@ -418,10 +338,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string ID
             {
-                get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = true
@@ -429,10 +348,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string GivenName
             {
-                get { return null; }
-                set { _GivenName = value; }
+                set { givenName = value; }
             }
-            private string _GivenName;
+            private string givenName;
 
             [Parameter(
             Mandatory = true
@@ -440,10 +358,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string FamilyName
             {
-                get { return null; }
-                set { _FamilyName = value; }
+                set { familyName = value; }
             }
-            private string _FamilyName;
+            private string familyName;
 
             [Parameter(
             Mandatory = true
@@ -451,28 +368,25 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string Passsword
             {
-                get { return null; }
-                set { _Password = value; }
+                set { password = value; }
             }
-            private string _Password;
+            private string password;
 
             #endregion Parameters
 
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
                 try
                 {
-                    var _UserEntry = _UserService.AppsService.CreateUser(_ID, _GivenName, _FamilyName, _Password);
-                    var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                    var _GdataUserEntry = _DgcGoogleAppsService.CreateUserEntry(_UserEntry);
-                    WriteObject(_GdataUserEntry);
+                    var _userEntry = dgcGoogleAppsService.CreateUserEntry(service.AppsService.CreateUser(id, givenName, familyName, password));
+                    WriteObject(_userEntry);
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
-
         }
 
         #endregion New-GDataUser
@@ -489,10 +403,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public GDataTypes.GDataService Service
             {
-                get { return null; }
-                set { _UserService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _UserService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = false
@@ -500,10 +413,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string ID
             {
-                get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = false
@@ -511,110 +423,89 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public SwitchParameter Legacy
             {
-                //get { return null; }
-                set { _Legacy = value; }
+                set { legacy = value; }
             }
-            private bool _Legacy;
+            private bool legacy;
 
             #endregion Parameters
 
-            private string NextPage;
-            private GDataTypes.ParseXML ParseXML;
+            private string nextPage;
+            private GDataTypes.ParseXML parseXML;
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
-                if (_ID == null)
+                if (id == null)
                 {
                     try 
                     {
-                        if (!_Legacy == true)
+                        if (!legacy == true)
                         {
-                            var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                            //var _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService);
-
-
-                            NextPage = "";
-                            var _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService.AppsService, NextPage);
-                            ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
-                            var _UserAliasEntry = _DgcGoogleAppsService.CreateUserAliasEntry(_Xml);
-
-                            while (NextPage != null)
+                            nextPage = "";
+                            var _xml = dgcGoogleAppsService.RetriveAllUserAlias(service.AppsService, nextPage);
+                            var _userAliasEntry = dgcGoogleAppsService.CreateUserAliasEntry(_xml);
+                            parseXML = new GDataTypes.ParseXML(_xml.ToString());
+                            
+                            while (nextPage != null)
                             {
-                                NextPage = null;
-                                foreach (var _Elements in ParseXML.ListFormat)
+                                nextPage = null;
+                                foreach (var _elements in parseXML.ListFormat)
                                 {
-                                    foreach (var _Attribute in _Elements.at)
+                                    foreach (var _attribute in _elements.at)
                                     {
-                                        if (_Attribute.Value == "next")
+                                        if (_attribute.Value == "next")
                                         {
-                                            //Console.WriteLine("Next/n");
-                                            NextPage = _Attribute.NextAttribute.NextAttribute.Value;
+                                            nextPage = _attribute.NextAttribute.NextAttribute.Value;
                                         }
                                     }
                                 }
-                                if (NextPage != null)
+                                if (nextPage != null)
                                 {
-
-                                    _Xml = _DgcGoogleAppsService.RetriveAllUserAlias(_UserService.AppsService, NextPage);
-                                    ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
-                                    _UserAliasEntry = _DgcGoogleAppsService.AppendUserAliasEntry(_Xml, _UserAliasEntry);
+                                    _xml = dgcGoogleAppsService.RetriveAllUserAlias(service.AppsService, nextPage);
+                                    parseXML = new GDataTypes.ParseXML(_xml.ToString());
+                                    _userAliasEntry = dgcGoogleAppsService.AppendUserAliasEntry(_xml, _userAliasEntry);
                                 }
                             }
 
-
-                            WriteObject(_UserAliasEntry,true);
+                            WriteObject(_userAliasEntry,true);
                         }
                         else
                         {
-                            var _Feed = _UserService.AppsService.RetrieveAllNicknames();
-                            WriteObject(_Feed.Entries);
+                            var _feed = service.AppsService.RetrieveAllNicknames();
+                            WriteObject(_feed.Entries);
                         }
                     }
-                    catch (Exception _Exception)
+                    catch (Exception _exception)
                     {
-                        WriteObject(_Exception);
+                        WriteObject(_exception);
                     }
                 }
                 else
-                {
-                    
+                { 
                     try
                     {
-                        if (!_Legacy == true)
+                        if (!legacy == true)
                         {
-                            if (!_ID.Contains("@"))
+                            if (!id.Contains("@"))
                             {
                                 throw new Exception("-ID must contain Domain, user@domain.com");
                             }
-                            var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                            var _Xml = _DgcGoogleAppsService.RetriveUserAlias(_ID, _UserService.AppsService);
 
-                            var _UserAliasEntry = _DgcGoogleAppsService.CreateUserAliasEntry(_Xml);
-
-                            //var _Reader = XmlReader.Create(_Entry);
-                            /*
-                            XmlDocument _XmlDoc = new XmlDocument();
-                            _XmlDoc.InnerXml = _Xml;
-                            XmlElement _Entry = _XmlDoc.DocumentElement;
-                            */
-
-                            WriteObject(_UserAliasEntry,true);
-
+                            var _userAliasEntry = dgcGoogleAppsService.CreateUserAliasEntry(dgcGoogleAppsService.RetriveUserAlias(id, service.AppsService));
+                            WriteObject(_userAliasEntry,true);
                         }
                         else
                         {
-                            var _Feed = _UserService.AppsService.RetrieveNicknames(_ID);
-                            WriteObject(_Feed);
+                            var _feed = service.AppsService.RetrieveNicknames(id);
+                            WriteObject(_feed);
                         }
              
                     }
-                    catch (Exception _Exception)
+                    catch (Exception _exception)
                     {
-                        WriteObject(_Exception);
+                        WriteObject(_exception);
                     }
                 }
-
             }
-
         }
 
         #endregion Get-GDataUserNickname
@@ -632,10 +523,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public GDataTypes.GDataService Service
             {
-                get { return null; }
-                set { _UserService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _UserService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true
@@ -643,10 +533,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string ID
             {
-                get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
 
             [Parameter(
@@ -655,10 +544,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string NickName
             {
-                get { return null; }
-                set { _NickName = value; }
+                set { nickName = value; }
             }
-            private string _NickName;
+            private string nickName;
 
             [Parameter(
             Mandatory = false
@@ -666,46 +554,41 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public SwitchParameter Legacy
             {
-                //get { return null; }
-                set { _Legacy = value; }
+                set { legacy = value; }
             }
-            private bool _Legacy;
+            private bool legacy;
 
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
                 try
                 {
-                    if (!_Legacy == true)
+                    if (!legacy == true)
                     {
-                        if (!_NickName.Contains("@"))
+                        if (!nickName.Contains("@"))
                         {
                             throw new Exception("-NickName must contain Domain, user@domain.com");
                         }
-                        if (!_ID.Contains("@"))
+                        if (!id.Contains("@"))
                         {
                             throw new Exception("-ID must contain Domain, user@domain.com");
                         }
-                            var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                            var _Xml = _DgcGoogleAppsService.CreateUserAlias(_ID, _UserService.AppsService, _NickName);
-                            var _UserAliasEntry = _DgcGoogleAppsService.CreateUserAliasEntry(_Xml);
-
-
-                            WriteObject(_UserAliasEntry);
+                        var _userAliasEntry = dgcGoogleAppsService.CreateUserAliasEntry(dgcGoogleAppsService.CreateUserAlias(id, service.AppsService, nickName));
+                        WriteObject(_userAliasEntry);
                     }
                     else
                     {
-                        var _Entry = _UserService.AppsService.CreateNickname(_ID, _NickName);
-                        WriteObject(_Entry);
+                        var _entry = service.AppsService.CreateNickname(id, nickName);
+                        WriteObject(_entry);
                     }
 
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
 
@@ -726,10 +609,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public GDataTypes.GDataService Service
             {
-                get { return null; }
-                set { _UserService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _UserService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true
@@ -737,10 +619,9 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public string NickName
             {
-                get { return null; }
-                set { _NickName = value; }
+                set { nickName = value; }
             }
-            private string _NickName;
+            private string nickName;
 
             [Parameter(
             Mandatory = false
@@ -748,49 +629,40 @@ namespace Microsoft.PowerShell.GData
             [ValidateNotNullOrEmpty]
             public SwitchParameter Legacy
             {
-                //get { return null; }
-                set { _Legacy = value; }
+                set { legacy = value; }
             }
-            private bool _Legacy;
-
+            private bool legacy;
 
             #endregion Parameters
 
-
+            private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
                 try
                 {
-                    if (!_Legacy == true)
+                    if (!legacy == true)
                     {
-                        if(!_NickName.Contains("@"))
+                        if(!nickName.Contains("@"))
                         {
                             throw new Exception("-NickName must contain EmailDomain, user@domain.com");
                         }
 
-                        var _DgcGoogleAppsService = new Dgc.GoogleAppService();
-                        var _Xml = _DgcGoogleAppsService.RemoveUserAlias(_UserService.AppsService, _NickName);
-
-
-                        WriteObject(_NickName);
-
+                        dgcGoogleAppsService.RemoveUserAlias(service.AppsService, nickName);
+                        WriteObject(nickName);
                     }
                     else
                     {
-                        _UserService.AppsService.DeleteNickname(_NickName);
-                        WriteObject(_NickName);
+                        service.AppsService.DeleteNickname(nickName);
+                        WriteObject(nickName);
                     }
                 }
-                catch (Exception _Exception)
+                catch (Exception _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
 
         }
-
         #endregion Remove-GDataUserNickname
-
     }
-
 }

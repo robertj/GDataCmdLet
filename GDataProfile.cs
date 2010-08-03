@@ -13,65 +13,8 @@ using System.Xml.Linq;
 
 namespace Microsoft.PowerShell.GData
 {
-
     public class Profile
     {
-
-        #region New-GDataProfileService
-        /*
-        [Cmdlet(VerbsCommon.New, "GDataProfileService")]
-        public class NewGDataProfileService : Cmdlet
-        {
-            #region Parameters
-
-            [Parameter(
-            Mandatory = true,
-            HelpMessage = "GoogleApps admin user, admin@domain.com",
-            HelpMessageBaseName = "GoogleApps admin user, admin@domain.com"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminUsername
-            {
-                get { return null; }
-                set { _AdminUser = value; }
-            }
-            private string _AdminUser;
-
-            [Parameter(
-               Mandatory = true,
-               HelpMessage = "GoogleApps admin password"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminPassword
-            {
-                get { return null; }
-                set { _AdminPassword = value; }
-            }
-            private string _AdminPassword;
-
-            #endregion Parameters
-
-            protected override void ProcessRecord()
-            {
-
-                try
-                {
-                    var _DgcGoogleProfileService = new Dgc.GoogleProfileService();
-                    var _Entry = _DgcGoogleProfileService.GetAuthToken(_AdminUser, _AdminPassword);
-
-                    WriteObject(_Entry);
-
-                }
-                catch (WebException _Exception)
-                {
-                    WriteObject(_Exception);
-                }
-            }
-
-
-        }
-        */
-        #endregion New-GDataProfileService
 
         #region Get-GDataProfile
 
@@ -87,9 +30,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _ProfileService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _ProfileService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = false
@@ -98,119 +41,65 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             #endregion Parameters
 
-            private string NextPage;
-            private string ParseXML;
+            private string nextPage;
+            private string parseXML;
+            private Dgc.GoogleProfileService dgcGoogleProfileService = new Dgc.GoogleProfileService();
             protected override void ProcessRecord()
             {
 
                 try
                 {
-                    if (_ID != null)
+                    if (id != null)
                     {
-                        var _DgcGoogleProfileService = new Dgc.GoogleProfileService();
-                        var _Xml = _DgcGoogleProfileService.GetProfile(_ProfileService.ProfileService, _ID);
+                        var _xml = dgcGoogleProfileService.GetProfile(service.ProfileService, id);
 
-                        var _ProfileEntry = _DgcGoogleProfileService.CreateProfileEntry(_Xml, _ID, _ProfileService.ProfileService);
-                        WriteObject(_ProfileEntry);
+                        var _profileEntry = dgcGoogleProfileService.CreateProfileEntry(_xml, id, service.ProfileService);
+                        WriteObject(_profileEntry);
 
                     }
                     else
                     {
-                        
-                        var _DgcGoogleProfileService = new Dgc.GoogleProfileService();
+                        nextPage = "";
+                        var _xml = dgcGoogleProfileService.GetProfiles(service.ProfileService, nextPage);
 
+                        var parseXML = new GDataTypes.ParseXML(_xml.ToString());
+                        var _profileEntrys = dgcGoogleProfileService.CreateProfileEntrys(_xml, service.ProfileService);
 
-                        NextPage = "";
-                        var _Xml = _DgcGoogleProfileService.GetProfiles(_ProfileService.ProfileService, NextPage);
-
-                        var ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
-                        var _ProfileEntrys = _DgcGoogleProfileService.CreateProfileEntrys(_Xml, _ProfileService.ProfileService);
-
-                        while (NextPage != null)
+                        while (nextPage != null)
                         {
-                            NextPage = null;
-                            foreach (var _Elements in ParseXML.ListFormat)
+                            nextPage = null;
+                            foreach (var _elements in parseXML.ListFormat)
                             {
-                                foreach (var _Attribute in _Elements.at)
+                                foreach (var _attribute in _elements.at)
                                 {
-                                    if (_Attribute.Value == "next")
+                                    if (_attribute.Value == "next")
                                     {
-                                        //Console.WriteLine("Next/n");
-                                        NextPage = _Attribute.NextAttribute.NextAttribute.Value;
+                                        nextPage = _attribute.NextAttribute.NextAttribute.Value;
                                     }
                                 }
                             }
-                            if (NextPage != null)
+                            if (nextPage != null)
                             {
 
-                                _Xml = _DgcGoogleProfileService.GetProfiles(_ProfileService.ProfileService, NextPage);
-                                ParseXML = new GDataTypes.ParseXML(_Xml.ToString());
-                                _ProfileEntrys = _DgcGoogleProfileService.AppendProfileEntrys(_Xml, _ProfileService.ProfileService, _ProfileEntrys);
+                                _xml = dgcGoogleProfileService.GetProfiles(service.ProfileService, nextPage);
+                                parseXML = new GDataTypes.ParseXML(_xml.ToString());
+                                _profileEntrys = dgcGoogleProfileService.AppendProfileEntrys(_xml, service.ProfileService, _profileEntrys);
                             }
                         }
 
-                        WriteObject(_ProfileEntrys,true);
+                        WriteObject(_profileEntrys, true);
                     }
 
-                    #region comment
-                    /*
-
-                    var _ParesdXml = new GDataTypes.ParseXML(_Xml);
-
-
-                    var _ProfileEntry = new GDataTypes.ProfileEntry();
-
-                    _ProfileEntry.User = _ID;
-                    _ProfileEntry.Domain = _ProfileService.Domain;
-
-                    foreach (var _Entry in _ParesdXml.ListFormat)
-                    {
-                        if (_Entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
-                        {
-                            foreach (var _Attribute in _Entry.at)
-                            {
-                                if (_Attribute.Value == "http://schemas.google.com/g/2005#home")
-                                {
-                                    _ProfileEntry.HomePostalAddress = _Entry.value;
-                                }
-                                if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
-                                {
-                                    _ProfileEntry.PostalAddress = _Entry.value;
-                                }
-                            }
-                        }
-                        if (_Entry.name == "{http://schemas.google.com/g/2005}phoneNumber")
-                        {
-                            foreach (var _Attribute in _Entry.at)
-                            {
-                                if (_Attribute.Value == "http://schemas.google.com/g/2005#other")
-                                {
-                                    _ProfileEntry.OtherPhoneNumber = _Entry.value;
-                                }
-                                if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
-                                {
-                                    _ProfileEntry.PhoneNumber = _Entry.value;
-                                }
-                                if (_Attribute.Value == "http://schemas.google.com/g/2005#mobile")
-                                {
-                                    _ProfileEntry.MobilePhoneNumber = _Entry.value;
-                                }
-                            }
-                        }
-                    }
-                    */
-                    #endregion comment
-                    
                 }
-                catch (WebException _Exception)
+                catch (WebException _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
 
@@ -232,9 +121,9 @@ namespace Microsoft.PowerShell.GData
             public GDataTypes.GDataService Service
             {
                 get { return null; }
-                set { _ProfileService = value; }
+                set { service = value; }
             }
-            private GDataTypes.GDataService _ProfileService;
+            private GDataTypes.GDataService service;
 
             [Parameter(
             Mandatory = true
@@ -243,9 +132,9 @@ namespace Microsoft.PowerShell.GData
             public string ID
             {
                 get { return null; }
-                set { _ID = value; }
+                set { id = value; }
             }
-            private string _ID;
+            private string id;
 
             [Parameter(
             Mandatory = false
@@ -254,9 +143,9 @@ namespace Microsoft.PowerShell.GData
             public string PostalAddress
             {
                 get { return null; }
-                set { _PostalAddress = value; }
+                set { postalAddress = value; }
             }
-            private string _PostalAddress;
+            private string postalAddress;
 
             [Parameter(
             Mandatory = false
@@ -265,9 +154,9 @@ namespace Microsoft.PowerShell.GData
             public string HomePostalAddress
             {
                 get { return null; }
-                set { _HomePostalAddress = value; }
+                set { homePostalAddress = value; }
             }
-            private string _HomePostalAddress;
+            private string homePostalAddress;
 
             [Parameter(
             Mandatory = false
@@ -276,9 +165,9 @@ namespace Microsoft.PowerShell.GData
             public string PhoneNumber
             {
                 get { return null; }
-                set { _PhoneNumber = value; }
+                set { phoneNumber = value; }
             }
-            private string _PhoneNumber;
+            private string phoneNumber;
 
             [Parameter(
             Mandatory = false
@@ -287,9 +176,9 @@ namespace Microsoft.PowerShell.GData
             public string MobilePhoneNumber
             {
                 get { return null; }
-                set { _MobilePhoneNumber = value; }
+                set { mobilePhoneNumber = value; }
             }
-            private string _MobilePhoneNumber;
+            private string mobilePhoneNumber;
 
             [Parameter(
             Mandatory = false
@@ -298,9 +187,9 @@ namespace Microsoft.PowerShell.GData
             public string OtherPhoneNumber
             {
                 get { return null; }
-                set { _OtherPhoneNumber = value; }
+                set { otherPhoneNumber = value; }
             }
-            private string _OtherPhoneNumber;
+            private string otherPhoneNumber;
 
             [Parameter(
             Mandatory = false
@@ -309,86 +198,30 @@ namespace Microsoft.PowerShell.GData
             public string HomePhoneNumber
             {
                 get { return null; }
-                set { _HomePhoneNumber = value; }
+                set { homePhoneNumber = value; }
             }
-            private string _HomePhoneNumber;
+            private string homePhoneNumber;
 
             #endregion Parameters
 
+            private Dgc.GoogleProfileService dgcGoogleProfileService = new Dgc.GoogleProfileService();
             protected override void ProcessRecord()
             {
-
                 try
                 {
+                    var _xml = dgcGoogleProfileService.SetProfile(service.ProfileService, id, postalAddress, phoneNumber, mobilePhoneNumber, otherPhoneNumber, homePostalAddress, homePhoneNumber);
+                    var _profileEntry = dgcGoogleProfileService.CreateProfileEntry(_xml, id, service.ProfileService);
 
-                    
-                    var _DgcGoogleProfileService = new Dgc.GoogleProfileService();
-                    var _Xml = _DgcGoogleProfileService.SetProfile(_ProfileService.ProfileService, _ID, _PostalAddress, _PhoneNumber, _MobilePhoneNumber, _OtherPhoneNumber, _HomePostalAddress, _HomePhoneNumber);
-
-                    var _ProfileEntry = _DgcGoogleProfileService.CreateProfileEntry(_Xml, _ID, _ProfileService.ProfileService);
-
-                    #region comment
-                    /*
-                    var _ParesdXml = new GDataTypes.ParseXML(_Xml);
-
-                   
-                    var _ProfileEntry = new GDataTypes.ProfileEntry();
-
-                    _ProfileEntry.User = _ID;
-                    _ProfileEntry.Domain = _ProfileService.Domain;
-
-                    foreach (var _Entry in _ParesdXml.ListFormat)
-                    {
-                        if (_Entry.name == "{http://schemas.google.com/g/2005}structuredPostalAddress")
-                        {
-                            foreach (var _Attribute in _Entry.at)
-                            {
-                                if (_Attribute.Value == "http://schemas.google.com/g/2005#home")
-                                {
-                                    _ProfileEntry.HomePostalAddress = _Entry.value;
-                                }
-                                if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
-                                {
-                                    _ProfileEntry.PostalAddress = _Entry.value;
-                                }
-                            }
-                        }
-                        if (_Entry.name == "{http://schemas.google.com/g/2005}phoneNumber")
-                        {
-                            foreach (var _Attribute in _Entry.at)
-                            {
-                                if (_Attribute.Value == "http://schemas.google.com/g/2005#other")
-                                {
-                                    _ProfileEntry.OtherPhoneNumber = _Entry.value;
-                                }
-                                if (_Attribute.Value == "http://schemas.google.com/g/2005#work")
-                                {
-                                    _ProfileEntry.PhoneNumber = _Entry.value;
-                                }
-                                if (_Attribute.Value == "http://schemas.google.com/g/2005#mobile")
-                                {
-                                    _ProfileEntry.MobilePhoneNumber = _Entry.value;
-                                }
-                                if (_Attribute.Value == "http://schemas.google.com/g/2005#mobile")
-                                {
-                                    _ProfileEntry.MobilePhoneNumber = _Entry.value;
-                                }
-                            }
-                        }
-                    }
-                    */
-                    #endregion comment
-                    WriteObject(_ProfileEntry);
+                    WriteObject(_profileEntry);
                 }
-                catch (WebException _Exception)
+                catch (WebException _exception)
                 {
-                    WriteObject(_Exception);
+                    WriteObject(_exception);
                 }
             }
 
         }
+        #endregion Set-GdataProfile
 
     }
-
-        #endregion Set-GdataProfile
 }
