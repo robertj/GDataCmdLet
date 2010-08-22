@@ -15,7 +15,8 @@ Add-PSSnapin GData
 
 Example use:
 
-$Service = New-GDataService -AdminPassword Password -AdminUsername admin@plan-tre.net
+$cred = get-credential
+$Service = New-GDataService -Credentials $cred
 New-GDataUser -Service $Service -FamilyName Robert -GivenName Jonsson -ID robertj -Passsword Password
 Add-GDataUserNickName -Service $Service -ID robertj -NickName robert.jonsson@plan-tre.net
 
