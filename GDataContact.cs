@@ -238,23 +238,8 @@ namespace Microsoft.PowerShell.GData
             }
             private string name;
 
-
             [Parameter(
-               Mandatory = false,
-               HelpMessage = "Contact PhoneNumber"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string PhoneNumber
-            {
-                get { return null; }
-                set { phoneNumber = value; }
-            }
-            private string phoneNumber;
-
-
-            [Parameter(
-               Mandatory = false,
-               HelpMessage = "Contact PostalAddress"
+            Mandatory = false
             )]
             [ValidateNotNullOrEmpty]
             public string PostalAddress
@@ -264,19 +249,61 @@ namespace Microsoft.PowerShell.GData
             }
             private string postalAddress;
 
-
             [Parameter(
-               Mandatory = false,
-               HelpMessage = "Contact City"
+            Mandatory = false
             )]
             [ValidateNotNullOrEmpty]
-            public string City
+            public string HomePostalAddress
             {
                 get { return null; }
-                set { city = value; }
+                set { homePostalAddress = value; }
             }
-            private string city;
-            
+            private string homePostalAddress;
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string PhoneNumber
+            {
+                get { return null; }
+                set { phoneNumber = value; }
+            }
+            private string phoneNumber;
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string MobilePhoneNumber
+            {
+                get { return null; }
+                set { mobilePhoneNumber = value; }
+            }
+            private string mobilePhoneNumber;
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string OtherPhoneNumber
+            {
+                get { return null; }
+                set { otherPhoneNumber = value; }
+            }
+            private string otherPhoneNumber;
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string HomePhoneNumber
+            {
+                get { return null; }
+                set { homePhoneNumber = value; }
+            }
+            private string homePhoneNumber;
+
             #endregion Parameters
 
             private Dgc.GoogleContactsService dgcGoogleContactsService = new Dgc.GoogleContactsService();
@@ -301,29 +328,180 @@ namespace Microsoft.PowerShell.GData
 
                         if (phoneNumber != null)
                         {
-                            _entry.Phonenumbers.Clear();
-                            var _phoneNumber = new PhoneNumber(phoneNumber);
-                            _phoneNumber.Primary = true;
-                            _phoneNumber.Rel = ContactsRelationships.IsWork;
-                            _entry.Phonenumbers.Add(_phoneNumber);
+                            bool _exists = false; 
+                            foreach (PhoneNumber _phEntry in _entry.Phonenumbers)
+                            {
+                                if (_phEntry.Rel == ContactsRelationships.IsWork)
+                                {
+                                    _exists = true;
+                                }
+                            }
+                            if (_exists == true)
+                            {
+                                foreach (PhoneNumber _phEntry in _entry.Phonenumbers)
+                                {
+                                    if (_phEntry.Rel == ContactsRelationships.IsWork)
+                                    {
+                                        _phEntry.Value = phoneNumber;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var _phoneNumber = new PhoneNumber(phoneNumber);
+                                _phoneNumber.Primary = true;
+                                _phoneNumber.Rel = ContactsRelationships.IsWork;
+                                _entry.Phonenumbers.Add(_phoneNumber);
+                            }
+                        }
+
+                        if (homePhoneNumber != null)
+                        {
+                            bool _exists = false;
+                            foreach (PhoneNumber _phEntry in _entry.Phonenumbers)
+                            {
+                                if (_phEntry.Rel == ContactsRelationships.IsHome)
+                                {
+                                    _exists = true;
+                                }
+                            }
+                            if (_exists == true)
+                            {
+                                foreach (PhoneNumber _phEntry in _entry.Phonenumbers)
+                                {
+                                    if (_phEntry.Rel == ContactsRelationships.IsHome)
+                                    {
+                                        _phEntry.Value = homePhoneNumber;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var _phoneNumber = new PhoneNumber(homePhoneNumber);
+                                _phoneNumber.Primary = false;
+                                _phoneNumber.Rel = ContactsRelationships.IsHome;
+                                _entry.Phonenumbers.Add(_phoneNumber);
+
+                            }
+                        }
+
+                        if (mobilePhoneNumber != null)
+                        {
+                            bool _exists = false; 
+                            foreach (PhoneNumber _phEntry in _entry.Phonenumbers)
+                            {
+                                if (_phEntry.Rel == ContactsRelationships.IsMobile)
+                                {
+                                    _exists = true;
+                                }
+                            }
+                            if (_exists == true)
+                            {
+                                foreach (PhoneNumber _phEntry in _entry.Phonenumbers)
+                                {
+                                    if (_phEntry.Rel == ContactsRelationships.IsMobile)
+                                    {
+                                        _phEntry.Value = mobilePhoneNumber;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var _phoneNumber = new PhoneNumber(mobilePhoneNumber);
+                                _phoneNumber.Primary = false;
+                                _phoneNumber.Rel = ContactsRelationships.IsMobile;
+                                _entry.Phonenumbers.Add(_phoneNumber);
+                            }
+                        }
+
+
+                        if (otherPhoneNumber != null)
+                        {
+                            bool _exists = false; 
+                            foreach (PhoneNumber _phEntry in _entry.Phonenumbers)
+                            {
+                                if (_phEntry.Rel == ContactsRelationships.IsOther)
+                                {
+                                    _exists = true;
+                                }
+                            }
+                            if (_exists == true)
+                            {
+                                foreach (PhoneNumber _phEntry in _entry.Phonenumbers)
+                                {
+                                    if (_phEntry.Rel == ContactsRelationships.IsOther)
+                                    {
+                                        _phEntry.Value = otherPhoneNumber;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var _phoneNumber = new PhoneNumber(otherPhoneNumber);
+                                _phoneNumber.Primary = false;
+                                _phoneNumber.Rel = ContactsRelationships.IsOther;
+                                _entry.Phonenumbers.Add(_phoneNumber);
+                            }
                         }
 
                         if (postalAddress != null)
                         {
-                            _entry.PostalAddresses.Clear();
-                            var _postalAddress = new StructuredPostalAddress();
-                            _postalAddress.FormattedAddress = postalAddress;
-                            _postalAddress.Primary = true;
-                            _postalAddress.Rel = ContactsRelationships.IsWork;
-                            if (city != null)
+                            bool _exists = false; 
+                            foreach (StructuredPostalAddress _poEntry in _entry.PostalAddresses)
                             {
-                                _postalAddress.City = city;
+                                if (_poEntry.Rel == ContactsRelationships.IsWork)
+                                {
+                                    _exists = true;
+                                }
+                            }
+                            if (_exists == true)
+                            {
+                                foreach (StructuredPostalAddress _poEntry in _entry.PostalAddresses)
+                                {
+                                    if (_poEntry.Rel == ContactsRelationships.IsWork)
+                                    {
+                                        _poEntry.FormattedAddress = postalAddress;
+                                    }
+                                }
                             }
                             else
                             {
-
+                                var _postalAddress = new StructuredPostalAddress();
+                                _postalAddress.FormattedAddress = postalAddress;
+                                _postalAddress.Primary = true;
+                                _postalAddress.Rel = ContactsRelationships.IsWork;
+                                _entry.PostalAddresses.Add(_postalAddress);
                             }
-                            _entry.PostalAddresses.Add(_postalAddress);           
+                        }
+
+                        if (homePostalAddress != null)
+                        {
+                            bool _exists = false; 
+                            foreach (StructuredPostalAddress _poEntry in _entry.PostalAddresses)
+                            {
+                                if (_poEntry.Rel == ContactsRelationships.IsHome)
+                                {
+                                    _exists = true;
+                                }
+                            }
+                            if (_exists == true)
+                            {
+                                foreach (StructuredPostalAddress _poEntry in _entry.PostalAddresses)
+                                {
+                                    if (_poEntry.Rel == ContactsRelationships.IsHome)
+                                    {
+                                        _poEntry.FormattedAddress = homePostalAddress;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var _postalAddress = new StructuredPostalAddress();
+                                _postalAddress.FormattedAddress = homePostalAddress;
+                                _postalAddress.Primary = false;
+                                _postalAddress.Rel = ContactsRelationships.IsHome;
+                                _entry.PostalAddresses.Add(_postalAddress);
+                            }
                         }
 
                         Uri _feedUri = new Uri(ContactsQuery.CreateContactsUri(_domain));
@@ -401,21 +579,7 @@ namespace Microsoft.PowerShell.GData
             private string name;
             
             [Parameter(
-               Mandatory = false,
-               HelpMessage = "Contact PhoneNumber"
-            )]
-            [ValidateNotNullOrEmpty]
-            public string PhoneNumber
-            {
-                get { return null; }
-                set { phoneNumber = value; }
-            }
-            private string phoneNumber;
-
-            
-            [Parameter(
-               Mandatory = false,
-               HelpMessage = "Contact PostalAddress"
+            Mandatory = false
             )]
             [ValidateNotNullOrEmpty]
             public string PostalAddress
@@ -426,16 +590,59 @@ namespace Microsoft.PowerShell.GData
             private string postalAddress;
 
             [Parameter(
-            Mandatory = false,
-            HelpMessage = "Contact City"
+            Mandatory = false
             )]
             [ValidateNotNullOrEmpty]
-            public string City
+            public string HomePostalAddress
             {
                 get { return null; }
-                set { city = value; }
+                set { homePostalAddress = value; }
             }
-            private string city;
+            private string homePostalAddress;
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string PhoneNumber
+            {
+                get { return null; }
+                set { phoneNumber = value; }
+            }
+            private string phoneNumber;
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string MobilePhoneNumber
+            {
+                get { return null; }
+                set { mobilePhoneNumber = value; }
+            }
+            private string mobilePhoneNumber;
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string OtherPhoneNumber
+            {
+                get { return null; }
+                set { otherPhoneNumber = value; }
+            }
+            private string otherPhoneNumber;
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string HomePhoneNumber
+            {
+                get { return null; }
+                set { homePhoneNumber = value; }
+            }
+            private string homePhoneNumber;
             
             #endregion Parameters
 
@@ -449,29 +656,56 @@ namespace Microsoft.PowerShell.GData
                 _primaryEmail.Rel = ContactsRelationships.IsWork;
                 _newEntry.Emails.Add(_primaryEmail);
             
-                if (phoneNumber != null)
-                {
-                    var _phoneNumber = new PhoneNumber(phoneNumber);
-                    _phoneNumber.Primary = true;
-                    _phoneNumber.Rel = ContactsRelationships.IsWork;
-                    _newEntry.Phonenumbers.Add(_phoneNumber);
-                }
+                        if (phoneNumber != null)
+                        {
+                            var _phoneNumber = new PhoneNumber(phoneNumber);
+                            _phoneNumber.Primary = true;
+                            _phoneNumber.Rel = ContactsRelationships.IsWork;
+                            _newEntry.Phonenumbers.Add(_phoneNumber);
+                        }
 
-                if (postalAddress != null)
-                {
-                    //var postalAddress = new PostalAddress();
-                    var _postalAddress = new StructuredPostalAddress();
-                    //postalAddress.Value = _PostalAddress;
-                    _postalAddress.FormattedAddress = postalAddress;
-                    _postalAddress.Primary = true;
-                    _postalAddress.Rel = ContactsRelationships.IsWork;
-                    if (city != null)
-                    {
-                        _postalAddress.City = city;
-                    }
-                    
-                    _newEntry.PostalAddresses.Add(_postalAddress);
-                }
+                        if (homePhoneNumber != null)
+                        {
+                            var _phoneNumber = new PhoneNumber(homePhoneNumber);
+                            _phoneNumber.Primary = false;
+                            _phoneNumber.Rel = ContactsRelationships.IsHome;
+                            _newEntry.Phonenumbers.Add(_phoneNumber);
+                        }
+
+                        if (mobilePhoneNumber != null)
+                        {
+                            var _phoneNumber = new PhoneNumber(mobilePhoneNumber);
+                            _phoneNumber.Primary = false;
+                            _phoneNumber.Rel = ContactsRelationships.IsMobile;
+                            _newEntry.Phonenumbers.Add(_phoneNumber);
+                        }
+
+
+                        if (otherPhoneNumber != null)
+                        {
+                            var _phoneNumber = new PhoneNumber(otherPhoneNumber);
+                            _phoneNumber.Primary = false;
+                            _phoneNumber.Rel = ContactsRelationships.IsOther;
+                            _newEntry.Phonenumbers.Add(_phoneNumber);
+                        }
+
+                        if (postalAddress != null)
+                        {
+                            var _postalAddress = new StructuredPostalAddress();
+                            _postalAddress.FormattedAddress = postalAddress;
+                            _postalAddress.Primary = true;
+                            _postalAddress.Rel = ContactsRelationships.IsWork;
+                            _newEntry.PostalAddresses.Add(_postalAddress);           
+                        }
+
+                        if (homePostalAddress != null)
+                        {
+                            var _postalAddress = new StructuredPostalAddress();
+                            _postalAddress.FormattedAddress = homePostalAddress;
+                            _postalAddress.Primary = false;
+                            _postalAddress.Rel = ContactsRelationships.IsWork;
+                            _newEntry.PostalAddresses.Add(_postalAddress);
+                        }
 
                 var _domain = dgcGoogleContactsService.GetDomain(service.ContactsService);
                 
