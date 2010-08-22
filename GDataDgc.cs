@@ -20,7 +20,8 @@ using System.Xml;
 using System.Xml.Linq;
 using Google.AccessControl;
 using Google.GData.AccessControl;
-
+using System.Security;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.PowerShell.GData
 {
@@ -60,7 +61,27 @@ namespace Microsoft.PowerShell.GData
         }
 
         #endregion ParseXML
-        
+
+        #region ConvertToUnsecureString
+
+        public class ConvertToUnsecureString
+        {
+            public string PlainString;
+            public ConvertToUnsecureString(SecureString securePassword)
+            {
+                if (securePassword == null)
+                {
+                    throw new ArgumentNullException("securePassword");
+                }
+
+                IntPtr _unmanagedString = IntPtr.Zero;
+                _unmanagedString = Marshal.SecureStringToGlobalAllocUnicode(securePassword);
+                PlainString = Marshal.PtrToStringUni(_unmanagedString);
+            }
+        }
+
+        #endregion ConvertToUnsecureString
+
         #region GoogleAppService
 
         public class GoogleAppService
@@ -894,17 +915,32 @@ namespace Microsoft.PowerShell.GData
                 }
                 foreach (var _phoneNumberEntry in contactEntry.Phonenumbers)
                 {
-                    if (_phoneNumberEntry.Work == true)
+                    if (_phoneNumberEntry.Rel == ContactsRelationships.IsWork)
                     {
                         _gDataContactEntry.PhoneNumber = _phoneNumberEntry.Value;
+                    }
+                    if (_phoneNumberEntry.Rel == ContactsRelationships.IsHome)
+                    {
+                        _gDataContactEntry.HomePhoneNumber = _phoneNumberEntry.Value;
+                    }
+                    if (_phoneNumberEntry.Rel == ContactsRelationships.IsMobile)
+                    {
+                        _gDataContactEntry.MobilePhoneNumber = _phoneNumberEntry.Value;
+                    }
+                    if (_phoneNumberEntry.Rel == ContactsRelationships.IsOther)
+                    {
+                        _gDataContactEntry.OtherPhoneNumber = _phoneNumberEntry.Value;
                     }
                 }
                 foreach (var _postaAddressEntry in contactEntry.PostalAddresses)
                 {
-                    if (_postaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                    if (_postaAddressEntry.Rel == ContactsRelationships.IsWork)
                     {
                         _gDataContactEntry.PostalAddress = _postaAddressEntry.FormattedAddress;
-                        _gDataContactEntry.City = _postaAddressEntry.City;
+                    }
+                    if (_postaAddressEntry.Rel == ContactsRelationships.IsHome)
+                    {
+                        _gDataContactEntry.HomeAddress = _postaAddressEntry.FormattedAddress;
                     }
                 }
                 _gDataContactEntry.SelfUri = contactEntry.SelfUri.ToString();
@@ -928,17 +964,32 @@ namespace Microsoft.PowerShell.GData
                 }
                 foreach (var _phoneNumberEntry in contactEntry.Phonenumbers)
                 {
-                    if (_phoneNumberEntry.Work == true)
+                    if (_phoneNumberEntry.Rel == ContactsRelationships.IsWork)
                     {
                         _gDataContactEntry.PhoneNumber = _phoneNumberEntry.Value;
+                    }
+                    if (_phoneNumberEntry.Rel == ContactsRelationships.IsHome)
+                    {
+                        _gDataContactEntry.HomePhoneNumber = _phoneNumberEntry.Value;
+                    }
+                    if (_phoneNumberEntry.Rel == ContactsRelationships.IsMobile)
+                    {
+                        _gDataContactEntry.MobilePhoneNumber = _phoneNumberEntry.Value;
+                    }
+                    if (_phoneNumberEntry.Rel == ContactsRelationships.IsOther)
+                    {
+                        _gDataContactEntry.OtherPhoneNumber = _phoneNumberEntry.Value;
                     }
                 }
                 foreach (var _postaAddressEntry in contactEntry.PostalAddresses)
                 {
-                    if (_postaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                    if (_postaAddressEntry.Rel == ContactsRelationships.IsWork)
                     {
                         _gDataContactEntry.PostalAddress = _postaAddressEntry.FormattedAddress;
-                        _gDataContactEntry.City = _postaAddressEntry.City;
+                    }
+                    if (_postaAddressEntry.Rel == ContactsRelationships.IsHome)
+                    {
+                        _gDataContactEntry.HomeAddress = _postaAddressEntry.FormattedAddress;
                     }
                 }
                 _gDataContactEntry.SelfUri = contactEntry.SelfUri.ToString();
@@ -966,17 +1017,32 @@ namespace Microsoft.PowerShell.GData
                     }
                     foreach (var _phoneNumberEntry in _contactEntry.Phonenumbers)
                     {
-                        if (_phoneNumberEntry.Work == true)
+                        if (_phoneNumberEntry.Rel == ContactsRelationships.IsWork)
                         {
                             _gDataContactEntry.PhoneNumber = _phoneNumberEntry.Value;
+                        }
+                        if (_phoneNumberEntry.Rel == ContactsRelationships.IsHome)
+                        {
+                            _gDataContactEntry.HomePhoneNumber = _phoneNumberEntry.Value;
+                        }
+                        if (_phoneNumberEntry.Rel == ContactsRelationships.IsMobile)
+                        {
+                            _gDataContactEntry.MobilePhoneNumber = _phoneNumberEntry.Value;
+                        }
+                        if (_phoneNumberEntry.Rel == ContactsRelationships.IsOther)
+                        {
+                            _gDataContactEntry.OtherPhoneNumber = _phoneNumberEntry.Value;
                         }
                     }
                     foreach (var _postaAddressEntry in _contactEntry.PostalAddresses)
                     {
-                        if (_postaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                        if (_postaAddressEntry.Rel == ContactsRelationships.IsWork)
                         {
                             _gDataContactEntry.PostalAddress = _postaAddressEntry.FormattedAddress;
-                            _gDataContactEntry.City = _postaAddressEntry.City;
+                        }
+                        if (_postaAddressEntry.Rel == ContactsRelationships.IsHome)
+                        {
+                            _gDataContactEntry.HomeAddress = _postaAddressEntry.FormattedAddress;
                         }
                     }
                     _gDataContactEntry.SelfUri = _contactEntry.SelfUri.ToString();
@@ -1002,17 +1068,32 @@ namespace Microsoft.PowerShell.GData
                     }
                     foreach (var _phoneNumberEntry in contactEntry.Phonenumbers)
                     {
-                        if (_phoneNumberEntry.Work == true)
+                        if (_phoneNumberEntry.Rel == ContactsRelationships.IsWork)
                         {
                             _gDataContactEntry.PhoneNumber = _phoneNumberEntry.Value;
+                        }
+                        if (_phoneNumberEntry.Rel == ContactsRelationships.IsHome)
+                        {
+                            _gDataContactEntry.HomePhoneNumber = _phoneNumberEntry.Value;
+                        }
+                        if (_phoneNumberEntry.Rel == ContactsRelationships.IsMobile)
+                        {
+                            _gDataContactEntry.MobilePhoneNumber = _phoneNumberEntry.Value;
+                        }
+                        if (_phoneNumberEntry.Rel == ContactsRelationships.IsOther)
+                        {
+                            _gDataContactEntry.OtherPhoneNumber = _phoneNumberEntry.Value;
                         }
                     }
                     foreach (var _postaAddressEntry in contactEntry.PostalAddresses)
                     {
-                        if (_postaAddressEntry.Rel == "http://schemas.google.com/g/2005#work")
+                        if (_postaAddressEntry.Rel == ContactsRelationships.IsWork)
                         {
                             _gDataContactEntry.PostalAddress = _postaAddressEntry.FormattedAddress;
-                            _gDataContactEntry.City = _postaAddressEntry.City;
+                        }
+                        if (_postaAddressEntry.Rel == ContactsRelationships.IsHome)
+                        {
+                            _gDataContactEntry.HomeAddress = _postaAddressEntry.FormattedAddress;
                         }
                     }
                     _gDataContactEntry.SelfUri = contactEntry.SelfUri.ToString();

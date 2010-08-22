@@ -30,24 +30,13 @@ namespace Microsoft.PowerShell.GData
             Mandatory = true
             )]
             [ValidateNotNullOrEmpty]
-            public string AdminUsername
+            public PSCredential Credentials
             {
                 get { return null; }
-                set { adminUser = value; }
+                set { credentials = value; }
             }
-            private string adminUser;
-
-            [Parameter(
-               Mandatory = true
-            )]
-            [ValidateNotNullOrEmpty]
-            public string AdminPassword
-            {
-                get { return null; }
-                set { adminPassword = value; }
-            }
-            private string adminPassword;
-
+            private PSCredential credentials;
+            
             [Parameter(
                Mandatory = false
             )]
@@ -74,8 +63,12 @@ namespace Microsoft.PowerShell.GData
 
             private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             private GDataTypes.GDataService service = new GDataTypes.GDataService();
+            private string adminUser;
+            private string adminPassword;
             protected override void ProcessRecord()
             {
+                adminUser = credentials.UserName;
+                adminPassword = new Dgc.ConvertToUnsecureString(credentials.Password).PlainString;
                 var _domain = dgcGoogleAppsService.GetDomain(adminUser);
 
                 try

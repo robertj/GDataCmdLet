@@ -107,8 +107,11 @@ namespace Microsoft.PowerShell.GData
             public string Name;
             public string Email;
             public string PhoneNumber;
+            public string HomePhoneNumber;
+            public string MobilePhoneNumber;
+            public string OtherPhoneNumber;
             public string PostalAddress;
-            public string City;
+            public string HomeAddress;
             public string SelfUri;
         }
 

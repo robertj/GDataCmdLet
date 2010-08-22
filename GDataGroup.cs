@@ -436,7 +436,7 @@ namespace Microsoft.PowerShell.GData
 
         #region Remove-GDataGroupOwner
 
-        [Cmdlet(VerbsCommon.Remove, "GDataGrouOwner")]
+        [Cmdlet(VerbsCommon.Remove, "GDataGroupOwner")]
         public class RemoveGDataGroupOwner : Cmdlet
         {
             #region Paradmeters
