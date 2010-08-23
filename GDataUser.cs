@@ -485,11 +485,13 @@ namespace Microsoft.PowerShell.GData
                     {
                         if (!legacy == true)
                         {
+
+                            /*
                             if (!id.Contains("@"))
                             {
                                 throw new Exception("-ID must contain Domain, user@domain.com");
                             }
-
+                            */
                             var _userAliasEntry = dgcGoogleAppsService.CreateUserAliasEntry(dgcGoogleAppsService.RetriveUserAlias(id, service.AppsService));
                             WriteObject(_userAliasEntry,true);
                         }
@@ -572,10 +574,12 @@ namespace Microsoft.PowerShell.GData
                         {
                             throw new Exception("-NickName must contain Domain, user@domain.com");
                         }
+                        /*
                         if (!id.Contains("@"))
                         {
                             throw new Exception("-ID must contain Domain, user@domain.com");
                         }
+                        */
                         var _userAliasEntry = dgcGoogleAppsService.CreateUserAliasEntry(dgcGoogleAppsService.CreateUserAlias(id, service.AppsService, nickName));
                         WriteObject(_userAliasEntry);
                     }

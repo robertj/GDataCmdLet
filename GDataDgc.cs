@@ -665,7 +665,7 @@ namespace Microsoft.PowerShell.GData
                 var _domain = userService.Domain.ToString();
                 char[] _delimiterChars = { '@' };
                 var _token = userService.Groups.QueryClientLoginToken();
-                var _uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + _domain + "?userEmail=" + id);
+                var _uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + _domain + "?userEmail=" + id + "@" + _domain);
 
                 WebRequest _webRequest = WebRequest.Create(_uri);
 
