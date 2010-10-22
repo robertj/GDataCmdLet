@@ -324,6 +324,16 @@ namespace Microsoft.PowerShell.GData
             public string EnabledFor;
         }
 
+        public class GDataLanguage
+        {
+            public string Language;
+        }
+
+        public class GDataWebClips
+        {
+            public string Enabled;
+        }
+
         #endregion Mailsettings
 
         public class ParseXML

@@ -314,6 +314,40 @@ namespace Microsoft.PowerShell.GData
 
             #endregion CreateSenderAddressEntry
 
+            #region CreateLanguageEntry
+
+            public GDataTypes.GDataLanguage CreateLanguageEntry(GoogleMailSettingsEntry mailSettingsEntry)
+            {
+                var _gDataLanguageEntry = new GDataTypes.GDataLanguage();
+                foreach (var _setting in mailSettingsEntry.Properties)
+                {
+                    if (_setting.Name == "language")
+                    {
+                        _gDataLanguageEntry.Language = _setting.Value;
+                    }
+                }
+                return _gDataLanguageEntry;
+            }
+
+            #endregion CreateLanguageEntry
+
+            #region CreateWebclipsEntry
+
+            public GDataTypes.GDataWebClips CreateWebClipsEntry(GoogleMailSettingsEntry mailSettingsEntry)
+            {
+                var _gDataWebClips = new GDataTypes.GDataWebClips();
+                foreach (var _setting in mailSettingsEntry.Properties)
+                {
+                    if (_setting.Name == "enable")
+                    {
+                        _gDataWebClips.Enabled = _setting.Value;
+                    }
+                }
+                return _gDataWebClips;
+            }
+
+            #endregion CreateWebclipsEntry
+
             #region CreateCreateIMapEntry
 
             public GDataTypes.GDataImap CreateIMapEntry(GoogleMailSettingsEntry mailSettingsEntry)
@@ -560,7 +594,7 @@ namespace Microsoft.PowerShell.GData
                 string[] _temp = userAlias.Split(_delimiterChars);
                 var _aliasDomain = _temp[1];
                 var _token = userService.Groups.QueryClientLoginToken();
-                var uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + _aliasDomain);
+                var uri = new Uri("https://apps-apis.google.com/a/feeds/alias/2.0/" + _domain);
 
                 WebRequest _webRequest = WebRequest.Create(uri);
 

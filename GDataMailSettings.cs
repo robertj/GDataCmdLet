@@ -12,6 +12,8 @@ using Google.GData.Apps.GoogleMailSettings;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using Google.GData.Client;
+using Google.GData.Extensions.Apps;
 
 namespace Microsoft.PowerShell.GData
 {
@@ -147,14 +149,95 @@ namespace Microsoft.PowerShell.GData
             }
             private bool pop3ActionDelete;
 
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public string Language
+            {
+                set { language = value; }
+            }
+            private string language;
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public SwitchParameter EnableWebclips
+            {
+                set { enableWebclips = value; }
+            }
+            private bool enableWebclips;
+
+            [Parameter(
+            Mandatory = false
+            )]
+            [ValidateNotNullOrEmpty]
+            public SwitchParameter DisableWebclips
+            {
+                set { disableWebclips = value; }
+            }
+            private bool disableWebclips;
+
             #endregion Parameters
 
             private Dgc.GoogleAppService dgcGoogleAppsService = new Dgc.GoogleAppService();
             protected override void ProcessRecord()
             {
+
+
+                if (language != null)
+                {
+                    try
+                    {
+                        var _entry = dgcGoogleAppsService.CreateLanguageEntry(service.GoogleMailSettingsService.UpdateLanguage(id, language));
+                        WriteObject(_entry);
+
+                    }
+                    catch (Exception _exception)
+                    {
+                        WriteObject(_exception);
+                    }
+                }
+
+                if (disableWebclips == true)
+                {
+                    try
+                    {
+                        Uri _webClipsUri = new Uri(AppsGoogleMailSettingsNameTable.AppsGoogleMailSettingsBaseFeedUri + "/" + service.GoogleMailSettingsService.Domain + "/" + id + "/webclip");
+                        GoogleMailSettingsEntry _update = new GoogleMailSettingsEntry();
+                        _update.EditUri = _webClipsUri;
+                        _update.Properties.Add(new PropertyElement(AppsGoogleMailSettingsNameTable.enable, "false"));
+
+                        var _entry = dgcGoogleAppsService.CreateWebClipsEntry(service.GoogleMailSettingsService.Update(_update));
+                        WriteObject(_entry);
+                    }
+                    catch (Exception _exception)
+                    {
+                        WriteObject(_exception);
+                    }
+                }
+
+                if (enableWebclips == true)
+                {
+                    try
+                    {
+                        Uri _webClipsUri = new Uri(AppsGoogleMailSettingsNameTable.AppsGoogleMailSettingsBaseFeedUri + "/" + service.GoogleMailSettingsService.Domain + "/" + id + "/webclip");
+                        GoogleMailSettingsEntry _update = new GoogleMailSettingsEntry();
+                        _update.EditUri = _webClipsUri;
+                        _update.Properties.Add(new PropertyElement(AppsGoogleMailSettingsNameTable.enable, "true"));
+                       
+                        var _entry = dgcGoogleAppsService.CreateWebClipsEntry(service.GoogleMailSettingsService.Update(_update));
+                        WriteObject(_entry);
+                    }
+                    catch (Exception _exception)
+                    {
+                        WriteObject(_exception);
+                    }
+                }
+
                 if (senderAdress != null)
                 {
-                    
                     if (name  == null)
                     {
                         throw new ArgumentException("Parameter Name is null"); 
